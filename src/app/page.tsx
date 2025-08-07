@@ -1,103 +1,78 @@
-import Image from "next/image";
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import expenses from "@/commons/data/expenses.json"
+import auctioned from "@/commons/data/auctioned.json"
 
 export default function Home() {
+  const total = expenses.reduce((a, c) => a + c.valor, 0)
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="mx-auto px-6 py-12 sm:py-24 max-w-5xl md:max-w-7xl">
+      <h2>Arrematado</h2>
+      <Table>
+        <TableCaption>CARROS ARREMATADOS</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Invoice</TableHead>
+            <TableHead>Marca</TableHead>
+            <TableHead>Modelo</TableHead>
+            <TableHead>Cor</TableHead>
+            <TableHead>Ano/Modelo</TableHead>
+            <TableHead>Ano/Fabric</TableHead>
+            <TableHead>Tipo</TableHead>
+            <TableHead>Condição</TableHead>
+            <TableHead>Fipe</TableHead>
+            <TableCell>Pagamento</TableCell>
+            <TableHead className="text-right">Pago</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {auctioned.map(item => (
+            <TableRow key={item.codigo}>
+              <TableCell className="font-medium">{item.codigo}</TableCell>
+              <TableCell>{item.marca}</TableCell>
+              <TableCell>{item.modelo}</TableCell>
+              <TableCell>{item.cor}</TableCell>
+              <TableCell>{item.ano_modelo}</TableCell>
+              <TableCell>{item.ano_de_fabricacao}</TableCell>
+              <TableCell>{item.condicao}</TableCell>
+              <TableCell>{item.condicao_de_func}</TableCell>
+              <TableCell>{item.valor_fipe}</TableCell>
+              <TableCell>{item.data_pagamento}</TableCell>
+              <TableCell className="text-right">{item.valor_pago}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <h2 className="mt-10">Despesas</h2>
+      <Table>
+        <TableCaption className="uppercase">Lista de despesas recentes</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Código</TableHead>
+            <TableHead>Versão</TableHead>
+            <TableHead>Cor</TableHead>
+            <TableHead>Gasto</TableHead>
+            <TableHead className="text-right">Total</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {expenses.map((expense) => (
+            <TableRow key={expense.descricao}>
+              <TableCell className="font-medium">{expense.codigo}</TableCell>
+              <TableCell>{expense.versao}</TableCell>
+              <TableCell>{expense.cor}</TableCell>
+              <TableCell>{expense.descricao}</TableCell>
+              <TableCell className="text-right">{expense.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={4}>Total</TableCell>
+            <TableCell className="text-right">{total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </main>
   );
 }

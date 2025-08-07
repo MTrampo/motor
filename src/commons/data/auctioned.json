@@ -1,0 +1,36 @@
+[
+  {
+    "codigo": "1007262",
+    "marca": "FIAT",
+    "modelo": "CRONOS",
+    "versao": "Cronos Precision A/T6 1.8 16V Flex",
+    "ano_modelo": "2021",
+    "ano_de_fabricacao": "2021",
+    "cor": "prata",
+    "comitente": "ALLIANZ SEGUROS S/A",
+    "tipo_de_monta": "Pequena Monta",
+    "data_pagamento": "04.08.2025",
+    "condicao": "COLISÃO",
+    "condicao_de_func": "Motor dá partida e engrena",
+    "final_de_placa": "7",
+    "valor_fipe": "R$ 75.464,00 BRL",
+    "valor_pago": "R$ 46.097,00 BRL"
+  },
+  {
+    "codigo": "1010316",
+    "marca": "FORD",
+    "modelo": "KA",
+    "versao": "KA SE 1.0 12V TI-VCT",
+    "ano_modelo": "2019",
+    "ano_de_fabricacao": "2019",
+    "cor": "prata",
+    "comitente": "ALLIANZ SEGUROS S/A",
+    "tipo_de_monta": "Média Monta",
+    "data_pagamento": "05.08.2025",
+    "condicao": "COLISÃO",
+    "condicao_de_func": "Motor dá partida e engrena",
+    "final_de_placa": "1",
+    "valor_fipe": "R$ 44.608,00 BRL",
+    "valor_pago": "R$ 22.209,50 BRL"
+  }
+]
