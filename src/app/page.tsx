@@ -14,6 +14,7 @@ export default function Home() {
             <TableHead className="w-[100px]">Invoice</TableHead>
             <TableHead>Marca</TableHead>
             <TableHead>Modelo</TableHead>
+            <TableHead>Placa</TableHead>
             <TableHead>Cor</TableHead>
             <TableHead>Ano/Modelo</TableHead>
             <TableHead>Ano/Fabric</TableHead>
@@ -30,6 +31,7 @@ export default function Home() {
               <TableCell className="font-medium">{item.codigo}</TableCell>
               <TableCell>{item.marca}</TableCell>
               <TableCell>{item.modelo}</TableCell>
+              <TableCell>{item.final_de_placa}</TableCell>
               <TableCell>{item.cor}</TableCell>
               <TableCell>{item.ano_modelo}</TableCell>
               <TableCell>{item.ano_de_fabricacao}</TableCell>
