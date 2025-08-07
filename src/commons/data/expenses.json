@@ -26,5 +26,26 @@
     "cor": "prata",
     "descricao": "Lanterna",
     "valor": 500
+  },
+  {
+    "codigo": "1010316",
+    "versao": "KA SE 1.0 12V TI-VCT",
+    "cor": "prata",
+    "descricao": "Guincho",
+    "valor": 1300
+  },
+  {
+    "codigo": "1007262",
+    "versao": "Cronos Precision A/T6 1.8 16V Flex",
+    "cor": "prata",
+    "descricao": "parachoque dianteiro",
+    "valor": 400
+  },
+  {
+    "codigo": "1007262",
+    "versao": "Cronos Precision A/T6 1.8 16V Flex",
+    "cor": "prata",
+    "descricao": "farol, paralama e bandeja",
+    "valor": 900
   }
 ]
