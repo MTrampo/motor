@@ -59,8 +59,8 @@ export default function Home() {
         </TableHeader>
         <TableBody>
           {expenses.map((expense) => (
-            <TableRow key={expense.descricao}>
-              <TableCell className="font-medium">{expense.codigo}</TableCell>
+            <TableRow key={expense.codigo}>
+              <TableCell className="font-medium">{expense.codigo_carro}</TableCell>
               <TableCell>{expense.versao}</TableCell>
               <TableCell>{expense.cor}</TableCell>
               <TableCell>{expense.descricao}</TableCell>

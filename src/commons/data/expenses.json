@@ -1,51 +1,98 @@
 [
   {
-    "codigo": "1007262",
+    "codigo": 1,
+    "codigo_carro": "1007262",
     "versao": "Cronos Precision A/T6 1.8 16V Flex",
     "cor": "prata",
     "descricao": "Guincho",
     "valor": 700
   },
   {
-    "codigo": "1007262",
+    "codigo": 2,
+    "codigo_carro": "1007262",
     "versao": "Cronos Precision A/T6 1.8 16V Flex",
     "cor": "prata",
     "descricao": "Porta trás Esq",
     "valor": 800
   },
   {
-    "codigo": "1007262",
+    "codigo": 3,
+    "codigo_carro": "1007262",
     "versao": "Cronos Precision A/T6 1.8 16V Flex",
     "cor": "prata",
     "descricao": "Capo",
     "valor": 1800
   },
   {
-    "codigo": "1007262",
+    "codigo": 4,
+    "codigo_carro": "1007262",
     "versao": "Cronos Precision A/T6 1.8 16V Flex",
     "cor": "prata",
     "descricao": "Lanterna",
     "valor": 500
   },
   {
-    "codigo": "1010316",
+    "codigo": 5,
+    "codigo_carro": "1010316",
     "versao": "KA SE 1.0 12V TI-VCT",
     "cor": "prata",
     "descricao": "Guincho",
     "valor": 1300
   },
   {
-    "codigo": "1007262",
+    "codigo": 6,
+    "codigo_carro": "1007262",
     "versao": "Cronos Precision A/T6 1.8 16V Flex",
     "cor": "prata",
     "descricao": "parachoque dianteiro",
     "valor": 400
   },
   {
-    "codigo": "1007262",
+    "codigo": 7,
+    "codigo_carro": "1007262",
     "versao": "Cronos Precision A/T6 1.8 16V Flex",
     "cor": "prata",
-    "descricao": "farol, paralama e bandeja",
+    "descricao": "Farol, paralama e bandeja",
     "valor": 900
+  },
+  {
+    "codigo": 8,
+    "codigo_carro": "1010316",
+    "versao": "KA SE 1.0 12V TI-VCT",
+    "cor": "prata",
+    "descricao": "Eixo",
+    "valor": 500
+  },
+  {
+    "codigo": 9,
+    "codigo_carro": "1010316",
+    "versao": "KA SE 1.0 12V TI-VCT",
+    "cor": "prata",
+    "descricao": "Tampa",
+    "valor": 400
+  },
+  {
+    "codigo": 10,
+    "codigo_carro": "1010316",
+    "versao": "KA SE 1.0 12V TI-VCT",
+    "cor": "prata",
+    "descricao": "Par de lanterna",
+    "valor": 400
+  },
+  {
+    "codigo": 11,
+    "codigo_carro": "1010316",
+    "versao": "KA SE 1.0 12V TI-VCT",
+    "cor": "prata",
+    "descricao": "Parachoque",
+    "valor": 350
+  },
+  {
+    "codigo": 12,
+    "codigo_carro": "1010316",
+    "versao": "KA SE 1.0 12V TI-VCT",
+    "cor": "prata",
+    "descricao": "Porta",
+    "valor": 300
   }
 ]
