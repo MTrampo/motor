@@ -1,5 +1,6 @@
 "use client"
 
+import useSWR from 'swr'
 import * as React from "react"
 import {
   ColumnDef,
@@ -35,33 +36,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { columns, Payment } from "./columns-cars-finances"
-
-const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    vehicle: "Cronos Precision A/T6 1.8 16V Flex",
-    licensePlate: "HJD3G15",
-    payment: 316,
-    status: "Comprado",
-    brand: "FIAT",
-    color: "Prata",
-    maintenance: 500
-  },
-  {
-    id: "3u1reuv4",
-    vehicle: "Cronos Precision A/T6 1.8 16V Flex",
-    licensePlate: 'xdd-4587',
-    payment: 242,
-    status: "No Guincho",
-    brand: "FIAT",
-    color: "Prata",
-    maintenance: 500
-  },
-]
-
+import { columns } from "./columns-cars-finances"
+import { getAllVehicles } from '@/app/dashboard/action'
+import { FaChevronDown } from 'react-icons/fa6'
 
 export default function OverviewCarsFinances() {
+  const { vehicles } = getAllVehicles()
+
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =
@@ -69,7 +50,7 @@ export default function OverviewCarsFinances() {
   const [rowSelection, setRowSelection] = React.useState({})
 
   const table = useReactTable({
-    data,
+    data: vehicles || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -92,16 +73,16 @@ export default function OverviewCarsFinances() {
       <div className="flex items-center py-4">
         <Input
           placeholder="Buscar por veículo..."
-          value={(table.getColumn("vehicle")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("version")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("vehicle")?.setFilterValue(event.target.value)
+            table.getColumn("version")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
+              Editar <FaChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -109,6 +90,9 @@ export default function OverviewCarsFinances() {
               .getAllColumns()
               .filter((column) => column.getCanHide())
               .map((column) => {
+                const headerValue = column.columnDef.header
+                const headerText = typeof headerValue === 'string' ? headerValue : column.id
+
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
@@ -118,7 +102,7 @@ export default function OverviewCarsFinances() {
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {headerText}
                   </DropdownMenuCheckboxItem>
                 )
               })}
@@ -168,7 +152,7 @@ export default function OverviewCarsFinances() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Nenhum resultado encontrado.
                 </TableCell>
               </TableRow>
             )}
@@ -177,8 +161,8 @@ export default function OverviewCarsFinances() {
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredSelectedRowModel().rows.length} de{" "}
+          {table.getFilteredRowModel().rows.length} linha(s) selecionadas.
         </div>
         <div className="space-x-2">
           <Button
@@ -187,7 +171,7 @@ export default function OverviewCarsFinances() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            Anterio
           </Button>
           <Button
             variant="outline"
@@ -195,7 +179,7 @@ export default function OverviewCarsFinances() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            Próximo
           </Button>
         </div>
       </div>

@@ -26,20 +26,10 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { FaArrowRotateRight, FaArrowUpAZ, FaCarBurst } from "react-icons/fa6"
+import { VehicleFormatted } from "@/commons/models/Vehicles"
+import { CarStatusBadge } from "@/components/status/car-status"
 
-
-export type Payment = {
-  id: string
-  vehicle: string
-  licensePlate: string
-  payment: number
-  status: string
-  brand: string
-  color: string
-  maintenance: number
-}
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<VehicleFormatted>[] = [
   {
     id: "select",
     accessorKey: "licensePlate",
@@ -80,9 +70,9 @@ export const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => <div className="uppercase">{row.getValue("brand")}</div>,
   },
   {
-    accessorKey: "vehicle",
+    accessorKey: "version",
     header: "Veículo",
-    cell: ({ row }) => <div className="uppercase">{row.getValue("vehicle")}</div>,
+    cell: ({ row }) => <div className="uppercase">{row.getValue("version")}</div>,
   },
   {
     accessorKey: "color",
@@ -92,43 +82,26 @@ export const columns: ColumnDef<Payment>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "Em Manutenção" ? (
-          <FaCarBurst />
-        ) : (
-          <FaArrowRotateRight />
-        )}
-        {row.original.status}
-      </Badge>
-    ),
+    cell: ({ row }) => <CarStatusBadge status={row.original.status} />,
   },
   {
-    accessorKey: "payment",
+    accessorKey: "paidFormatted",
     header: "Pgto",
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("payment"))
-      const formatted = new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }).format(amount)
-
-      return <div className="font-medium">{formatted}</div>
-    },
+    cell: ({ row }) => <div className="font-medium">{row.getValue("paidFormatted")}</div>,
   },
-  {
-    accessorKey: "maintenance",
-    header: "Manut",
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("maintenance"))
-      const formatted = new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }).format(amount)
+  // {
+  //   accessorKey: "maintenance",
+  //   header: "Manut",
+  //   cell: ({ row }) => {
+  //     const amount = parseFloat(row.getValue("maintenance"))
+  //     const formatted = new Intl.NumberFormat("pt-BR", {
+  //       style: "currency",
+  //       currency: "BRL",
+  //     }).format(amount)
 
-      return <div className="font-medium">{formatted}</div>
-    },
-  },
+  //     return <div className="font-medium">{formatted}</div>
+  //   },
+  // },
   {
     id: "actions",
     enableHiding: false,

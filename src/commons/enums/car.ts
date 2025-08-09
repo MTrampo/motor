@@ -1,4 +1,5 @@
-export enum CarStatus {
+export enum CarStatusEnum {
+  EVALUATING,
   PURCHASED,
   WINCH,
   MAINTENANCE,
@@ -7,7 +8,7 @@ export enum CarStatus {
   SOLD
 }
 
-export enum CarConditionType {
+export enum CarConditionTypeEnum {
   COLLISION,
   THEFT,
   FLOOD,

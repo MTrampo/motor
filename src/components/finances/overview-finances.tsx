@@ -1,15 +1,20 @@
+"use client";
+
 import { FaArrowTrendUp, FaGripLines } from "react-icons/fa6";
 import { Badge } from "../ui/badge";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { getFinancialSummary } from "@/app/dashboard/action";
 
 export default function OverviewFinances() {
+  const { finance } = getFinancialSummary()
+
   return(
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <Card>
         <CardHeader>
           <CardDescription>Comprados</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            R$ 68.500,00
+            {finance?.amountPurchasedFormatted}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -20,11 +25,11 @@ export default function OverviewFinances() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            2 carros comprados neste mês
+            {finance?.countPurchased} carro(s) comprado(s) neste mês
             <FaArrowTrendUp className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            Atualizado segunda às 16h
+            {finance?.lastPurchasedFormatted}
           </div>
         </CardFooter>
       </Card>
@@ -32,7 +37,7 @@ export default function OverviewFinances() {
         <CardHeader>
           <CardDescription>Manutenções</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            R$ 7.250,00
+            {finance?.amountMaintenanceFormatted}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -43,11 +48,11 @@ export default function OverviewFinances() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Tendências em alta neste mês
+            {finance?.countMaintenance} manutenção(ões) realizada(s) neste mês
             <FaArrowTrendUp className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            Atualizado à 1h atrás
+            {finance?.lastMaintenanceFormatted}
           </div>
         </CardFooter>
       </Card>
@@ -55,7 +60,7 @@ export default function OverviewFinances() {
         <CardHeader>
           <CardDescription>Vendidos</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            R$ 0,00
+            {finance?.amountSoldFormatted}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -66,11 +71,11 @@ export default function OverviewFinances() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Tendências em alta
+            {finance?.countSold} carro(s) vendido(s) neste mês
             <FaArrowTrendUp className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            Sem entradas esse mês
+            {finance?.lastSoldFormatted}
           </div>
         </CardFooter>
       </Card>
@@ -78,7 +83,7 @@ export default function OverviewFinances() {
         <CardHeader>
           <CardDescription>Lucros</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            R$ 0,00
+            {finance?.amountProfitFormatted}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -89,11 +94,11 @@ export default function OverviewFinances() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Tendências em alta
+            {finance?.countProfit} vendas geraram lucro(s) neste mês
             <FaArrowTrendUp className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            Sem entradas esse mês
+            {finance?.lastProfitFormatted}
           </div>
         </CardFooter>
       </Card>
