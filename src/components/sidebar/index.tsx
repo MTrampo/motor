@@ -45,24 +45,34 @@ const data = {
   navMain: [
     {
       title: "Painel",
-      url: "#",
+      url: "/dashboard",
       icon: <FaChartPie />,
-      isActive: true,
-      items: [
-        {
-          title: "Visão Geral",
-          url: "/dashboard",
-        },
-        {
-          title: "Custos",
-          url: "#",
-        },
-        {
-          title: "Faturamento",
-          url: "#",
-        },
-      ],
+      // items: [
+      //   {
+      //     title: "Visão Geral",
+      //     url: "/dashboard",
+      //   },
+      //   {
+      //     title: "Custos",
+      //     url: "#",
+      //   },
+      //   {
+      //     title: "Faturamento",
+      //     url: "#",
+      //   },
+      // ],
     },
+    {
+      title: "Veículos",
+      url: "/dashboard/vehicles",
+      icon: <FaCar />,
+      isActive: true,
+    },
+    // {
+    //   title: "Relatórios",
+    //   url: "/reports",
+    //   icon: <FaChartPie />,
+    // },
   ],
   // navClouds: [
   //   {
