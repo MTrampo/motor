@@ -1,5 +1,5 @@
 import { DocumentReference, Timestamp } from "firebase-admin/firestore"
-import { VehicleFistore, VehicleFormatted, formatVehicle } from "./Vehicles"
+import { VehicleFistore, VehicleFormatted, formatVehicle } from "./Vehicle"
 import { dateFormatter, dateTimeFormatter } from "../utils/formatter"
 import { serviceFormSchema } from "../validations/Service"
 import { z } from "zod"

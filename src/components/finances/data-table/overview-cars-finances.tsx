@@ -41,7 +41,7 @@ import { getAllVehicles } from '@/app/dashboard/action'
 import { FaChevronDown } from 'react-icons/fa6'
 
 export default function OverviewCarsFinances() {
-  const { vehicles } = getAllVehicles()
+  const { vehicles, isLoading } = getAllVehicles()
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -67,6 +67,10 @@ export default function OverviewCarsFinances() {
       rowSelection,
     },
   })
+
+  if (isLoading) {
+    return <div className="text-center py-10">Carregando veículos...</div>
+  }
 
   return (
     <div className="w-full">

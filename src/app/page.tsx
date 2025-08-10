@@ -1,11 +1,21 @@
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import expenses from "@/commons/data/expenses.json"
 import auctioned from "@/commons/data/auctioned.json"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const total = expenses.reduce((a, c) => a + c.valor, 0)
   return (
     <main className="mx-auto px-6 py-12 sm:py-24 max-w-5xl md:max-w-7xl">
+
+      <Button variant="ghost" asChild className="mb-10">
+        <Link prefetch href='/dashboard' className="bg-blue-500 p-2 text-primary-foreground shadow-xs hover:bg-blue-500/90 ">
+          NOVA VERSÃO
+        </Link>
+      </Button>
+      
+
       <h2>Arrematado</h2>
       <Table>
         <TableCaption>CARROS ARREMATADOS</TableCaption>

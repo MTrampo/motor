@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { FaArrowRotateRight, FaArrowUpAZ, FaCarBurst } from "react-icons/fa6"
-import { VehicleFormatted } from "@/commons/models/Vehicles"
+import { VehicleFormatted } from "@/commons/models/Vehicle"
 import { CarStatusBadge } from "@/components/status/car-status"
 
 export const columns: ColumnDef<VehicleFormatted>[] = [
@@ -89,19 +89,11 @@ export const columns: ColumnDef<VehicleFormatted>[] = [
     header: "Pgto",
     cell: ({ row }) => <div className="font-medium">{row.getValue("paidFormatted")}</div>,
   },
-  // {
-  //   accessorKey: "maintenance",
-  //   header: "Manut",
-  //   cell: ({ row }) => {
-  //     const amount = parseFloat(row.getValue("maintenance"))
-  //     const formatted = new Intl.NumberFormat("pt-BR", {
-  //       style: "currency",
-  //       currency: "BRL",
-  //     }).format(amount)
-
-  //     return <div className="font-medium">{formatted}</div>
-  //   },
-  // },
+  {
+    accessorKey: "maintenance.totalFormatted",
+    header: "Manut",
+    cell: ({ row }) => <div className="font-medium">{row.original.maintenance.totalFormatted}</div>,
+  },
   {
     id: "actions",
     enableHiding: false,

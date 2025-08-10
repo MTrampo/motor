@@ -1,4 +1,4 @@
-import { formatVehicles } from "@/commons/models/Vehicles"
+import { formatVehicles } from "@/commons/models/Vehicle"
 import { getAllVehiclesDocs } from "./vehicle.firestore"
 import globalResponses from "@/commons/utils/responses"
 

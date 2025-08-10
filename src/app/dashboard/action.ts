@@ -1,7 +1,7 @@
 import { fetcher } from "@/commons/lib/fetcher/swr"
 import { ResponseProps, SWRAPIError } from "@/commons/models/Api"
 import { FinanceFormatted } from "@/commons/models/Finance"
-import { VehicleFormatted } from "@/commons/models/Vehicles"
+import { VehicleFormatted } from "@/commons/models/Vehicle"
 import useSWR from "swr"
 
 export function getAllVehicles() {

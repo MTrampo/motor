@@ -7,6 +7,7 @@ import { ServiceFistore, ServiceFormatted } from './Service'
 import { CarConditionTypeEnum, CarStatusEnum } from '../enums/Car';
 import { AuctionTypeEnum, DamageTypeEnum } from '../enums/Auction';
 import { translateEnum } from '../utils/enum-helpers';
+import { MaintenanceVehicleFistore, MaintenanceVehicleFormatted } from './Maintenance';
 
 export interface BudgetRequestBody {
   documentId: string
@@ -51,6 +52,7 @@ export interface VehicleFistore {
   paid?: number,
   paymentDate?: Timestamp,
   auction?: AuctionFirestore,
+  maintenance?: MaintenanceVehicleFistore,
   createdAt: Timestamp,
   updatedAt: Timestamp,
 }
@@ -80,6 +82,7 @@ export interface VehicleFormatted {
   paid?: number,
   paymentDate?: Date | null,
   auction: AuctionFormatted | null,
+  maintenance: MaintenanceVehicleFormatted,
   createdAt: Date,
   updatedAt: Date,
   conditionTypeFormatted: string,
@@ -122,6 +125,10 @@ export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
       damageTypeFormatted: translateEnum('DamageType', vehicle.auction.damageType),
       functionalFormatted: translateEnum('AuctionType', vehicle.auction.functional),
     } : null,
+    maintenance: {
+      total: vehicle.maintenance?.total || 0,
+      totalFormatted: currencyFormatter.format(vehicle.maintenance?.total || 0),
+    },
     createdAt: vehicle.createdAt.toDate(),
     updatedAt: vehicle.updatedAt.toDate(),
     conditionTypeFormatted: translateEnum('CarConditionType', vehicle.conditionType),
@@ -158,6 +165,10 @@ export function formatVehicles(vehicles: VehicleFistore[]): VehicleFormatted[] {
       damageTypeFormatted: translateEnum('DamageType', vehicle.auction.damageType),
       functionalFormatted: translateEnum('AuctionType', vehicle.auction.functional),
     } : null,
+    maintenance: {
+      total: vehicle.maintenance?.total || 0,
+      totalFormatted: currencyFormatter.format(vehicle.maintenance?.total || 0),
+    },
     createdAt: vehicle.createdAt.toDate(),
     updatedAt: vehicle.updatedAt.toDate(),
     conditionTypeFormatted: translateEnum('CarConditionType', vehicle.conditionType),

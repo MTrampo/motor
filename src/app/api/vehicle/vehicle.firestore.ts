@@ -1,5 +1,5 @@
 import { firebaseAdmin } from "@/commons/lib/firebase/server";
-import { VehicleFistore } from "@/commons/models/Vehicles";
+import { VehicleFistore } from "@/commons/models/Vehicle";
 
 export async function getAllVehiclesDocs(teamId: string) {
   const querySnapshot = await firebaseAdmin.db.collection(firebaseAdmin.getPath.vehicles(teamId)).get()

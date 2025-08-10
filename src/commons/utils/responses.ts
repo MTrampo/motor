@@ -2,7 +2,7 @@ import { de } from "date-fns/locale"
 import { HttpStatusEnum } from "../enums/Api"
 import { ResponseProps } from "../models/Api"
 import { getFirebaseAuthErrorMessage } from "../validations/User"
-import { VehicleFormatted } from "../models/Vehicles"
+import { VehicleFormatted } from "../models/Vehicle"
 
 const globalResponses = {
   unauthorizedUser: (code: string): ResponseProps<null> => ({
