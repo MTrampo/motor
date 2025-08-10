@@ -4,8 +4,8 @@ import { CustomerFistore, CustomerFormatted } from "./Customer"
 import { budgetFormSchema } from '../validations/Budget'
 import { currencyFormatter, dateFormatter } from '../utils/formatter'
 import { ServiceFistore, ServiceFormatted } from './Service'
-import { CarConditionTypeEnum, CarStatusEnum } from '../enums/Car';
-import { AuctionTypeEnum, DamageTypeEnum } from '../enums/Auction';
+import { CarConditionTypeEnum, CarStatusEnum } from '../enums/car';
+import { AuctionTypeEnum, DamageTypeEnum } from '../enums/auction';
 import { translateEnum } from '../utils/enum-helpers';
 import { MaintenanceVehicleFistore, MaintenanceVehicleFormatted } from './Maintenance';
 

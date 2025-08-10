@@ -1,4 +1,4 @@
-import { HttpStatusEnum } from "@/commons/enums/Api";
+import { HttpStatusEnum } from "@/commons/enums/api";
 import { ErrorResponse, ResponseProps, SWRAPIError } from "@/commons/models/Api";
 
 export const fetcher = async <T>(url: string): Promise<ResponseProps<T>> => {
