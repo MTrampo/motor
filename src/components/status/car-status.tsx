@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { CarStatusEnum } from "@/commons/enums/Car";
+import { CarStatusEnum } from "@/commons/enums/car";
 import { Badge } from "../ui/badge";
 import { translateEnum } from "@/commons/utils/enum-helpers";
 import { FaCarBurst, FaCarOn, FaCartShopping, FaNewspaper, FaSearchengin, FaTag, FaTruckPickup } from "react-icons/fa6";

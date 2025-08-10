@@ -1,5 +1,5 @@
 import { de } from "date-fns/locale"
-import { HttpStatusEnum } from "../enums/Api"
+import { HttpStatusEnum } from "../enums/api"
 import { ResponseProps } from "../models/Api"
 import { getFirebaseAuthErrorMessage } from "../validations/User"
 import { VehicleFormatted } from "../models/Vehicle"
