@@ -1,6 +1,5 @@
-import { AuctionTypeEnum, DamageTypeEnum } from "../enums/Auction";
-import { CarConditionTypeEnum, CarStatusEnum } from "../enums/Car";
-
+import { AuctionTypeEnum, DamageTypeEnum } from "@/commons/enums/Auction";
+import { CarConditionTypeEnum, CarStatusEnum } from "@/commons/enums/Car";
 
 const carStatusTranslations: Record<CarStatusEnum, string> = {
   [CarStatusEnum.EVALUATING]: "Em Avaliação",
