@@ -1,7 +1,7 @@
 import { HttpStatusEnum } from "../enums/Api"
 
 export interface ApiProps {
-  body?: any;
+  body?: Record<string, unknown>;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   type?: 'server' | 'client';
   cache?: RequestCache;
@@ -19,7 +19,7 @@ export interface ErrorResponse {
   status: HttpStatusEnum;
   title: string;
   message: string;
-  data: any;
+  data: null;
 }
 
 export type ResponseFirebaseProps<T> = {

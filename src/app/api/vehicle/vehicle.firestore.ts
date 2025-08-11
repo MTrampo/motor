@@ -4,7 +4,7 @@ import { VehicleFistore } from "@/commons/models/Vehicle";
 export async function getAllVehiclesDocs(teamId: string) {
   const querySnapshot = await firebaseAdmin.db.collection(firebaseAdmin.getPath.vehicles(teamId)).get()
   
-  let documents: Array<VehicleFistore> = [];
+  const documents: Array<VehicleFistore> = [];
 
   if (querySnapshot.empty) {
     console.log('Orçamentos não encontrados!');
