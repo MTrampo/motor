@@ -38,10 +38,10 @@ import {
 } from "@/components/ui/table"
 import { columns } from "./columns-cars-finances"
 import { FaChevronDown } from 'react-icons/fa6'
-import { getAllVehicles } from '@/app/dashboard/vehicles/action'
+import { useGetAllVehicles } from '@/hooks/swr/use-vehicle'
 
 export default function OverviewCarsFinances() {
-  const { vehicles, isLoading } = getAllVehicles()
+  const { vehicles, isLoading } = useGetAllVehicles()
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])

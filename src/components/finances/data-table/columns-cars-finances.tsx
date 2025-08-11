@@ -124,15 +124,3 @@ export const columns: ColumnDef<VehicleFormatted>[] = [
     },
   },
 ]
-
-// (
-//         <div
-//           className="flex items-center"
-//           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-//         >
-//           Veículo
-//           <div>
-//             <FaArrowUpAZ />
-//           </div>
-//         </div>
-//       )

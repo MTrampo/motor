@@ -3,10 +3,10 @@
 import { FaArrowTrendUp, FaGripLines } from "react-icons/fa6";
 import { Badge } from "../ui/badge";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { getFinancialSummary } from "@/app/dashboard/action";
+import { useGetFinancialSummary } from "@/hooks/swr/use-financial";
 
 export default function OverviewFinances() {
-  const { finance } = getFinancialSummary()
+  const { finance } = useGetFinancialSummary()
 
   return(
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
