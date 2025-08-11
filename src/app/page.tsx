@@ -16,10 +16,7 @@ export default function Home() {
           NOVA VERSÃO
         </Link>
       </Button>
-
-      <div className="block">
-        <InstallPrompt/>
-      </div>
+      <InstallPrompt/>
       </div>
       
 
