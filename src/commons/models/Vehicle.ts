@@ -1,9 +1,5 @@
-import z from 'zod'
 import { DocumentReference, Timestamp, DocumentData } from 'firebase-admin/firestore';
-import { CustomerFistore, CustomerFormatted } from "./Customer"
-import { budgetFormSchema } from '../validations/Budget'
 import { currencyFormatter, dateFormatter, formatNumber } from '../utils/formatter'
-import { ServiceFistore, ServiceFormatted } from './Service'
 import { CarConditionTypeEnum, CarStatusEnum } from '../enums/Car';
 import { AuctionTypeEnum, DamageTypeEnum } from '../enums/Auction';
 import { translateEnum } from '../utils/enum-helpers';
@@ -105,7 +101,7 @@ export interface ReturnPageBudgets {
   lastDocument: string | null
 }
 
-export type BudgetFormInputs = z.infer<typeof budgetFormSchema>
+// export type BudgetFormInputs = z.infer<typeof budgetFormSchema>
 
 export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
   return {

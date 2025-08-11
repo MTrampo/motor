@@ -1,7 +1,7 @@
 import { HttpStatusEnum } from "../enums/Api"
 
 export interface ApiProps {
-  body?: Record<string, unknown>;
+  body?: Record<string, unknown> | null;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   type?: 'server' | 'client';
   cache?: RequestCache;
