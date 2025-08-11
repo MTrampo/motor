@@ -1,15 +1,15 @@
 import { ResponseProps } from "../models/Api"
-import { getFirebaseAuthErrorMessage } from "../validations/User"
+//import { getFirebaseAuthErrorMessage } from "../validations/User"
 import { VehicleFormatted } from "../models/Vehicle"
 import { HttpStatusEnum } from "../enums/Api"
 
 const globalResponses = {
-  unauthorizedUser: (code: string): ResponseProps<null> => ({
-    status: HttpStatusEnum.UNAUTHORIZED,
-    title: 'Usuário não autenticado',
-    message: getFirebaseAuthErrorMessage(code),
-    data: null
-  }),
+  // unauthorizedUser: (code: string): ResponseProps<null> => ({
+  //   status: HttpStatusEnum.UNAUTHORIZED,
+  //   title: 'Usuário não autenticado',
+  //   message: getFirebaseAuthErrorMessage(code),
+  //   data: null
+  // }),
 
   vehicleNotFound: (isPlural = true): ResponseProps<null> => ({
     status: HttpStatusEnum.NOT_FOUND,
