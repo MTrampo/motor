@@ -1,4 +1,4 @@
-import { HttpStatusEnum } from "../enums/api"
+import { HttpStatusEnum } from "../enums/Api"
 
 export interface ApiProps {
   body?: any;

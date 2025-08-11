@@ -37,8 +37,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { columns } from "./columns-cars-finances"
-import { getAllVehicles } from '@/app/dashboard/action'
 import { FaChevronDown } from 'react-icons/fa6'
+import { getAllVehicles } from '@/app/dashboard/vehicles/action'
 
 export default function OverviewCarsFinances() {
   const { vehicles, isLoading } = getAllVehicles()

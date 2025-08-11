@@ -1,8 +1,7 @@
-import { de } from "date-fns/locale"
-import { HttpStatusEnum } from "../enums/api"
 import { ResponseProps } from "../models/Api"
 import { getFirebaseAuthErrorMessage } from "../validations/User"
 import { VehicleFormatted } from "../models/Vehicle"
+import { HttpStatusEnum } from "../enums/Api"
 
 const globalResponses = {
   unauthorizedUser: (code: string): ResponseProps<null> => ({
@@ -12,10 +11,10 @@ const globalResponses = {
     data: null
   }),
 
-  budgetNotFound: (isPlural = true): ResponseProps<null> => ({
+  vehicleNotFound: (isPlural = true): ResponseProps<null> => ({
     status: HttpStatusEnum.NOT_FOUND,
-    title: isPlural ? 'Orçamentos não Encontrados' : 'Orçamento não Encontrado',
-    message: isPlural ? 'Nenhum orçamento encontrado' : 'Orçamento desejado não encontrado',
+    title: isPlural ? 'Veículos não Encontrados' : 'Veículo não Encontrado',
+    message: isPlural ? 'Nenhum veículo encontrado' : 'Veículo desejado não encontrado',
     data: null
   }),
 

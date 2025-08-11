@@ -2,10 +2,10 @@ import z from 'zod'
 import { DocumentReference, Timestamp, DocumentData } from 'firebase-admin/firestore';
 import { CustomerFistore, CustomerFormatted } from "./Customer"
 import { budgetFormSchema } from '../validations/Budget'
-import { currencyFormatter, dateFormatter } from '../utils/formatter'
+import { currencyFormatter, dateFormatter, formatNumber } from '../utils/formatter'
 import { ServiceFistore, ServiceFormatted } from './Service'
-import { CarConditionTypeEnum, CarStatusEnum } from '../enums/car';
-import { AuctionTypeEnum, DamageTypeEnum } from '../enums/auction';
+import { CarConditionTypeEnum, CarStatusEnum } from '../enums/Car';
+import { AuctionTypeEnum, DamageTypeEnum } from '../enums/Auction';
 import { translateEnum } from '../utils/enum-helpers';
 import { MaintenanceVehicleFistore, MaintenanceVehicleFormatted } from './Maintenance';
 
@@ -43,7 +43,10 @@ export interface VehicleFistore {
   model: string,
   color: string,
   version: string,
+  images: string[],
   licensePlate: string,
+  kilometers: number,
+  chassis: string,
   modelYear: string,
   manufacturingYear: string,
   conditionType: CarConditionTypeEnum,
@@ -73,7 +76,10 @@ export interface VehicleFormatted {
   model: string,
   color: string,
   version: string,
+  images: string[],
   licensePlate: string,
+  kilometers: string,
+  chassis: string,
   modelYear: string,
   manufacturingYear: string,
   conditionType: CarConditionTypeEnum,
@@ -108,7 +114,10 @@ export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
     model: vehicle.model.toUpperCase(),
     color: vehicle.color.toUpperCase(),
     version: vehicle.version.toUpperCase(),
+    images: vehicle.images,
     licensePlate: vehicle.licensePlate.toUpperCase(),
+    kilometers: `${formatNumber.format(vehicle.kilometers)} Km`,
+    chassis: vehicle.chassis.toUpperCase(),
     modelYear: vehicle.modelYear,
     manufacturingYear: vehicle.manufacturingYear,
     conditionType: vehicle.conditionType,
@@ -148,7 +157,10 @@ export function formatVehicles(vehicles: VehicleFistore[]): VehicleFormatted[] {
     model: vehicle.model.toUpperCase(),
     color: vehicle.color.toUpperCase(),
     version: vehicle.version.toUpperCase(),
+    images: vehicle.images,
     licensePlate: vehicle.licensePlate.toUpperCase(),
+    kilometers: `${formatNumber.format(vehicle.kilometers)} Km`,
+    chassis: vehicle.chassis.toUpperCase(),
     modelYear: vehicle.modelYear,
     manufacturingYear: vehicle.manufacturingYear,
     conditionType: vehicle.conditionType,
