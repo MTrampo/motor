@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { CarStatusEnum } from "@/commons/enums/car";
+import { CarStatusEnum } from "@/commons/enums/Car";
 import { Badge } from "../ui/badge";
 import { translateEnum } from "@/commons/utils/enum-helpers";
 import { FaCarBurst, FaCarOn, FaCartShopping, FaNewspaper, FaSearchengin, FaTag, FaTruckPickup } from "react-icons/fa6";
@@ -19,11 +19,21 @@ export function CarStatusBadge({ status }: CarStatusBadgeProps) {
     [CarStatusEnum.SOLD]: <FaTag />,
   };
 
+  const statusColorMap: Record<CarStatusEnum, string> = {
+    [CarStatusEnum.EVALUATING]: 'text-orange-800 bg-orange-100',
+    [CarStatusEnum.PURCHASED]: 'text-green-800 bg-green-100',
+    [CarStatusEnum.WINCH]: 'text-blue-800 bg-blue-100',
+    [CarStatusEnum.MAINTENANCE]: 'text-gray-800 bg-gray-200 ',
+    [CarStatusEnum.AVAILABLE]: 'text-lime-800 bg-lime-100',
+    [CarStatusEnum.ANNOUNCED]: 'text-indigo-800 bg-indigo-100',
+    [CarStatusEnum.SOLD]: 'text-red-800 bg-red-100',
+  };
+
   const statusText = translateEnum('CarStatus', status);
   const statusIcon = statusIconMap[status];
 
   return (
-    <Badge variant="outline" className="text-muted-foreground px-1.5">
+    <Badge variant="outline" className={`px-1.5 ${statusColorMap[status]}`}>
       {statusIcon}
       <span className="ml-1.5">{statusText}</span>
     </Badge>

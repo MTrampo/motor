@@ -2,6 +2,8 @@ import { format, formatDistanceToNow, isThisWeek, isToday, isYesterday, parse } 
 import { ptBR } from 'date-fns/locale'
 import { Timestamp } from 'firebase-admin/firestore'
 
+// Formatação de datas e horas
+
 export const dateFormatter = new Intl.DateTimeFormat('pt-BR')
 
 export const dateTimeFormatter = (date: Date) => {
@@ -60,61 +62,6 @@ export const formatLastUpdated = (date: Date | null): string => {
   return `atualizado em ${format(date, 'dd/MM/yyyy', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
 };
 
-export const currencyFormatter = new Intl.NumberFormat('pt-BR', {
-  style: 'currency',
-  currency: 'BRL'
-})
-
-export const formatCurrencyInput = (value: string | number): string => {
-  const float = typeof value === 'string' ? parseFloat(value.replace(',', '.')) : value
-
-  if (isNaN(float)) return 'R$ 0,00'
-
-  return float.toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    minimumFractionDigits: 2,
-  })
-}
-
-export const normalizeCurrencyValue = (formattedValue: string): number => {
-  const cleaned = formattedValue.replace(/\D/g, '')
-  const number = parseFloat(cleaned) / 100
-  return Number(number.toFixed(2))
-}
-
-export const timeFormatter = (time: string) => {
-  const [hours, minutes] = time.split(':').map(Number)
-
-  return hours < 1 ? `${minutes}m` : `${hours}h ${minutes}m`
-}
-
-export const fullNameFormatter = (name: string) => {
-  return name.toLowerCase()
-    .split(" ")
-    .map(word => (word.length > 3 ? word.charAt(0).toUpperCase() + word.slice(1) : word.toLowerCase()))
-    .join(" ");
-}
-
-export const nameFormatter = (fullName: string) => {
-  const nameParts = fullName.trim().split(/\s+/)
-
-  if (nameParts.length === 1) return nameParts[0]
-
-  const firstName = nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1).toLowerCase();
-  const lastName = nameParts[nameParts.length - 1].charAt(0).toUpperCase() + nameParts[nameParts.length - 1].slice(1).toLowerCase();
-
-  return `${firstName} ${lastName}`
-};
-
-export const phoneFormatter = (value: string = "11942214974") => {
-  value = value.replace(/\D/g, "")
-  value = value.replace(/^(\d{2})(\d)/g, "($1) $2")
-  value = value.replace(/(\d{5})(\d)/, "$1-$2")
-
-  return value
-}
-
 export const timeToDisplayFormatter = (timeString: string): string => {
   const [hours, minutes] = timeString.split(':').map(Number)
 
@@ -148,4 +95,67 @@ export const formatDurationInput = (input: string): string => {
   }
 
   return formatted
+}
+
+export const timeFormatter = (time: string) => {
+  const [hours, minutes] = time.split(':').map(Number)
+
+  return hours < 1 ? `${minutes}m` : `${hours}h ${minutes}m`
+}
+
+// Formatação de moeda e números
+
+export const formatNumber = new Intl.NumberFormat('pt-BR')
+
+export const currencyFormatter = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL'
+})
+
+export const formatCurrencyInput = (value: string | number): string => {
+  const float = typeof value === 'string' ? parseFloat(value.replace(',', '.')) : value
+
+  if (isNaN(float)) return 'R$ 0,00'
+
+  return float.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+  })
+}
+
+// Formatação de textos
+
+export const normalizeCurrencyValue = (formattedValue: string): number => {
+  const cleaned = formattedValue.replace(/\D/g, '')
+  const number = parseFloat(cleaned) / 100
+  return Number(number.toFixed(2))
+}
+
+export const fullNameFormatter = (name: string) => {
+  return name.toLowerCase()
+    .split(" ")
+    .map(word => (word.length > 3 ? word.charAt(0).toUpperCase() + word.slice(1) : word.toLowerCase()))
+    .join(" ");
+}
+
+export const nameFormatter = (fullName: string) => {
+  const nameParts = fullName.trim().split(/\s+/)
+
+  if (nameParts.length === 1) return nameParts[0]
+
+  const firstName = nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1).toLowerCase();
+  const lastName = nameParts[nameParts.length - 1].charAt(0).toUpperCase() + nameParts[nameParts.length - 1].slice(1).toLowerCase();
+
+  return `${firstName} ${lastName}`
+};
+
+// Formatação de telefone
+
+export const phoneFormatter = (value: string) => {
+  value = value.replace(/\D/g, "")
+  value = value.replace(/^(\d{2})(\d)/g, "($1) $2")
+  value = value.replace(/(\d{5})(\d)/, "$1-$2")
+
+  return value
 }

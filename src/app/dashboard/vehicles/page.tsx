@@ -1,7 +1,14 @@
-export default function Vehicles() {
+import Header from "@/components/header";
+import CardVehicles from "@/components/vehicles/card-vehicle";
+import ContainerCardVehicle from "@/components/vehicles/container-card-vehicle";
+
+export default async function Vehicles() {
   return (
-    <div>
-      xdd
-    </div>
+    <>
+      <Header title="Veículos" />
+      <main className="flex flex-col p-6 gap-y-10">
+        <ContainerCardVehicle/>
+      </main>
+    </>
   )
 }

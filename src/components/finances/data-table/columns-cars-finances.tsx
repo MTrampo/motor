@@ -86,12 +86,12 @@ export const columns: ColumnDef<VehicleFormatted>[] = [
   },
   {
     accessorKey: "paidFormatted",
-    header: "Pgto",
+    header: "Pagamento",
     cell: ({ row }) => <div className="font-medium">{row.getValue("paidFormatted")}</div>,
   },
   {
     accessorKey: "maintenance.totalFormatted",
-    header: "Manut",
+    header: "Manutenção",
     cell: ({ row }) => <div className="font-medium">{row.original.maintenance.totalFormatted}</div>,
   },
   {
