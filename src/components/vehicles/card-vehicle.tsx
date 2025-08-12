@@ -29,7 +29,7 @@ export default function CardVehicles({ vehicle }: CardVehiclesProps) {
         </CardHeader>
         <CardContent className="px-3 py-3 mb-1">
           <h6 className="font-semibold">
-            {vehicle.brand} {vehicle.model}
+            {vehicle.brand} <span className="text-blue-500">{vehicle.model}</span>
           </h6>
           <div className="flex flex-col text-muted-foreground gap-y-1">
             <CardDescription>

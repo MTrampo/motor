@@ -11,7 +11,7 @@ const collection = {
 
 const subCollection = {
   user: process.env.FIRESTORE_SUB_COLLECTION_USER as string,
-  vehicles: process.env.FIRESTORE_SUB_COLLECTION_VEHICLES as string,
+  vehicle: process.env.FIRESTORE_SUB_COLLECTION_VEHICLES as string,
   // budget: process.env.FIRESTORE_SUB_COLLECTION_BUDGET as string,
   // service: process.env.FIRESTORE_SUB_COLLECTION_SERVICE as string,
   finance: process.env.FIRESTORE_SUB_COLLECTION_FINANCE as string,
@@ -21,7 +21,7 @@ const subCollection = {
 export const getPath: FirestorePaths = {
   // Métodos diretos para cada tipo
   user: (teamId: string): string => `${collection.team}/${teamId}`,
-  vehicles: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.vehicles}`,
+  vehicle: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.vehicle}`,
   // budget: (teamId: string): string => `${collection.user}/${teamId}/${subCollection.budget}`,
   // service: (teamId: string): string => `${collection.user}/${teamId}/${subCollection.service}`,
   finance: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.finance}`,

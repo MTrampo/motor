@@ -1,13 +1,23 @@
+import useSWR from "swr"
 import { fetcher } from "@/commons/lib/fetcher/swr"
 import { ResponseProps, SWRAPIError } from "@/commons/models/Api"
 import { VehicleFormatted } from "@/commons/models/Vehicle"
-import useSWR from "swr"
 
 export function useGetAllVehicles() {
   const { data, error, isLoading } = useSWR<ResponseProps<VehicleFormatted[]>, SWRAPIError>(`/api/vehicle`, fetcher)
  
   return {
     vehicles: data?.data,
+    isLoading,
+    error: error
+  }
+}
+
+export function useGetVehicleById(id: string) {
+  const { data, error, isLoading } = useSWR<ResponseProps<VehicleFormatted>, SWRAPIError>(`/api/vehicle/${id}`, fetcher)
+ 
+  return {
+    vehicle: data?.data,
     isLoading,
     error: error
   }

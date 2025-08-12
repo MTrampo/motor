@@ -1,6 +1,6 @@
 import { ResponseProps } from "@/commons/models/Api";
 import { FinanceFormatted, formatFinance } from "@/commons/models/Finance";
-import { getCurrentPeriod } from "@/commons/utils/data";
+import { getCurrentPeriod } from "@/commons/utils/generate-data";
 import { getFinanceDocByPeriod } from "./financial.firestore";
 import { HttpStatusEnum } from "@/commons/enums/Api";
 
