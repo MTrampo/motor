@@ -23,7 +23,7 @@ export function CarStatusBadge({ status }: CarStatusBadgeProps) {
     [CarStatusEnum.EVALUATING]: 'text-orange-800 bg-orange-100',
     [CarStatusEnum.PURCHASED]: 'text-green-800 bg-green-100',
     [CarStatusEnum.WINCH]: 'text-blue-800 bg-blue-100',
-    [CarStatusEnum.MAINTENANCE]: 'text-gray-800 bg-gray-200 ',
+    [CarStatusEnum.MAINTENANCE]: 'text-gray-800 bg-gray-200',
     [CarStatusEnum.AVAILABLE]: 'text-lime-800 bg-lime-100',
     [CarStatusEnum.ANNOUNCED]: 'text-indigo-800 bg-indigo-100',
     [CarStatusEnum.SOLD]: 'text-red-800 bg-red-100',

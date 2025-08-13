@@ -1,5 +1,6 @@
 import { AuctionTypeEnum, DamageTypeEnum } from "@/commons/enums/Auction";
 import { CarConditionTypeEnum, CarStatusEnum } from "@/commons/enums/Car";
+import { CostTypeEnum } from "../enums/Cost";
 
 const carStatusTranslations: Record<CarStatusEnum, string> = {
   [CarStatusEnum.EVALUATING]: "Em Avaliação",
@@ -34,11 +35,29 @@ const damageTypeTranslations: Record<DamageTypeEnum, string> = {
   [DamageTypeEnum.BIG_VALUE]: "Grande Monta",
 };
 
+const costTypeTranslations: Record<CostTypeEnum, string> = {
+  [CostTypeEnum.TRANSPORT]: "Transporte",
+  [CostTypeEnum.MAINTENANCE]: "Manutenção",
+  [CostTypeEnum.INSPECTION]: "Inspeção",
+  [CostTypeEnum.DOCUMENTATION]: "Documentação",
+  [CostTypeEnum.PART_WHEELS_TIRES]: "Peças - Rodas/Pneus",
+  [CostTypeEnum.PART_MECHANICAL]: "Peças - Mecânica",
+  [CostTypeEnum.PART_BODYWORK]: "Peças - Lataria",
+  [CostTypeEnum.PART_INTERNAL]: "Peças - Interna",
+  [CostTypeEnum.PART_ELECTRICAL]: "Peças - Elétrica",
+  [CostTypeEnum.PAINTING]: "Pintura",
+  [CostTypeEnum.MECHANICAL]: "Mecânico",
+  [CostTypeEnum.TECHNICIAN]: "Funileiro",
+  [CostTypeEnum.KEYCHAIN]: "Chaveiro",
+  [CostTypeEnum.INSURANCE]: "Seguro"
+}
+
 const translations = {
   CarStatus: carStatusTranslations,
   CarConditionType: carConditionTypeTranslations,
   AuctionType: auctionTypeTranslations,
   DamageType: damageTypeTranslations,
+  CostType: costTypeTranslations,
 };
 
 export function translateEnum<T extends keyof typeof translations, K extends keyof typeof translations[T]>(
