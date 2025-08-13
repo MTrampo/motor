@@ -51,9 +51,11 @@ export const columns: ColumnDef<ItemsCostFormatted>[] = [
     cell: ({ row }) => <div className="capitalize">{row.getValue("description")}</div>,
   },
   {
-    accessorKey: "typeFormatted",
+    accessorKey: "type",
     header: "Tipo",
     cell: ({ row }) => <CostTypeBadge type={row.original.type} />,
+    filterFn: (row, id, value) => value.includes(row.getValue(id)),
+    enableColumnFilter: true,
   },
   {
     accessorKey: "valueFormatted",

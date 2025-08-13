@@ -1,41 +1,18 @@
 "use client"
 
 import * as React from "react"
-import {
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-  VisibilityState,
-} from "@tanstack/react-table"
-
+import { ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel,
+  getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { columns } from "./columns-costs-vehicle"
-import { FaChevronDown } from 'react-icons/fa6'
+import { FaFilter, FaFilterCircleXmark, FaMagnifyingGlass } from 'react-icons/fa6'
 import { useGetCostByPlate } from '@/hooks/swr/use-cost'
+import { useMemo } from "react"
+import { CostTypeText } from "../cost-type"
+import { InputIcon } from "@/components/ui/input-icon"
 
 type TableCostsVehicleProps = {
   plate: string
@@ -49,8 +26,6 @@ export default function TableCostsVehicle({ plate }: TableCostsVehicleProps) {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-
-  console.log(cost?.items)
 
   const table = useReactTable({
     data: cost?.items || [],
@@ -71,50 +46,91 @@ export default function TableCostsVehicle({ plate }: TableCostsVehicleProps) {
     },
   })
 
+  const uniqueTypeValuesWithCount = useMemo(() => {
+    if (!cost?.items || !Array.isArray(cost.items)) {
+      return []
+    }
+    const counts = cost.items.reduce((acc, item) => {
+      const key = item.type
+      acc[key] = (acc[key] || 0) + 1
+      return acc
+    }, {} as Record<string, number>)
+
+    return Object.keys(counts)
+      .sort()
+      .map(key => ({
+        value: Number(key),
+        count: counts[key]
+      }));
+  }, [cost?.items]);
+
   if (isLoading) {
     return <div className="text-center py-10">Carregando veículos...</div>
   }
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Buscar por veículo..."
-          value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("description")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <DropdownMenu>
+      <div className="flex items-center py-4 gap-2">
+          <InputIcon
+            placeholder="Buscar pela descrição..."
+            value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("description")?.setFilterValue(event.target.value)
+            }
+            iconLeft={<FaMagnifyingGlass/>}
+          />
+        
+         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Editar <FaChevronDown />
+            <Button variant="outline">
+              <FaFilter /> Tipo
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                const headerValue = column.columnDef.header
-                const headerText = typeof headerValue === 'string' ? headerValue : column.id
+          <DropdownMenuContent align="start">
+            {uniqueTypeValuesWithCount.map((item) => {
+              const column = table.getColumn("type");
+              const filterValue = (column?.getFilterValue() as number[]) || [];
+              const isChecked = filterValue.includes(item.value);
 
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
+              return (
+                <DropdownMenuItem
+                  key={item.value}
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    const newFilterValue = isChecked
+                      ? filterValue.filter((v) => v !== item.value)
+                      : [...filterValue, item.value];
+
+                    if (newFilterValue.length === 0) {
+                      column?.setFilterValue(undefined);
+                    } else {
+                      column?.setFilterValue(newFilterValue);
                     }
-                  >
-                    {headerText}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
+                  }}
+                  className="flex items-center justify-between gap-3"
+                >
+                  <div className="flex items-center gap-2 font-medium">
+                    <Checkbox id={`checkbox-${item.value}`} checked={isChecked} />
+                    <CostTypeText type={item.value} />
+                  </div>
+                  <span className="text-muted-foreground">{item.count}</span>
+                </DropdownMenuItem>
+              );
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {columnFilters.length > 0 && (
+          <>
+            <Button
+              variant="outline"
+              onClick={() => table.resetColumnFilters()}
+            >
+              <FaFilterCircleXmark />
+              Remover Filtros
+            </Button>
+          </>
+        )}
       </div>
       <div className="overflow-hidden rounded-md border">
         <Table>

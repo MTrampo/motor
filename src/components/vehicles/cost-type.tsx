@@ -10,31 +10,43 @@ interface CostTypeBadgeProps {
   type: CostTypeEnum
 }
 
-export function CostTypeBadge({ type }: CostTypeBadgeProps) {
-  const typeIconMap: Record<CostTypeEnum, JSX.Element> = {
-    [CostTypeEnum.TRANSPORT]: <GiTowTruck />,
-    [CostTypeEnum.MAINTENANCE]: <FaScrewdriverWrench />,
-    [CostTypeEnum.INSPECTION]: <FaTruckPickup />,
-    [CostTypeEnum.DOCUMENTATION]: <FaFileLines />,
-    [CostTypeEnum.PART_WHEELS_TIRES]: <GiCarWheel />,
-    [CostTypeEnum.PART_MECHANICAL]: <GiTurbine />,
-    [CostTypeEnum.PART_BODYWORK]: <MdCarRepair />,
-    [CostTypeEnum.PART_INTERNAL]: <GiSpeedometer />,
-    [CostTypeEnum.PART_ELECTRICAL]: <MdElectricCar />,
-    [CostTypeEnum.PAINTING]: <GiSpray />,
-    [CostTypeEnum.MECHANICAL]: <MdEngineering />,
-    [CostTypeEnum.TECHNICIAN]: <GiMechanicGarage />,
-    [CostTypeEnum.KEYCHAIN]: <MdCarRental />,
-    [CostTypeEnum.INSURANCE]: <FaFileShield />,
-  };
+const typeIconMap: Record<CostTypeEnum, JSX.Element> = {
+  [CostTypeEnum.TRANSPORT]: <GiTowTruck />,
+  [CostTypeEnum.MAINTENANCE]: <FaScrewdriverWrench />,
+  [CostTypeEnum.INSPECTION]: <FaTruckPickup />,
+  [CostTypeEnum.DOCUMENTATION]: <FaFileLines />,
+  [CostTypeEnum.PART_WHEELS_TIRES]: <GiCarWheel />,
+  [CostTypeEnum.PART_MECHANICAL]: <GiTurbine />,
+  [CostTypeEnum.PART_BODYWORK]: <MdCarRepair />,
+  [CostTypeEnum.PART_INTERNAL]: <GiSpeedometer />,
+  [CostTypeEnum.PART_ELECTRICAL]: <MdElectricCar />,
+  [CostTypeEnum.PAINTING]: <GiSpray />,
+  [CostTypeEnum.MECHANICAL]: <MdEngineering />,
+  [CostTypeEnum.TECHNICIAN]: <GiMechanicGarage />,
+  [CostTypeEnum.KEYCHAIN]: <MdCarRental />,
+  [CostTypeEnum.INSURANCE]: <FaFileShield />,
+}
 
-  const statusText = translateEnum('CostType', type);
-  const statusIcon = typeIconMap[type];
+export function CostTypeBadge({ type }: CostTypeBadgeProps) {
+  const typeText = translateEnum('CostType', type);
+  const typeIcon = typeIconMap[type];
 
   return (
     <Badge variant="outline" className="px-1.5 text-gray-800 bg-gray-200">
-      {statusIcon}
-      <span className="ml-0.5">{statusText}</span>
+      {typeIcon}
+      <span className="ml-0.5">{typeText}</span>
     </Badge>
+  );
+}
+
+export function CostTypeText({ type }: CostTypeBadgeProps) {
+  const typeText = translateEnum('CostType', type);
+  const typeIcon = typeIconMap[type];
+
+  return (
+    <span className="flex gap-2 items-center">
+      {typeIcon}
+      <span>{typeText}</span>
+    </span>
   );
 }
