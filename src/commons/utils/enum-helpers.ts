@@ -2,7 +2,7 @@ import { AuctionTypeEnum, DamageTypeEnum } from "@/commons/enums/Auction";
 import { CarConditionTypeEnum, CarStatusEnum } from "@/commons/enums/Car";
 import { CostTypeEnum } from "../enums/Cost";
 
-const carStatusTranslations: Record<CarStatusEnum, string> = {
+export const carStatusTranslations: Record<CarStatusEnum, string> = {
   [CarStatusEnum.EVALUATING]: "Em Avaliação",
   [CarStatusEnum.PURCHASED]: "Comprado",
   [CarStatusEnum.WINCH]: "Em tranporte",
@@ -12,7 +12,7 @@ const carStatusTranslations: Record<CarStatusEnum, string> = {
   [CarStatusEnum.SOLD]: "Vendido",
 };
 
-const carConditionTypeTranslations: Record<CarConditionTypeEnum, string> = {
+export const carConditionTypeTranslations: Record<CarConditionTypeEnum, string> = {
   [CarConditionTypeEnum.COLLISION]: "Colisão",
   [CarConditionTypeEnum.THEFT]: "Roubo/Furto",
   [CarConditionTypeEnum.FLOOD]: "Enchente",
@@ -23,19 +23,20 @@ const carConditionTypeTranslations: Record<CarConditionTypeEnum, string> = {
   [CarConditionTypeEnum.OTHER]: "Outro",
 };
 
-const auctionTypeTranslations: Record<AuctionTypeEnum, string> = {
+export const auctionTypeTranslations: Record<AuctionTypeEnum, string> = {
   [AuctionTypeEnum.START]: "Motor dá partida",
   [AuctionTypeEnum.START_AND_GEAR]: "Motor dá partida e engrena",
   [AuctionTypeEnum.DOESNT_START]: "Veículo não Liga",
 };
 
-const damageTypeTranslations: Record<DamageTypeEnum, string> = {
+export const damageTypeTranslations: Record<DamageTypeEnum, string> = {
   [DamageTypeEnum.SMALL_VALUE]: "Pequena Monta",
   [DamageTypeEnum.MEDIUM_VALUE]: "Média Monta",
   [DamageTypeEnum.BIG_VALUE]: "Grande Monta",
 };
 
-const costTypeTranslations: Record<CostTypeEnum, string> = {
+export const costTypeTranslations: Record<CostTypeEnum, string> = {
+  [CostTypeEnum.WINCH]: "Guincho",
   [CostTypeEnum.TRANSPORT]: "Transporte",
   [CostTypeEnum.MAINTENANCE]: "Manutenção",
   [CostTypeEnum.INSPECTION]: "Inspeção",

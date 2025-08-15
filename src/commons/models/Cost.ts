@@ -4,6 +4,7 @@ import { currencyFormatter, dateFormatter, dateTimeFormatter } from "../utils/fo
 import { z } from "zod"
 import { CostTypeEnum } from "../enums/Cost"
 import { translateEnum } from "../utils/enum-helpers"
+import { registerCostFormSchema } from "../validations/Cost"
 
 // export interface ServiceRequestBody {
 //   day: Date
@@ -20,41 +21,41 @@ import { translateEnum } from "../utils/enum-helpers"
 // }
 
 export interface ItemsCostFistore {
-  guid: string
-  value: number
-  description: string
-  type: CostTypeEnum
-  paymentDate: Timestamp
+  guid: string;
+  value: number;
+  description: string;
+  type: CostTypeEnum;
+  paymentDate: Timestamp;
 }
 
 export interface CostFistore {
-  id: string
-  total: number
-  items: ItemsCostFistore[]
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  id: string;
+  total: number;
+  items: ItemsCostFistore[];
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 export interface ItemsCostFormatted {
-  guid: string
-  value: number
-  description: string
-  type: CostTypeEnum
-  paymentDate: Date
-  valueFormatted: string
-  typeFormatted: string
-  paymentDateFormatted: string
+  guid: string;
+  value: number;
+  description: string;
+  type: CostTypeEnum;
+  paymentDate: Date;
+  valueFormatted: string;
+  typeFormatted: string;
+  paymentDateFormatted: string;
 }
 
 export interface CostFormatted {
-  id: string
-  total: number
-  items: ItemsCostFormatted[]
-  createdAt: Date
-  updatedAt: Date
-  totalFormatted: string
-  updatedAtFormatted: string
-  createdAtFormatted: string
+  id: string;
+  total: number;
+  items: ItemsCostFormatted[];
+  createdAt: Date;
+  updatedAt: Date;
+  totalFormatted: string;
+  updatedAtFormatted: string;
+  createdAtFormatted: string;
 }
 
 // export type ServiceFormInputs = {
@@ -67,6 +68,8 @@ export interface CostFormatted {
 //   start: Date
 //   end: Date
 // }
+
+export type RegisterCostFormInputs = z.infer<typeof registerCostFormSchema>;
 
 export function formatCost(cost: CostFistore): CostFormatted {
   return {

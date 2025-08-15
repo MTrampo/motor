@@ -1,8 +1,13 @@
 import { VehicleFormatted } from "@/commons/models/Vehicle";
+import { ButtonIcon } from "@/components/buttons/button-icon";
+import { RegisterCostForm } from "@/components/forms/Cost/register-cost-form";
+import { SheetForm } from "@/components/forms/sheet-form";
 import { CarStatusBadge } from "@/components/status/car-status";
+import { Button } from "@/components/ui/button";
 import { ChartBarProfitProjection } from "@/components/vehicles/chart-profit-projection-vehicle";
 import TableCostsVehicle from "@/components/vehicles/data-table/table-costs-vehicle";
-import { FaCartArrowDown, FaMagnifyingGlassDollar, FaMoneyBillTrendUp, FaScrewdriverWrench } from "react-icons/fa6";
+import Link from "next/link";
+import { FaCartArrowDown, FaFileCirclePlus, FaMagnifyingGlassDollar, FaMoneyBillTrendUp, FaPenToSquare, FaScrewdriverWrench } from "react-icons/fa6";
 
 type VehicleDetailsProps = {
   vehicle: VehicleFormatted
@@ -14,7 +19,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
       <div className="flex flex-col gap-6">
         <div className="relative flex flex-col flex-2 gap-10 border rounded-xl -mt-16 z-10 bg-white shadow-sm">
           <div className="flex flex-col p-10 gap-6">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between">
               <div>
                 <h1 className="text-3xl font-bold gap-1 flex items-center">
                   {vehicle.brand}
@@ -24,7 +29,12 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                   {vehicle?.version}
                 </h2>
               </div>
-              <CarStatusBadge status={vehicle.status}/>
+              <div className="space-x-10">
+                <CarStatusBadge status={vehicle.status}/>
+                <Link href="">
+                  <ButtonIcon icon={<FaPenToSquare />} info="Editar Carro" />
+                </Link>
+              </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <div>
@@ -102,10 +112,26 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
         </div>
         <div className="flex flex-col flex-2 gap-10 border rounded-xl bg-white shadow-sm">
           <div className="p-10">
-            <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
-              Custos
-              <span className="block capitalize text-blue-500">Gerais</span>
-            </h3>
+            <div className="flex justify-between items-center">
+              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
+                Custos
+                <span className="block capitalize text-blue-500">Gerais</span>
+              </h3>
+              <div>
+                <SheetForm
+                  triggerComponent={(
+                    <Button variant="outline" size="icon">
+                      <FaFileCirclePlus />
+                    </Button>
+                  )}
+                  title="Adicionar Custos"
+                  description='Informe qualquer despesa relacionada ao seu veículo, desde manutenções e reparos a gastos com peças, inspeções ou documentação.'
+                  formComponent={(
+                    <RegisterCostForm onHandleSubmitCost={() => {}} />
+                  )}
+                />
+              </div>
+            </div>
             <TableCostsVehicle plate={vehicle.licensePlate}/>
           </div>
         </div>

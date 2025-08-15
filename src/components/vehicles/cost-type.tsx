@@ -2,7 +2,7 @@ import { JSX } from "react";
 import { CostTypeEnum } from "@/commons/enums/Cost";
 import { Badge } from "../ui/badge";
 import { translateEnum } from "@/commons/utils/enum-helpers";
-import { FaFileLines, FaFileShield, FaScrewdriverWrench, FaTag, FaTruckPickup } from "react-icons/fa6";
+import { FaFileLines, FaFileShield, FaMagnifyingGlassPlus, FaScrewdriverWrench, FaTruckFast } from "react-icons/fa6";
 import { GiCarWheel, GiMechanicGarage, GiSpeedometer, GiSpray, GiTowTruck, GiTurbine } from "react-icons/gi";
 import { MdCarRental, MdCarRepair, MdElectricCar, MdEngineering } from "react-icons/md";
 
@@ -11,9 +11,10 @@ interface CostTypeBadgeProps {
 }
 
 const typeIconMap: Record<CostTypeEnum, JSX.Element> = {
-  [CostTypeEnum.TRANSPORT]: <GiTowTruck />,
+  [CostTypeEnum.WINCH]: <GiTowTruck />,
+  [CostTypeEnum.TRANSPORT]: <FaTruckFast />,
   [CostTypeEnum.MAINTENANCE]: <FaScrewdriverWrench />,
-  [CostTypeEnum.INSPECTION]: <FaTruckPickup />,
+  [CostTypeEnum.INSPECTION]: <FaMagnifyingGlassPlus />,
   [CostTypeEnum.DOCUMENTATION]: <FaFileLines />,
   [CostTypeEnum.PART_WHEELS_TIRES]: <GiCarWheel />,
   [CostTypeEnum.PART_MECHANICAL]: <GiTurbine />,
