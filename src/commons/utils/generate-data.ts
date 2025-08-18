@@ -2,6 +2,7 @@ import { addDays, format, startOfWeek } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { it } from "node:test";
 import { currencyFormatter } from "./formatter";
+import { PaginatedResult, ProfitCalculation } from "../models/Data";
 
 export function generateServiceWeek() {
   const today = new Date();
@@ -41,12 +42,6 @@ export const convertMinutesToHours = (minutes: number) => {
 
 export const getCurrentPeriod = (date?: Date): string => format(date ?? new Date(), 'MM-yyyy');
 
-type ProfitCalculation = {
-  paidValue: number;
-  fipeValue: number;
-  totalCosts: number;
-}
-
 export function calculateProfitProjection(item: ProfitCalculation) {
   const totalCost = item.paidValue + item.totalCosts;
   const discounts = [0.10, 0.15, 0.20];
@@ -65,5 +60,24 @@ export function calculateProfitProjection(item: ProfitCalculation) {
   return {
     totalCost,
     projection,
+  };
+}
+
+export function paginate<T>(array: T[], pageNumber: number, pageSize: number = 10): PaginatedResult<T> {
+  const totalItems = array.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  
+  const validPageNumber = Math.max(1, Math.min(pageNumber, totalPages || 1));
+  
+  const startIndex = (validPageNumber - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  
+  const paginatedData = array.slice(startIndex, endIndex);
+
+  return {
+    data: paginatedData,
+    currentPage: validPageNumber,
+    totalPages: totalPages,
+    totalItems: totalItems,
   };
 }

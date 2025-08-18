@@ -13,6 +13,8 @@ import { useGetCostByPlate } from '@/hooks/swr/use-cost'
 import { useMemo } from "react"
 import { CostTypeText } from "../cost-type"
 import { InputIcon } from "@/components/ui/input-icon"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type TableCostsVehicleProps = {
   plate: string
@@ -44,6 +46,11 @@ export default function TableCostsVehicle({ plate }: TableCostsVehicleProps) {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 5
+      }
+    }
   })
 
   const uniqueTypeValuesWithCount = useMemo(() => {
@@ -182,10 +189,40 @@ export default function TableCostsVehicle({ plate }: TableCostsVehicleProps) {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="text-muted-foreground flex-1 text-sm">
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="text-muted-foreground text-sm">
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
-          {table.getFilteredRowModel().rows.length} linha(s) selecionadas.
+          {table.getPaginationRowModel().rows.length} linha(s) selecionadas.
+        </div>
+        <div className="flex items-center gap-x-2">
+          <div className="hidden items-center gap-2 lg:flex">
+            <Label htmlFor="rows-per-page" className="text-sm font-normal text-muted-foreground">
+              Linhas por página
+            </Label>
+            <Select
+              value={`${table.getState().pagination.pageSize}`}
+              onValueChange={(value) => {
+                table.setPageSize(Number(value))
+              }}
+            >
+              <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[5, 10, 20, 35, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex w-fit items-center justify-center text-sm text-muted-foreground">
+            Página {table.getState().pagination.pageIndex + 1} de{" "}
+            {table.getPageCount()}
+          </div>
         </div>
         <div className="space-x-2">
           <Button

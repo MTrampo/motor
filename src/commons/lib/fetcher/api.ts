@@ -1,12 +1,10 @@
 import { HttpStatusEnum } from "../../enums/Api"
 import { ApiProps, ResponseProps } from "../../models/Api"
 
-const api = async <T>(
-  path: string,
-  { body = null, method, type = 'client', cache = 'no-store', token }: ApiProps
+const api = async <T, K>(
+  url: string,
+  { body = null, method, cache = 'no-store', token }: ApiProps<K>
 ): Promise<ResponseProps<T>> => {
-  const url = type === 'server' ? `${process.env.APP_URL}${path}` : path
-
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
   }
@@ -19,7 +17,7 @@ const api = async <T>(
     method,
     cache,
     headers,
-    credentials: type === 'server' ? 'include' : 'same-origin',
+    credentials: 'same-origin',
     body: body ? JSON.stringify(body) : null,
   })
 

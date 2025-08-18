@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FaCartPlus, FaTrashCan } from "react-icons/fa6";
+import { FaCartPlus, FaFileCircleXmark, FaTrashCan } from "react-icons/fa6";
 import { registerCostFormSchema } from "@/commons/validations/Cost";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
@@ -15,13 +15,15 @@ import { costTypeTranslations } from "@/commons/utils/enum-helpers";
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SelectCalendar } from "@/components/ui/select-calendar";
 import { CostTypeText } from "@/components/vehicles/cost-type";
+import { SheetFormRef } from "../sheet-form";
+import { toast } from "sonner";
 
 
 type RegisterCostFormProps = {
   onHandleSubmitCost: (data: RegisterCostFormInputs[]) => void
 }
 
-export function RegisterCostForm({ onHandleSubmitCost }: RegisterCostFormProps) {
+const RegisterCostForm = forwardRef<SheetFormRef, RegisterCostFormProps>(({ onHandleSubmitCost }, ref) => {
   const [costs, setCosts] = useState<RegisterCostFormInputs[]>([])
 
   const formCost = useForm<RegisterCostFormInputs>({
@@ -33,16 +35,24 @@ export function RegisterCostForm({ onHandleSubmitCost }: RegisterCostFormProps) 
       type: 0,
       paymentDate: new Date(),
     }
-  })
+  }) 
 
   const handleAddCost = (data: RegisterCostFormInputs) => {
     setCosts((cost) => [data, ...cost])
-    formCost.reset()
+    formCost.reset({
+      type: data.type
+    })
   }
 
   const handleRemoveCost = (index: number) => {
     setCosts((cost) => cost.filter((_, i) => i !== index));
   }
+
+  useImperativeHandle(ref, () => ({
+    isValid: costs.length > 0,
+    errMessage: 'Por favor, adicione pelo menos um custo.',
+    onSubmit: () => onHandleSubmitCost(costs)
+  }))
 
   return(
     <Form {...formCost}>
@@ -132,7 +142,7 @@ export function RegisterCostForm({ onHandleSubmitCost }: RegisterCostFormProps) 
                 <CostTypeText type={cost.type}/>
               </CardTitle>
               <CardAction>
-                <Button variant='destructive' size='icon'>
+                <Button variant='destructive' size='icon' onClick={() => handleRemoveCost(i)}>
                   <FaTrashCan />
                 </Button>
               </CardAction>
@@ -147,10 +157,9 @@ export function RegisterCostForm({ onHandleSubmitCost }: RegisterCostFormProps) 
           </Card>
         ))}
       </div>
-
-        {/* {costs.length > 0 && ( */}
-
-        {/* )} */}
     </Form>
   )
-}
+})
+
+RegisterCostForm.displayName = "RegisterCostForm";
+export { RegisterCostForm };

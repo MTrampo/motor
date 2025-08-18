@@ -4,9 +4,8 @@ import { CostFormatted } from "@/commons/models/Cost"
 import useSWR from "swr"
 
 export function useGetCostByPlate(id: string) {
-  const { data, error, isLoading } = useSWR<ResponseProps<CostFormatted>, SWRAPIError>(`/api/cost/${id}`, fetcher)
+  const { data, error, isLoading } = useSWR<ResponseProps<CostFormatted>, SWRAPIError>(`/api/financial/cost/${id}`, fetcher)
 
-  console.log(data)
   return {
     cost: data?.data,
     isLoading,

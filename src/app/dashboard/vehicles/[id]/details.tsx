@@ -1,19 +1,29 @@
+"use client"
+
+import Link from "next/link";
+import { useRef } from "react";
 import { VehicleFormatted } from "@/commons/models/Vehicle";
 import { ButtonIcon } from "@/components/buttons/button-icon";
 import { RegisterCostForm } from "@/components/forms/Cost/register-cost-form";
-import { SheetForm } from "@/components/forms/sheet-form";
+import { SheetForm, SheetFormRef } from "@/components/forms/sheet-form";
 import { CarStatusBadge } from "@/components/status/car-status";
 import { Button } from "@/components/ui/button";
 import { ChartBarProfitProjection } from "@/components/vehicles/chart-profit-projection-vehicle";
 import TableCostsVehicle from "@/components/vehicles/data-table/table-costs-vehicle";
-import Link from "next/link";
 import { FaCartArrowDown, FaFileCirclePlus, FaMagnifyingGlassDollar, FaMoneyBillTrendUp, FaPenToSquare, FaScrewdriverWrench } from "react-icons/fa6";
+import { RegisterCostFormInputs } from "@/commons/models/Cost";
+import { addCost } from "./action";
 
 type VehicleDetailsProps = {
   vehicle: VehicleFormatted
 }
 
 export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
+  const formRef = useRef<SheetFormRef>(null)
+  const handleAddCost = async (data: RegisterCostFormInputs[]) => {
+    await addCost(vehicle.licensePlate, data)
+  }
+
   return (
     <main className="p-6 flex gap-6">
       <div className="flex flex-col gap-6">
@@ -119,6 +129,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
               </h3>
               <div>
                 <SheetForm
+                  formRef={formRef}
                   triggerComponent={(
                     <Button variant="outline" size="icon">
                       <FaFileCirclePlus />
@@ -127,7 +138,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                   title="Adicionar Custos"
                   description='Informe qualquer despesa relacionada ao seu veículo, desde manutenções e reparos a gastos com peças, inspeções ou documentação.'
                   formComponent={(
-                    <RegisterCostForm onHandleSubmitCost={() => {}} />
+                    <RegisterCostForm ref={formRef} onHandleSubmitCost={handleAddCost} />
                   )}
                 />
               </div>

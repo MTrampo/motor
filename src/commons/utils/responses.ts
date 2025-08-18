@@ -24,10 +24,10 @@ const globalResponses = {
     data: null
   }),
   costFound: (
-    formattedData: CostFormatted | CostFormatted[],
+    formattedData: CostFormatted,
     isPlural = true
-  ): ResponseProps<CostFormatted | CostFormatted[]> => ({
-    status: HttpStatusEnum.NOT_FOUND,
+  ): ResponseProps<CostFormatted> => ({
+    status: HttpStatusEnum.OK,
     title: isPlural ? 'Custos Encontrados' : 'Custo Encontrado',
     message: isPlural ? 'Custos dos veículo encontrados' : 'Custo do veículo desejado encontrado',
     data: formattedData

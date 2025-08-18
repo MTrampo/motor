@@ -5,20 +5,35 @@ import { z } from "zod"
 import { CostTypeEnum } from "../enums/Cost"
 import { translateEnum } from "../utils/enum-helpers"
 import { registerCostFormSchema } from "../validations/Cost"
+import { PaginatedResult } from "./Data"
 
-// export interface ServiceRequestBody {
-//   day: Date
-//   duration: number
-//   budgetId: string
-// }
+export interface CostRequestBody {
+  documentId: string
+  items: CostItemRequestBody[]
+}
 
-// export interface ServiceDocData {
-//   day: Date
-//   duration: number
-//   budgetRef?: DocumentReference
-//   createdAt: Date
-//   updatedAt: Date
-// }
+export interface CostItemRequestBody {
+  guid?: string;
+  value: number;
+  description: string;
+  type: number;
+  paymentDate: Date;
+}
+
+export interface CostDocData {
+  total: number
+  items: CostItemDocData[]
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface CostItemDocData {
+  guid: string;
+  value: number;
+  description: string;
+  type: number;
+  paymentDate: Date;
+}
 
 export interface ItemsCostFistore {
   guid: string;
@@ -58,16 +73,16 @@ export interface CostFormatted {
   createdAtFormatted: string;
 }
 
-// export type ServiceFormInputs = {
-//   day: Date
-//   time: string
-//   duration: string
-// }
-
-// export type ReturnBookedSlots = {
-//   start: Date
-//   end: Date
-// }
+export interface CostFormattedPaginated {
+  id: string;
+  total: number;
+  items: PaginatedResult<ItemsCostFormatted>
+  createdAt: Date;
+  updatedAt: Date;
+  totalFormatted: string;
+  updatedAtFormatted: string;
+  createdAtFormatted: string;
+}
 
 export type RegisterCostFormInputs = z.infer<typeof registerCostFormSchema>;
 
@@ -75,16 +90,18 @@ export function formatCost(cost: CostFistore): CostFormatted {
   return {
     id: cost.id,
     total: cost.total,
-    items: cost.items.map((item) => ({
-      guid: item.guid,
-      value: item.value,
-      description: item.description,
-      type: item.type,
-      paymentDate: item.paymentDate.toDate(),
-      valueFormatted: currencyFormatter.format(item.value),
-      typeFormatted: translateEnum('CostType', item.type),
-      paymentDateFormatted: dateFormatter.format(item.paymentDate.toDate()),
-    })),
+    items: cost.items
+      .sort((a, b) => b.paymentDate.toDate().getTime() - a.paymentDate.toDate().getTime())
+      .map((item) => ({
+        guid: item.guid,
+        value: item.value,
+        description: item.description,
+        type: item.type,
+        paymentDate: item.paymentDate.toDate(),
+        valueFormatted: currencyFormatter.format(item.value),
+        typeFormatted: translateEnum('CostType', item.type),
+        paymentDateFormatted: dateFormatter.format(item.paymentDate.toDate()),
+      })),
     createdAt: cost.createdAt.toDate(),
     updatedAt: cost.updatedAt.toDate(),
     totalFormatted: currencyFormatter.format(cost.total),

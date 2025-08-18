@@ -4,7 +4,7 @@ import { FinanceFormatted } from "@/commons/models/Finance"
 import useSWR from "swr"
 
 export function useGetFinancialSummary() {
-  const { data, error, isLoading } = useSWR<ResponseProps<FinanceFormatted>, SWRAPIError>(`/api/financial`, fetcher)
+  const { data, error, isLoading } = useSWR<ResponseProps<FinanceFormatted>, SWRAPIError>(`/api/financial/summary`, fetcher)
  
   return {
     finance: data?.data,
