@@ -61,7 +61,7 @@ export function ChartBarProfitProjection({ vehicle }: ChartBarProfitProjectionPr
   }, [vehicle])
 
   return (
-    <Card className="py-0 gap-0" ref={chartRef}>
+    <Card className="py-0 sm:gap-0 shadow-none" ref={chartRef}>
       <CardHeader className="flex flex-col items-stretch border-b !p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3">
           <CardTitle className="flex items-center gap-2 text-blue-500">

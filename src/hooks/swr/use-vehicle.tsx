@@ -4,7 +4,7 @@ import { ResponseProps, SWRAPIError } from "@/commons/models/Api"
 import { VehicleFormatted } from "@/commons/models/Vehicle"
 
 export function useGetAllVehicles() {
-  const { data, error, isLoading } = useSWR<ResponseProps<VehicleFormatted[]>, SWRAPIError>(`/api/financial/vehicle`, fetcher)
+  const { data, error, isLoading } = useSWR<ResponseProps<VehicleFormatted[]>, SWRAPIError>('/api/financial/vehicle', fetcher)
  
   return {
     vehicles: data?.data,

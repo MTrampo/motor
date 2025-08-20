@@ -9,20 +9,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { columns } from "./columns-costs-vehicle"
 import { FaFilter, FaFilterCircleXmark, FaMagnifyingGlass } from 'react-icons/fa6'
-import { useGetCostByPlate } from '@/hooks/swr/use-cost'
 import { useMemo } from "react"
 import { CostTypeText } from "../cost-type"
 import { InputIcon } from "@/components/ui/input-icon"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { CostFormatted } from "@/commons/models/Cost"
 
 type TableCostsVehicleProps = {
-  plate: string
+  cost: CostFormatted
 }
 
-export default function TableCostsVehicle({ plate }: TableCostsVehicleProps) {
-  const { cost, isLoading } = useGetCostByPlate(plate)
-
+export default function TableCostsVehicle({ cost }: TableCostsVehicleProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =
@@ -70,10 +68,6 @@ export default function TableCostsVehicle({ plate }: TableCostsVehicleProps) {
         count: counts[key]
       }));
   }, [cost?.items]);
-
-  if (isLoading) {
-    return <div className="text-center py-10">Carregando veículos...</div>
-  }
 
   return (
     <div className="w-full">
@@ -189,12 +183,12 @@ export default function TableCostsVehicle({ plate }: TableCostsVehicleProps) {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between space-x-2 py-4">
+      <div className="flex flex-col sm:flex-row items-center sm:justify-between sm:space-x-2 py-4">
         <div className="text-muted-foreground text-sm">
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
           {table.getPaginationRowModel().rows.length} linha(s) selecionadas.
         </div>
-        <div className="flex items-center gap-x-2">
+        <div className="flex items-center gap-2 mt-5 sm:mt-0">
           <div className="hidden items-center gap-2 lg:flex">
             <Label htmlFor="rows-per-page" className="text-sm font-normal text-muted-foreground">
               Linhas por página
@@ -224,7 +218,7 @@ export default function TableCostsVehicle({ plate }: TableCostsVehicleProps) {
             {table.getPageCount()}
           </div>
         </div>
-        <div className="space-x-2">
+        <div className="mt-2 sm:mt-0 space-x-2">
           <Button
             variant="outline"
             size="sm"

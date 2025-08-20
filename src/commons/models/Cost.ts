@@ -73,17 +73,6 @@ export interface CostFormatted {
   createdAtFormatted: string;
 }
 
-export interface CostFormattedPaginated {
-  id: string;
-  total: number;
-  items: PaginatedResult<ItemsCostFormatted>
-  createdAt: Date;
-  updatedAt: Date;
-  totalFormatted: string;
-  updatedAtFormatted: string;
-  createdAtFormatted: string;
-}
-
 export type RegisterCostFormInputs = z.infer<typeof registerCostFormSchema>;
 
 export function formatCost(cost: CostFistore): CostFormatted {

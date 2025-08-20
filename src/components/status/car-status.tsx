@@ -6,9 +6,10 @@ import { FaCarBurst, FaCarOn, FaCartShopping, FaNewspaper, FaSearchengin, FaTag,
 
 interface CarStatusBadgeProps {
   status: CarStatusEnum
+  className?: string
 }
 
-export function CarStatusBadge({ status }: CarStatusBadgeProps) {
+export function CarStatusBadge({ status, className }: CarStatusBadgeProps) {
   const statusIconMap: Record<CarStatusEnum, JSX.Element> = {
     [CarStatusEnum.EVALUATING]: <FaSearchengin />,
     [CarStatusEnum.PURCHASED]: <FaCartShopping />,
@@ -33,7 +34,7 @@ export function CarStatusBadge({ status }: CarStatusBadgeProps) {
   const statusIcon = statusIconMap[status];
 
   return (
-    <Badge variant="outline" className={`px-1.5 ${statusColorMap[status]}`}>
+    <Badge variant="outline" className={`px-1.5 ${statusColorMap[status]} ${className}`}>
       {statusIcon}
       <span className="ml-1.5">{statusText}</span>
     </Badge>

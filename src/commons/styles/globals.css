@@ -63,11 +63,21 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --chart-1: oklch(95.4% 0.02 258.94); /* Corresponde ao Blue-50 */
+  --chart-2: oklch(91.7% 0.04 259.98); /* Corresponde ao Blue-100 */
+  --chart-3: oklch(84.4% 0.08 261.21); /* Corresponde ao Blue-200 */
+  --chart-4: oklch(74.9% 0.13 262.19); /* Corresponde ao Blue-300 */
+  --chart-5: oklch(65.1% 0.19 263.38); /* Corresponde ao Blue-400 */
+  --chart-6: oklch(58.3% 0.23 263.34); /* Corresponde ao Blue-500 */
+  --chart-7: oklch(50.4% 0.24 263.59); /* Corresponde ao Blue-600 */
+  --chart-8: oklch(42.4% 0.20 265.64); /* Corresponde ao Blue-700 */
+  --chart-9: oklch(37.9% 0.15 265.52); /* Corresponde ao Blue-800 */
+  --chart-10: oklch(34.2% 0.12 265.65); /* Corresponde ao Blue-900 */
+  --chart-11: oklch(30.0% 0.11 265.50); /* Corresponde ao Blue-950 */
+  --chart-12: oklch(80% 0.10 260);    /* Um azul suave intermediário */
+  --chart-13: oklch(55% 0.20 255);    /* Um azul mais escuro e saturado */
+  --chart-14: oklch(70% 0.15 265);    /* Um azul médio vibrante */
+  --chart-15: oklch(40% 0.18 262);    /* Um azul escuro profundo */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -102,6 +112,16 @@
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
+  --chart-6: oklch(0.35 0.13 255);
+  --chart-7: oklch(0.5 0.18 250);
+  --chart-8: oklch(0.65 0.18 245);
+  --chart-9: oklch(0.8 0.15 240);
+  --chart-10: oklch(0.7 0.12 260);
+  --chart-11: oklch(0.42 0.16 265);
+  --chart-12: oklch(0.57 0.14 258);
+  --chart-13: oklch(0.72 0.17 248);
+  --chart-14: oklch(0.48 0.15 252);
+  --chart-15: oklch(0.85 0.16 262);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);

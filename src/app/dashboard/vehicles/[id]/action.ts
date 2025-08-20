@@ -16,7 +16,7 @@ export const addCost = async (plate: string, data: RegisterCostFormInputs[]) => 
 
   return toast.promise((async () => {
     try {
-      const response = await api<string, CostRequestBody>('/api/cost', { 
+      const response = await api<string, CostRequestBody>('/api/financial/cost', { 
         method: 'POST',
         body: requestBody 
       })
