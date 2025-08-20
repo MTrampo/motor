@@ -20,21 +20,30 @@ export default function Page({ params }: VehicleProps) {
     return <div className="p-6">Não encontrado...</div>
   }
 
+  const showCarousel = vehicle.images.length >= 3
+
   return (
     <>
       <Header title="Detalhes do Veículo" />
-      <section>
-        <Carousel className="w-full">
-          <CarouselContent className="">
-            {vehicle?.images.map(image => (
-              <CarouselItem key={image} className="w-full md:basis-1/2 lg:basis-1/3">
-                <Image className="w-full" src={image} alt={vehicle.model} width={400} height={400} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          {/* <CarouselPrevious />
-          <CarouselNext /> */}
-        </Carousel>
+      <section className={showCarousel ? '' : 'relative w-full h-[400px] overflow-hidden'}>
+        {showCarousel ? (
+          <Carousel className="w-full">
+            <CarouselContent className="">
+              {vehicle?.images.map(image => (
+                <CarouselItem key={image} className="w-full md:basis-1/2 lg:basis-1/3">
+                  <Image className="w-full" src={image} alt={vehicle.model} width={400} height={400} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {/* <CarouselPrevious />
+            <CarouselNext /> */}
+          </Carousel>
+        ) : (
+          <>
+            <Image className="w-fit h-full absolute z-10 left-1/2 -translate-x-1/2" src={vehicle.images[0]} alt={vehicle.model} width={400} height={400} />
+            <Image className="w-full object-contain blur-sm" src={vehicle.images[0]} alt={vehicle.model} width={400} height={400} />
+          </>
+        )}
       </section>
       <VehicleDetails vehicle={vehicle} />
     </>
