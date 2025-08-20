@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FaCartPlus, FaFileCircleXmark, FaTrashCan } from "react-icons/fa6";
+import { FaCartPlus, FaTrashCan } from "react-icons/fa6";
 import { registerCostFormSchema } from "@/commons/validations/Cost";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
@@ -16,7 +16,6 @@ import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader,
 import { SelectCalendar } from "@/components/ui/select-calendar";
 import { CostTypeText } from "@/components/vehicles/cost-type";
 import { SheetFormRef } from "../sheet-form";
-import { toast } from "sonner";
 
 
 type RegisterCostFormProps = {

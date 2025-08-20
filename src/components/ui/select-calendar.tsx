@@ -1,5 +1,3 @@
-// components/ui/select-calendar.jsx
-
 'use client'
 
 import { cn } from "@/commons/lib/utils";

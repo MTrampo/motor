@@ -1,5 +1,5 @@
 import { VehicleFormatted } from "@/commons/models/Vehicle";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "../ui/card";
 import Image from "next/image";
 import { FaCalendar, FaCar, FaCarSide, FaGaugeSimpleHigh, FaScrewdriverWrench } from "react-icons/fa6";
 import { CarStatusBadge } from "../status/car-status";

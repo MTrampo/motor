@@ -1,10 +1,9 @@
 import uuid from "node:crypto"
-import { CostDocData, CostItemDocData, CostRequestBody, formatCost, ItemsCostFormatted } from "@/commons/models/Cost"
+import { CostDocData, CostItemDocData, CostRequestBody, formatCost } from "@/commons/models/Cost"
 import globalResponses from "@/commons/utils/responses"
 import { addCostDoc, addCostDocAndUpdateTotal, getCostByIdDocs } from "./cost.firestore"
 import { ResponseProps } from "@/commons/models/Api"
 import { HttpStatusEnum } from "@/commons/enums/Api"
-import { paginate } from "@/commons/utils/generate-data"
 
 const TEAM_ID = "CRFAZy0GNVARC8eAxjMG"
 
