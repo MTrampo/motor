@@ -1,6 +1,5 @@
 import { firebaseAdmin } from "@/commons/lib/firebase/server";
-import { FinanceDocData, FinanceFirestore } from "@/commons/models/Finance";
-import { FieldValue, Timestamp } from "firebase-admin/firestore";
+import { FinanceFirestore } from "@/commons/models/Finance";
 
 const getFinanceDocRef = (teamId: string, documentId: string) => {
   return firebaseAdmin.db.collection(firebaseAdmin.getPath.finance(teamId)).doc(documentId);
