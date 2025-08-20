@@ -4,7 +4,7 @@ import { Timestamp } from 'firebase-admin/firestore'
 
 // Formatação de datas e horas
 
-export const dateFormatter = new Intl.DateTimeFormat('pt-BR')
+export const dateFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' })
 
 export const dateTimeFormatter = (date: Date) => {
   return format(date, "d 'de' MMM. 'de' yyyy, HH:mm", { locale: ptBR })

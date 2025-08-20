@@ -6,9 +6,10 @@ import { FaCarBurst, FaCarOn, FaCartShopping, FaNewspaper, FaSearchengin, FaTag,
 
 interface CarStatusBadgeProps {
   status: CarStatusEnum
+  className?: string
 }
 
-export function CarStatusBadge({ status }: CarStatusBadgeProps) {
+export function CarStatusBadge({ status, className }: CarStatusBadgeProps) {
   const statusIconMap: Record<CarStatusEnum, JSX.Element> = {
     [CarStatusEnum.EVALUATING]: <FaSearchengin />,
     [CarStatusEnum.PURCHASED]: <FaCartShopping />,
@@ -23,7 +24,7 @@ export function CarStatusBadge({ status }: CarStatusBadgeProps) {
     [CarStatusEnum.EVALUATING]: 'text-orange-800 bg-orange-100',
     [CarStatusEnum.PURCHASED]: 'text-green-800 bg-green-100',
     [CarStatusEnum.WINCH]: 'text-blue-800 bg-blue-100',
-    [CarStatusEnum.MAINTENANCE]: 'text-gray-800 bg-gray-200 ',
+    [CarStatusEnum.MAINTENANCE]: 'text-gray-800 bg-gray-200',
     [CarStatusEnum.AVAILABLE]: 'text-lime-800 bg-lime-100',
     [CarStatusEnum.ANNOUNCED]: 'text-indigo-800 bg-indigo-100',
     [CarStatusEnum.SOLD]: 'text-red-800 bg-red-100',
@@ -33,7 +34,7 @@ export function CarStatusBadge({ status }: CarStatusBadgeProps) {
   const statusIcon = statusIconMap[status];
 
   return (
-    <Badge variant="outline" className={`px-1.5 ${statusColorMap[status]}`}>
+    <Badge variant="outline" className={`px-1.5 ${statusColorMap[status]} ${className}`}>
       {statusIcon}
       <span className="ml-1.5">{statusText}</span>
     </Badge>

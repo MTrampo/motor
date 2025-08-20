@@ -6,7 +6,7 @@ export default async function Dashboard () {
   return (
     <>
       <Header title="Painel"/>
-      <div className="flex flex-col p-6 gap-y-10">
+      <div className="flex flex-col max-[374]:p-2 p-6 gap-y-10">
         <OverviewFinances/>
         <OverviewCarsFinances/>
       </div>

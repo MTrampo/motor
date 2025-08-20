@@ -1,9 +1,10 @@
+import { ReactNode } from "react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { SidebarTrigger } from "../ui/sidebar";
 
 type HeaderProps = {
-  title: string
+  title: ReactNode | string
 }
 
 export default function Header({ title }: HeaderProps) {
@@ -21,12 +22,12 @@ export default function Header({ title }: HeaderProps) {
         <div className="ml-auto flex items-center gap-2">
           <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
             <a
-              href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
+              href="https://meu-trampo.vercel.app/"
               rel="noopener noreferrer"
               target="_blank"
               className="dark:text-foreground"
             >
-              GitHub
+              Meu Trampo
             </a>
           </Button>
         </div>
