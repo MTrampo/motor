@@ -1,29 +1,29 @@
-import { DocumentReference, Timestamp, DocumentData } from 'firebase-admin/firestore';
+import { Timestamp } from 'firebase-admin/firestore';
 import { currencyFormatter, dateFormatter, formatNumber } from '../utils/formatter'
 import { CarConditionTypeEnum, CarStatusEnum } from '../enums/Car';
 import { AuctionTypeEnum, DamageTypeEnum } from '../enums/Auction';
 import { translateEnum } from '../utils/enum-helpers';
 import { MaintenanceVehicleFistore, MaintenanceVehicleFormatted } from './Maintenance';
 
-export interface BudgetRequestBody {
-  documentId: string
-  items: BudgetItemRequestBody[]
-}
+// export interface BudgetRequestBody {
+//   documentId: string
+//   items: BudgetItemRequestBody[]
+// }
 
-export interface BudgetItemRequestBody {
-  description: string
-  price: number
-  amount: number
-}
+// export interface BudgetItemRequestBody {
+//   description: string
+//   price: number
+//   amount: number
+// }
 
-export interface BudgetDocData {
-  total: number
-  items: AuctionFirestore[]
-  customerRef?: DocumentReference
-  servicePerformed: boolean
-  createdAt: Date
-  updatedAt: Date
-}
+// export interface BudgetDocData {
+//   total: number
+//   items: AuctionFirestore[]
+//   customerRef?: DocumentReference
+//   servicePerformed: boolean
+//   createdAt: Date
+//   updatedAt: Date
+// }
 
 interface AuctionFirestore {
   code: string,
@@ -108,10 +108,10 @@ export interface VehicleFormatted {
   createdAtFormatted: string,
 }
 
-export interface ReturnPageBudgets {
-  formattedData: VehicleFormatted[]
-  lastDocument: string | null
-}
+// export interface ReturnPageBudgets {
+//   formattedData: VehicleFormatted[]
+//   lastDocument: string | null
+// }
 
 // export type BudgetFormInputs = z.infer<typeof budgetFormSchema>
 

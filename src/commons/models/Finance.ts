@@ -1,26 +1,26 @@
 import { Timestamp } from "firebase/firestore"
 import { dateFormatter, currencyFormatter, formatLastUpdated } from "../utils/formatter"
 
-export interface FinanceRequestBody {
-  period: string
-  budgetAmount: number
-  budgetCount: number
-  serviceAmount: number
-  serviceCount: number
-}
+// export interface FinanceRequestBody {
+//   period: string
+//   budgetAmount: number
+//   budgetCount: number
+//   serviceAmount: number
+//   serviceCount: number
+// }
 
-export interface FinanceDocData {
-  period: string
-  lastBudget: Date
-  lastService: Date
-  disabled: boolean
-  budgetedCount: number
-  budgetedAmount: number
-  servicesCount: number
-  servicesAmount: number
-  createdAt: Date
-  updatedAt: Date
-}
+// export interface FinanceDocData {
+//   period: string
+//   lastBudget: Date
+//   lastService: Date
+//   disabled: boolean
+//   budgetedCount: number
+//   budgetedAmount: number
+//   servicesCount: number
+//   servicesAmount: number
+//   createdAt: Date
+//   updatedAt: Date
+// }
 
 export interface FinanceFirestore {
   id: string,
