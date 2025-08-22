@@ -1,5 +1,5 @@
 import { firebaseAdmin } from "@/commons/lib/firebase/server";
-import { CostDocData, CostFistore, CostItemDocData } from "@/commons/models/Cost";
+import { CostDocData, CostFistore, CostItemDocData, ItemsCostFistore } from "@/commons/models/Cost";
 import { FieldValue } from "firebase-admin/firestore";
 
 const getFinanceDocRef = (teamId: string, documentId: string) => {
@@ -23,12 +23,22 @@ export async function addCostDoc(teamId: string, documentId: string, docData: Co
   return docRef.id;
 }
 
+export async function killCostDoc(teamId: string, documentId: string, oldDocItemData: ItemsCostFistore, total: number) {
+  const docRef = getFinanceDocRef(teamId, documentId);
+  await docRef.update({
+    total,
+    items: FieldValue.arrayRemove(oldDocItemData)
+  });
+
+  return docRef.id;
+}
+
 export async function addCostDocAndUpdateTotal(teamId: string, documentId: string, newDocItemData: CostItemDocData[], total: number) {
   const docRef = getFinanceDocRef(teamId, documentId);
   await docRef.update({
     total,
     items: FieldValue.arrayUnion(...newDocItemData)
-  })
+  });
   
   return docRef.id;
 }

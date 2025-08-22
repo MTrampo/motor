@@ -1,7 +1,9 @@
 "use client"
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRef } from "react";
+import svgCarRepair from "@/commons/assets/svgs/car-repair.svg";
 import { VehicleFormatted } from "@/commons/models/Vehicle";
 import { ButtonIcon } from "@/components/buttons/button-icon";
 import { RegisterCostForm } from "@/components/forms/Cost/register-cost-form";
@@ -129,34 +131,39 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
             </div>
           )}
         </div>
-        {cost && (
-          <div className="flex flex-col gap-10 border rounded-xl bg-white shadow-sm">
-            <div className="max-[374]:p-5 p-10">
-              <div className="flex justify-between items-center">
-                <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
-                  Custos
-                  <span className="block capitalize text-blue-500">Gerais</span>
-                </h3>
-                <div>
-                  <SheetForm
-                    formRef={formRef}
-                    triggerComponent={(
-                      <Button variant="outline" size="icon">
-                        <FaFileCirclePlus />
-                      </Button>
-                    )}
-                    title="Adicionar Custos"
-                    description='Informe qualquer despesa relacionada ao seu veículo, desde manutenções e reparos a gastos com peças, inspeções ou documentação.'
-                    formComponent={(
-                      <RegisterCostForm ref={formRef} onHandleSubmitCost={handleAddCost} />
-                    )}
-                  />
-                </div>
+        <div className="flex flex-col gap-10 border rounded-xl bg-white shadow-sm">
+          <div className="max-[374]:p-5 p-10">
+            <div className="flex justify-between items-center">
+              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
+                Custos
+                <span className="block capitalize text-blue-500">Gerais</span>
+              </h3>
+              <div>
+                <SheetForm
+                  formRef={formRef}
+                  triggerComponent={(
+                    <Button variant="outline" size="icon">
+                      <FaFileCirclePlus />
+                    </Button>
+                  )}
+                  title="Adicionar Custos"
+                  description='Informe qualquer despesa relacionada ao seu veículo, desde manutenções e reparos a gastos com peças, inspeções ou documentação.'
+                  formComponent={(
+                    <RegisterCostForm ref={formRef} onHandleSubmitCost={handleAddCost} />
+                  )}
+                />
               </div>
-              <TableCostsVehicle cost={cost}/>
             </div>
+            {cost ? (
+              <TableCostsVehicle plate={vehicle.licensePlate} cost={cost}/>
+            ) : (
+              <div className="flex flex-col gap-5 pt-12">
+                <Image src={svgCarRepair} className="mx-auto" alt="carro em manutenção" width={200} height={200}/>
+                <p className="text-center text-muted-foreground">Sem gastos registrados. O histórico de custos aparecerá aqui após o primeiro lançamento.</p>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
       <aside className="xl:w-3/5 max-[374]:p-5 p-10 border rounded-xl xl:-mt-16 xl:z-10 bg-white shadow-sm flex flex-col gap-6">
         <div className="flex flex-col gap-6">

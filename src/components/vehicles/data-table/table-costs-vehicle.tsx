@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { columns } from "./columns-costs-vehicle"
+import { getColumns } from "./columns-costs-vehicle"
 import { FaFilter, FaFilterCircleXmark, FaMagnifyingGlass } from 'react-icons/fa6'
 import { useMemo } from "react"
 import { CostTypeText } from "../cost-type"
@@ -17,15 +17,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CostFormatted } from "@/commons/models/Cost"
 
 type TableCostsVehicleProps = {
+  plate: string
   cost: CostFormatted
 }
 
-export default function TableCostsVehicle({ cost }: TableCostsVehicleProps) {
+export default function TableCostsVehicle({ plate, cost }: TableCostsVehicleProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+
+  const columns = useMemo(() => getColumns(plate), [plate]);
 
   const table = useReactTable({
     data: cost?.items || [],
@@ -43,11 +46,6 @@ export default function TableCostsVehicle({ cost }: TableCostsVehicleProps) {
       columnFilters,
       columnVisibility,
       rowSelection,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 5
-      }
     }
   })
 
@@ -205,7 +203,7 @@ export default function TableCostsVehicle({ cost }: TableCostsVehicleProps) {
                 />
               </SelectTrigger>
               <SelectContent side="top">
-                {[5, 10, 20, 35, 50].map((pageSize) => (
+                {[10, 20, 30, 40, 50].map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>
                     {pageSize}
                   </SelectItem>

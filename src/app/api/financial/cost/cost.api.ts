@@ -1,7 +1,7 @@
 import uuid from "node:crypto"
 import { CostDocData, CostItemDocData, CostRequestBody, formatCost } from "@/commons/models/Cost"
 import globalResponses from "@/commons/utils/responses"
-import { addCostDoc, addCostDocAndUpdateTotal, getCostByIdDocs } from "./cost.firestore"
+import { addCostDoc, addCostDocAndUpdateTotal, getCostByIdDocs, killCostDoc } from "./cost.firestore"
 import { ResponseProps } from "@/commons/models/Api"
 import { HttpStatusEnum } from "@/commons/enums/Api"
 
@@ -36,10 +36,29 @@ export const addCost = async (data: CostRequestBody) => {
   return result;
 }
 
+export const killCost = async (data: CostRequestBody) => {
+  const oldDoc = await getCostByIdDocs(TEAM_ID, data.documentId);
+  if (!oldDoc) return null
+
+  const oldDocItem = oldDoc.items.find(item => item.guid === data.guidItem)!
+  const total = oldDoc.total - oldDocItem.value;
+
+  const id = await killCostDoc(TEAM_ID, data.documentId, oldDocItem, total)
+
+  const result: ResponseProps<string> = {
+    status: HttpStatusEnum.CREATED,
+    title: 'Cadastrado',
+    message: `Orçamento cadastrado com sucesso! 🤠`,
+    data: id,
+  }
+
+  return result;
+}
+
 const processAddNewCostOrNewCostItem = async (data: CostRequestBody) => {
   const checkCostsExist = await getCostByIdDocs(TEAM_ID, data.documentId);
   if (checkCostsExist) {
-    const docItemData: CostItemDocData[] = data.items.map(item => {
+    const docItemData: CostItemDocData[] = data.items!.map(item => {
       return {
         guid: uuid.randomUUID(),
         type: item.type,
@@ -54,14 +73,14 @@ const processAddNewCostOrNewCostItem = async (data: CostRequestBody) => {
 
   } else {
     const docData: CostDocData = {
-      items: data.items.map(item => ({
+      items: data.items!.map(item => ({
         guid: uuid.randomUUID(),
         type: item.type,
         description: item.description.toLowerCase(),
         value: item.value,
         paymentDate: new Date(item.paymentDate),
       })),
-      total: data.items.reduce((acc, item) => acc + item.value, 0),
+      total: data.items!.reduce((acc, item) => acc + item.value, 0),
       createdAt: new Date(),
       updatedAt: new Date()
     }

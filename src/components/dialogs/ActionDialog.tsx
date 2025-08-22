@@ -20,7 +20,7 @@ const actionButtonVariants = cva(
       variant: {
         default: "bg-blue-700 text-primary-foreground hover:bg-blue-800/90",
         success: "bg-green-700 text-green-50 hover:bg-green-800/90",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        destructive: "text-red-800 border border-red-800 shadow-sm bg-red-100 hover:bg-red-200/90",
       },
     },
     defaultVariants: {
