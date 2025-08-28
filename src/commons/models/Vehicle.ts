@@ -1,9 +1,11 @@
+import z from 'zod'
 import { Timestamp } from 'firebase-admin/firestore';
 import { currencyFormatter, dateFormatter, formatNumber } from '../utils/formatter'
 import { CarConditionTypeEnum, CarStatusEnum } from '../enums/Car';
 import { AuctionTypeEnum, DamageTypeEnum } from '../enums/Auction';
 import { translateEnum } from '../utils/enum-helpers';
 import { MaintenanceVehicleFistore, MaintenanceVehicleFormatted } from './Maintenance';
+import { auctionFormSchema, paymentFormSchema, thirdFormSchema, vehicleFormSchema } from '../validations/Vehicle';
 
 // export interface BudgetRequestBody {
 //   documentId: string
@@ -33,7 +35,7 @@ interface AuctionFirestore {
   functional: AuctionTypeEnum,
   bid: number,
   commission: number,
-  dsal: number,
+  administrative: number,
   others: number,
 }
 
@@ -68,11 +70,11 @@ export interface AuctionFormatted {
   functional: AuctionTypeEnum,
   bid: number,
   commission: number,
-  dsal: number,
+  administrative: number,
   others: number,
   bidFormatted: string,
   commissionFormatted: string,
-  dsalFormatted: string,
+  administrativeFormatted: string,
   othersFormatted: string,
   damageTypeFormatted: string,
   functionalFormatted: string,
@@ -113,7 +115,10 @@ export interface VehicleFormatted {
 //   lastDocument: string | null
 // }
 
-// export type BudgetFormInputs = z.infer<typeof budgetFormSchema>
+export type VehicleFormInputs = z.infer<typeof vehicleFormSchema>
+export type AuctionFormInputs = z.infer<typeof auctionFormSchema>
+export type ThirdFormInputs = z.infer<typeof thirdFormSchema>
+export type PaymentFormInputs = z.infer<typeof paymentFormSchema>;
 
 export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
   return {
@@ -141,11 +146,11 @@ export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
       functional: vehicle.auction.functional,
       bid: vehicle.auction.bid,
       commission: vehicle.auction.commission,
-      dsal: vehicle.auction.dsal,
+      administrative: vehicle.auction.administrative,
       others: vehicle.auction.others,
       bidFormatted: currencyFormatter.format(vehicle.auction.bid),
       commissionFormatted: currencyFormatter.format(vehicle.auction.commission),
-      dsalFormatted: currencyFormatter.format(vehicle.auction.dsal),
+      administrativeFormatted: currencyFormatter.format(vehicle.auction.administrative),
       othersFormatted: currencyFormatter.format(vehicle.auction.others),
       damageTypeFormatted: translateEnum('DamageType', vehicle.auction.damageType),
       functionalFormatted: translateEnum('AuctionType', vehicle.auction.functional),
@@ -192,11 +197,11 @@ export function formatVehicles(vehicles: VehicleFistore[]): VehicleFormatted[] {
       functional: vehicle.auction.functional,
       bid: vehicle.auction.bid,
       commission: vehicle.auction.commission,
-      dsal: vehicle.auction.dsal,
+      administrative: vehicle.auction.administrative,
       others: vehicle.auction.others,
       bidFormatted: currencyFormatter.format(vehicle.auction.bid),
       commissionFormatted: currencyFormatter.format(vehicle.auction.commission),
-      dsalFormatted: currencyFormatter.format(vehicle.auction.dsal),
+      administrativeFormatted: currencyFormatter.format(vehicle.auction.administrative),
       othersFormatted: currencyFormatter.format(vehicle.auction.others),
       damageTypeFormatted: translateEnum('DamageType', vehicle.auction.damageType),
       functionalFormatted: translateEnum('AuctionType', vehicle.auction.functional),

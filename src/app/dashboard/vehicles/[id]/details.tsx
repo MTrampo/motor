@@ -6,7 +6,7 @@ import { useRef } from "react";
 import svgCarRepair from "@/commons/assets/svgs/car-repair.svg";
 import { VehicleFormatted } from "@/commons/models/Vehicle";
 import { ButtonIcon } from "@/components/buttons/button-icon";
-import { RegisterCostForm } from "@/components/forms/Cost/register-cost-form";
+import { RegisterCostForm } from "@/components/forms/Cost/cost-form";
 import { SheetForm, SheetFormRef } from "@/components/forms/sheet-form";
 import { CarStatusBadge } from "@/components/status/car-status";
 import { Button } from "@/components/ui/button";
@@ -27,8 +27,6 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
   const { cost, isLoading } = useGetCostByPlate(vehicle.licensePlate)
 
   const formRef = useRef<SheetFormRef>(null)
-
-
 
   const handleAddCost = async (data: RegisterCostFormInputs[]) => {
     await addCost(vehicle.licensePlate, data)
@@ -120,8 +118,8 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                   <span className="block font-semibold">{vehicle.auction.commissionFormatted}</span>
                 </div>
                 <div>
-                  <span className="block text-muted-foreground">DSAL</span>
-                  <span className="block font-semibold">{vehicle.auction.dsalFormatted}</span>
+                  <span className="block text-muted-foreground">Administração</span>
+                  <span className="block font-semibold">{vehicle.auction.administrativeFormatted}</span>
                 </div>
                 <div>
                   <span className="block text-muted-foreground">Outros</span>

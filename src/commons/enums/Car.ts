@@ -9,12 +9,20 @@ export enum CarStatusEnum {
 }
 
 export enum CarConditionTypeEnum {
+  NEW,
+  NEUTRAL,
+  FLAWLESS,
   COLLISION,
   THEFT,
   FLOOD,
   FIRE,
+  DEBT,
   FINANCIAL,
   CONSORTIUM,
-  VMC,
-  OTHER
+  NOT_EVALUATED,
+}
+
+export enum CarOrigenEnum {
+  AUCTION,
+  THIRD
 }
