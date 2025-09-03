@@ -28,7 +28,7 @@ export default function Page({ params }: VehicleProps) {
       <section className={showCarousel ? '' : 'relative w-full h-[400px] overflow-hidden'}>
         {showCarousel ? (
           <Carousel className="w-full">
-            <CarouselContent className="">
+            <CarouselContent>
               {vehicle?.images.map(image => (
                 <CarouselItem key={image} className="w-full md:basis-1/2 lg:basis-1/3">
                   <Image className="w-full" src={image} alt={vehicle.model} width={400} height={400} />

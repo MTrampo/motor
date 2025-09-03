@@ -21,35 +21,40 @@ export const vehicleFormSchema = z.object({
   modelYear: z.string("Ano modelo é obrigatório.")
     .trim()
     .min(4, "Ano modelo inválido."),
+  kilometers: z.string().optional(),
+  conditionType: z.coerce.number<number>("Condição é obrigatório.")
+    .default(0)
+    .optional(),
+  chassis: z.string().min(17, "Chassi inválido").optional(),
+  fipe: z.coerce.number<number>()
+    .default(0)
+    .optional(),
 });
 
 export const thirdFormSchema = z.object({
-  origen: z.literal(String(CarOrigenEnum.THIRD)),
+  origin: z.literal(String(CarOrigenEnum.THIRD)),
   name: z.string()
     .trim()
     .min(3, "O nome do vendedor é obrigatório."),
-  cpfCnpj: z.string()
+  cpfCnpj: z.string("CPF ou CNPJ do vendedor é obrigatório.")
     .trim()
-    .min(11, "CPF ou CNPJ do vendedor é obrigatório."),
+    .min(11, "CPF ou CNPJ inválido."),
   paymentDate: z.coerce.date<Date>(),
   paid: z.coerce.number<number>("O valor da transação é obrigatório.")
     .nonnegative('O valor não pode ser negativo.'),
-  refPlate: z.string().optional(),
   notes: z.string().optional(),
 });
 
 export const auctionFormSchema = z.object({
-  origen: z.literal(String(CarOrigenEnum.AUCTION)),
-  code: z.string()
-    .trim()
-    .min(2, "Código do veículo obrigatório."),
-  name: z.string(),
-  consignor: z.string()
-    .trim()
-    .min(2, "Comitê do leilão é obrigatório."),
-  functional: z.coerce.number<number>(),
-  damageType: z.coerce.number<number>(),
-  bid: z.coerce.number<number>("Pagamento obrigatório.")
+  origin: z.literal(String(CarOrigenEnum.AUCTION)),
+  code: z.string("Código do veículo obrigatório.")
+    .trim(),
+  auctionName: z.string("Nome do leilão é obrigatório."),
+  consignor: z.string("Comitê do leilão é obrigatório.")
+    .trim(),
+  functional: z.coerce.number<number>("Condição do veículo é obrigatório."),
+  damageType: z.coerce.number<number>("Tipo de monta é obrigatório."),
+  bid: z.coerce.number<number>("Valor do lance obrigatório.")
     .nonnegative('O valor não pode ser negativo.'),
   commission: z.coerce.number<number>("Comissão obrigatório.")
     .nonnegative('O valor não pode ser negativo.'),
@@ -61,12 +66,14 @@ export const auctionFormSchema = z.object({
     .nonnegative('O valor não pode ser negativo.')
     .default(0)
     .optional(),
-  totalPaid: z.coerce.number<number>()
-    .default(0)
-    .optional(),
+  totalPaid: z.coerce.number<number>("Pagamento total obrigatório."),
+  paymentDate: z.coerce.date<Date>("Data de pagamento obrigatória."),
+  notes: z.string().optional(),
 })
 
-export const paymentFormSchema = z.discriminatedUnion("origen", [
-    auctionFormSchema,
-    thirdFormSchema
+export const paymentFormSchema = z.discriminatedUnion("origin", [
+  thirdFormSchema,
+  auctionFormSchema,
 ]);
+
+export const vehicleMainFormSchema = vehicleFormSchema.and(paymentFormSchema);

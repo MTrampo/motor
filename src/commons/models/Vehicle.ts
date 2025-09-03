@@ -1,11 +1,11 @@
 import z from 'zod'
 import { Timestamp } from 'firebase-admin/firestore';
 import { currencyFormatter, dateFormatter, formatNumber } from '../utils/formatter'
-import { CarConditionTypeEnum, CarStatusEnum } from '../enums/Car';
+import { CarConditionTypeEnum, CarOrigenEnum, CarStatusEnum } from '../enums/Car';
 import { AuctionTypeEnum, DamageTypeEnum } from '../enums/Auction';
 import { translateEnum } from '../utils/enum-helpers';
 import { MaintenanceVehicleFistore, MaintenanceVehicleFormatted } from './Maintenance';
-import { auctionFormSchema, paymentFormSchema, thirdFormSchema, vehicleFormSchema } from '../validations/Vehicle';
+import { auctionFormSchema, paymentFormSchema, thirdFormSchema, vehicleFormSchema, vehicleMainFormSchema } from '../validations/Vehicle';
 
 // export interface BudgetRequestBody {
 //   documentId: string
@@ -119,6 +119,7 @@ export type VehicleFormInputs = z.infer<typeof vehicleFormSchema>
 export type AuctionFormInputs = z.infer<typeof auctionFormSchema>
 export type ThirdFormInputs = z.infer<typeof thirdFormSchema>
 export type PaymentFormInputs = z.infer<typeof paymentFormSchema>;
+export type VehicleMainFormInputs = z.infer<typeof vehicleMainFormSchema>;
 
 export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
   return {

@@ -1,6 +1,11 @@
 import { AuctionTypeEnum, DamageTypeEnum } from "@/commons/enums/Auction";
-import { CarConditionTypeEnum, CarStatusEnum } from "@/commons/enums/Car";
+import { CarConditionTypeEnum, CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car";
 import { CostTypeEnum } from "../enums/Cost";
+
+export const originTypeTranslations: Record<CarOrigenEnum, string> = {
+  [CarOrigenEnum.AUCTION]: "Adquirido do leilão",
+  [CarOrigenEnum.THIRD]: "Adquirido de terceiros"
+}
 
 export const carStatusTranslations: Record<CarStatusEnum, string> = {
   [CarStatusEnum.EVALUATING]: "Em Avaliação",
@@ -13,23 +18,28 @@ export const carStatusTranslations: Record<CarStatusEnum, string> = {
 };
 
 export const carConditionTypeTranslations: Record<CarConditionTypeEnum, string> = {
+  [CarConditionTypeEnum.NEW]: "Novo",
+  [CarConditionTypeEnum.NEUTRAL]: "Boa",
+  [CarConditionTypeEnum.FLAWLESS]: "Impecável",
   [CarConditionTypeEnum.COLLISION]: "Colisão",
   [CarConditionTypeEnum.THEFT]: "Roubo/Furto",
   [CarConditionTypeEnum.FLOOD]: "Enchente",
   [CarConditionTypeEnum.FIRE]: "Incêndio",
-  [CarConditionTypeEnum.FINANCIAL]: "Financeiro",
+  [CarConditionTypeEnum.FINANCIAL]: "Financiado",
   [CarConditionTypeEnum.CONSORTIUM]: "Consórcio",
-  [CarConditionTypeEnum.VMC]: "VMC",
-  [CarConditionTypeEnum.OTHER]: "Outro",
+  [CarConditionTypeEnum.DEBT]: "Débito em aberto",
+  [CarConditionTypeEnum.RESTRICTION]: "Restrição em aberto",
+  [CarConditionTypeEnum.NOT_EVALUATED]: "Não avaliado",
 };
 
 export const auctionTypeTranslations: Record<AuctionTypeEnum, string> = {
   [AuctionTypeEnum.START]: "Motor dá partida",
   [AuctionTypeEnum.START_AND_GEAR]: "Motor dá partida e engrena",
-  [AuctionTypeEnum.DOESNT_START]: "Veículo não Liga",
+  [AuctionTypeEnum.DOESNT_START]: "Veículo não liga",
 };
 
 export const damageTypeTranslations: Record<DamageTypeEnum, string> = {
+  [DamageTypeEnum.FINANCE_CAR]: "Financeira",
   [DamageTypeEnum.SMALL_VALUE]: "Pequena Monta",
   [DamageTypeEnum.MEDIUM_VALUE]: "Média Monta",
   [DamageTypeEnum.BIG_VALUE]: "Grande Monta",
@@ -54,11 +64,12 @@ export const costTypeTranslations: Record<CostTypeEnum, string> = {
 }
 
 const translations = {
-  CarStatus: carStatusTranslations,
-  CarConditionType: carConditionTypeTranslations,
-  AuctionType: auctionTypeTranslations,
-  DamageType: damageTypeTranslations,
   CostType: costTypeTranslations,
+  CarStatus: carStatusTranslations,
+  OriginType: originTypeTranslations,
+  DamageType: damageTypeTranslations,
+  AuctionType: auctionTypeTranslations,
+  CarConditionType: carConditionTypeTranslations,
 };
 
 export function translateEnum<T extends keyof typeof translations, K extends keyof typeof translations[T]>(

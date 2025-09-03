@@ -17,12 +17,13 @@ export enum CarConditionTypeEnum {
   FLOOD,
   FIRE,
   DEBT,
+  RESTRICTION,
   FINANCIAL,
   CONSORTIUM,
   NOT_EVALUATED,
 }
 
 export enum CarOrigenEnum {
+  THIRD,
   AUCTION,
-  THIRD
 }

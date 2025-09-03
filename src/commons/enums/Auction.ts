@@ -5,6 +5,7 @@ export enum AuctionTypeEnum {
 }
 
 export enum DamageTypeEnum {
+  FINANCE_CAR,
   SMALL_VALUE,
   MEDIUM_VALUE,
   BIG_VALUE
