@@ -8,25 +8,32 @@ import { ComboboxBrand } from "@/components/ui/combobox-brand";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CarOrigenEnum } from "@/commons/enums/Car";
 import { SelectCalendar } from "@/components/ui/select-calendar";
-import { formatCurrencyInput, normalizeCurrencyValue } from "@/commons/utils/formatter";
+import { formatCpfCnpj, formatCurrencyInput, normalizeCurrencyValue } from "@/commons/utils/formatter";
 import { Textarea } from "@/components/ui/textarea";
 import { auctionTypeTranslations, originTypeTranslations, damageTypeTranslations } from "@/commons/utils/enum-helpers";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { FaSackDollar } from "react-icons/fa6";
+import { paymentDefaultValues } from "@/commons/validations/Vehicle";
 
 
 export function PaymentForm() {
   const form = useFormContext<PaymentFormInputs>()
   const origin = form.watch('origin')
 
-  console.log(origin)
-
   const generateTotalPaid = () => {
     const { bid, commission, administrative, others } = form.getValues() as AuctionFormInputs
     const total = Number(bid || 0) + Number(commission || 0) + Number(administrative || 0) + Number(others || 0)
     form.setValue('totalPaid', total)
   }
+
+  // const handleOriginChange = (value: string) => {
+  //   if(value === origin) return
+
+  //   localStorage.removeItem('payment')
+  //   form.reset(paymentDefaultValues, { keepDefaultValues: true })
+  //   form.setValue('origin', value)
+  // }
 
   return (
     <>
@@ -37,7 +44,7 @@ export function PaymentForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Origem</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione a origem do veículo"/>
@@ -79,7 +86,14 @@ export function PaymentForm() {
                 <FormItem>
                   <FormLabel>CPF*</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Ex: 381.044.062-05" {...field}/>
+                    <Input 
+                      inputMode="numeric"
+                      type="text" 
+                      placeholder="Ex: 381.044.062-05" 
+                      {...field}
+                      value={formatCpfCnpj(field.value)}
+                      onChange={(e) => field.onChange(e.target.value.replace(/\D/g, ''))}
+                    />
                   </FormControl>
                   <FormMessage/>
                 </FormItem>
@@ -147,7 +161,7 @@ export function PaymentForm() {
           <div className="grid grid-cols-4 gap-5">
             <div className="col-span-2">
               <FormField
-                name="auctionName"
+                name="name"
                 control={form.control}
                 rules={{ required: true }}
                 render={({ field }) => (

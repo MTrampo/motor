@@ -1,5 +1,6 @@
 import z from 'zod'
 import { CarOrigenEnum } from '../enums/Car';
+import { isCnpjValid, isCpfValid } from '../utils/validations';
 
 export const vehicleFormSchema = z.object({
   licensePlate: z.string("Placa é obrigatória.")
@@ -21,10 +22,11 @@ export const vehicleFormSchema = z.object({
   modelYear: z.string("Ano modelo é obrigatório.")
     .trim()
     .min(4, "Ano modelo inválido."),
-  kilometers: z.string().optional(),
-  conditionType: z.coerce.number<number>("Condição é obrigatório.")
+  kilometers: z.coerce.number<number>()
+    .nonnegative('Quilometragem não pode ser negativa.')
     .default(0)
     .optional(),
+  conditionType: z.coerce.number<number>("Condição é obrigatório."),
   chassis: z.string().min(17, "Chassi inválido").optional(),
   fipe: z.coerce.number<number>()
     .default(0)
@@ -36,9 +38,22 @@ export const thirdFormSchema = z.object({
   name: z.string()
     .trim()
     .min(3, "O nome do vendedor é obrigatório."),
-  cpfCnpj: z.string("CPF ou CNPJ do vendedor é obrigatório.")
+  cpfCnpj: z.string("CPF ou CNPJ do vendedor(a) é obrigatório.")
     .trim()
-    .min(11, "CPF ou CNPJ inválido."),
+    .min(1, "CPF ou CNPJ inválido.")
+    .refine((value) => {
+        const numericValue = value.replace(/\D/g, '');
+        if (numericValue.length === 11) {
+          return isCpfValid(numericValue);
+        }
+        if (numericValue.length === 14) {
+          return isCnpjValid(numericValue);
+        }
+        // Retorna false se o tamanho não for 11 ou 14
+        return false;
+      },
+      'CPF ou CNPJ inválido'
+    ),
   paymentDate: z.coerce.date<Date>(),
   paid: z.coerce.number<number>("O valor da transação é obrigatório.")
     .nonnegative('O valor não pode ser negativo.'),
@@ -49,7 +64,7 @@ export const auctionFormSchema = z.object({
   origin: z.literal(String(CarOrigenEnum.AUCTION)),
   code: z.string("Código do veículo obrigatório.")
     .trim(),
-  auctionName: z.string("Nome do leilão é obrigatório."),
+  name: z.string("Nome do leilão é obrigatório."),
   consignor: z.string("Comitê do leilão é obrigatório.")
     .trim(),
   functional: z.coerce.number<number>("Condição do veículo é obrigatório."),
@@ -77,3 +92,43 @@ export const paymentFormSchema = z.discriminatedUnion("origin", [
 ]);
 
 export const vehicleMainFormSchema = vehicleFormSchema.and(paymentFormSchema);
+
+export const vehicleDefaultValues = {
+  licensePlate: '',
+  color: '',
+  brand: '',
+  model: '',
+  version: '',
+  manufacturingYear: '',
+  modelYear: '',
+  kilometers: 0,
+  conditionType: 0,
+  chassis: '',
+  fipe: 0
+}
+
+export const paymentDefaultValues = {
+  origin: '3',
+  name: '',
+
+  // defaultValues third
+  cpfCnpj: '',
+  paid: 0,
+  paymentDate: new Date(),
+  refPlate: '',
+  notes: '',
+  // defaultValues auction
+  code: '',
+  consignor: '',
+  functional: 0,
+  damageType: 0,
+  bid: 0,
+  commission: 0,
+  administrative: 0,
+  others: 0,
+  totalPaid: 0,
+}
+
+export const VEHICLE = "vehicle" as const
+export const PAYMENT = "payment" as const
+export const SUMMARY = "summary" as const

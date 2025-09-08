@@ -1,3 +1,5 @@
+"use client"
+
 import { Slot } from "@radix-ui/react-slot";
 import * as Stepperize from "@stepperize/react";
 import { type VariantProps, cva } from "class-variance-authority";
@@ -245,7 +247,7 @@ const defineStepper = <const Steps extends Stepperize.Step[]>(
         return (
           <Comp
             date-component="stepper-controls"
-            className={cn("flex justify-end gap-4", className)}
+            className={cn("flex justify-end gap-6", className)}
             {...props}
           >
             {children}

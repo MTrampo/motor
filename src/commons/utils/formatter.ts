@@ -105,6 +105,31 @@ export const timeFormatter = (time: string) => {
 
 // Formatação de moeda e números
 
+export const formatCpfCnpj = (value: string | number | undefined) => {
+  if (value === undefined || value === null) {
+    return '';
+  }
+
+  const numericValue = String(value).replace(/\D/g, '');
+
+  if (numericValue.length <= 11) {
+    // Formata como CPF: 000.000.000-00
+    return numericValue
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1');
+  } else {
+    // Formata como CNPJ: 00.000.000/0000-00
+    return numericValue
+      .replace(/^(\d{2})(\d)/, '$1.$2')
+      .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+      .replace(/\.(\d{3})(\d)/, '.$1/$2')
+      .replace(/(\d{4})(\d)/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1');
+  }
+};
+
 export const formatNumber = new Intl.NumberFormat('pt-BR')
 
 export const currencyFormatter = new Intl.NumberFormat('pt-BR', {

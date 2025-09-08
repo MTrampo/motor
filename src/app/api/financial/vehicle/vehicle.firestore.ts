@@ -1,5 +1,13 @@
 import { firebaseAdmin } from "@/commons/lib/firebase/server";
-import { VehicleFistore } from "@/commons/models/Vehicle";
+import { VehicleDocData, VehicleFistore, VehicleSummaryDocData } from "@/commons/models/Vehicle";
+
+const getVehicleDocRef = (teamId: string, documentId: string) => {
+  return firebaseAdmin.db.collection(firebaseAdmin.getPath.vehicle(teamId)).doc(documentId);
+}
+
+const getVehicleSummaryDocRef = (teamId: string, documentId: string) => {
+  return firebaseAdmin.db.collection(firebaseAdmin.getPath.vehicleSummary(teamId)).doc(documentId);
+}
 
 export async function getVehicleByIdDocs(teamId: string, documentId: string) {
   const docRef = firebaseAdmin.db.collection(firebaseAdmin.getPath.vehicle(teamId)).doc(documentId);
@@ -27,4 +35,14 @@ export async function getAllVehiclesDocs(teamId: string) {
   }
 
   return documents;
+}
+
+export async function addVehicleDoc(teamId: string, documentId: string, vehicleDocData: VehicleDocData, vehicleSummaryDocData: VehicleSummaryDocData) {
+  const docRef = getVehicleDocRef(teamId, documentId);
+  await docRef.set(vehicleDocData);
+  
+  const summaryDocRef = getVehicleSummaryDocRef(teamId, documentId);
+  await summaryDocRef.set(vehicleSummaryDocData);
+
+  return true;
 }

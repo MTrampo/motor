@@ -1,6 +1,7 @@
-import { formatVehicle, formatVehicles } from "@/commons/models/Vehicle"
-import { getAllVehiclesDocs, getVehicleByIdDocs } from "./vehicle.firestore"
+import { formatVehicle, formatVehicles, VehicleAuctionFormInputs, VehicleDocData, VehicleRequestBody, VehicleSummaryDocData, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
+import { addVehicleDoc, getAllVehiclesDocs, getVehicleByIdDocs } from "./vehicle.firestore"
 import globalResponses from "@/commons/utils/responses"
+import { CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car"
 
 const TEAM_ID = "CRFAZy0GNVARC8eAxjMG"
 
@@ -28,4 +29,121 @@ export const getAllVehicles = async () => {
 
   const formattedData = formatVehicles(vehicles)
   return globalResponses.vehicleFound(formattedData)
+}
+
+export const addVehicle = async (data: VehicleRequestBody) => {
+  // const authVerification = await getAuthenticatedUser()
+  // if (!authVerification.decodedToken) return globalResponses.unauthorizedUser(authVerification.code)
+  // const decodedToken = authVerification.decodedToken
+
+  let docData: VehicleDocData
+  if (data.origin === CarOrigenEnum.THIRD)
+    docData = createDocDataVehicleThird(data.vehicleThird!)
+  else
+    docData = createDocDataVehicleAuction(data.VehicleAuction!)
+
+  return await syncAndAddVehicle(data.documentId, docData)
+}
+
+const createDocDataVehicleThird = (vehicle: VehicleThirdFormInputs) => {
+  const today = new Date()
+
+  const docData: VehicleDocData = {
+    brand: vehicle.brand.toLowerCase(),
+    model: vehicle.model.toLowerCase(),
+    version: vehicle.version?.toLowerCase() || null,
+    kilometers: vehicle.kilometers || null,
+    chassis: vehicle.chassis?.toLowerCase() || null,
+    color: vehicle.color,
+    fipe: vehicle.fipe || null,
+    status: CarStatusEnum.PURCHASED,
+    modelYear: vehicle.modelYear,
+    manufacturingYear: vehicle.manufacturingYear,
+    conditionType: vehicle.conditionType,
+    images: {
+      purchased: [],
+      ready: []
+    },
+    payment: {
+      third: {
+        name: vehicle.name.toLowerCase(),
+        cpfCnpj: vehicle.cpfCnpj,
+      },
+      total: vehicle.paid,
+      paymentDate: vehicle.paymentDate,
+      notes: vehicle.notes?.toLowerCase()
+    },
+    createdAt: today,
+    updatedAt: today
+  }
+
+  return docData
+}
+
+const createDocDataVehicleAuction = (vehicle: VehicleAuctionFormInputs) => {
+  const today = new Date();
+
+  const others = vehicle.others || 0;
+  const administrative = vehicle.administrative || 0;
+  const total = vehicle.bid + vehicle.commission + administrative + others;
+
+  const docData: VehicleDocData = {
+    brand: vehicle.brand.toLowerCase(),
+    model: vehicle.model.toLowerCase(),
+    version: vehicle.version?.toLowerCase() || null,
+    kilometers: vehicle.kilometers || null,
+    chassis: vehicle.chassis?.toLowerCase() || null,
+    color: vehicle.color.toLowerCase(),
+    fipe: vehicle.fipe || null,
+    status: CarStatusEnum.PURCHASED,
+    modelYear: vehicle.modelYear,
+    manufacturingYear: vehicle.manufacturingYear,
+    conditionType: vehicle.conditionType,
+    images: {
+      purchased: [],
+      ready: []
+    },
+    payment: {
+      auction: {
+        name: vehicle.name.toLowerCase(),
+        consignor: vehicle.consignor.toLowerCase(),
+        code: vehicle.code,
+        bid: vehicle.bid,
+        commission: vehicle.commission,
+        administrative,
+        others,
+        damageType: vehicle.damageType,
+        functional: vehicle.functional,
+      },
+      total,
+      paymentDate: vehicle.paymentDate,
+      notes: vehicle.notes?.toLowerCase()
+    },
+    createdAt: today,
+    updatedAt: today
+  }
+
+  return docData
+}
+
+const syncAndAddVehicle = async (documentId: string, data: VehicleDocData) => {
+  const today = new Date();
+
+  const vehicleSummaryDocData: VehicleSummaryDocData = {
+    brand: data.brand.toLowerCase(),
+    model: data.model.toLowerCase(),
+    version: data.version?.toLowerCase() || data.model,
+    color: data.color.toLowerCase(),
+    status: data.status,
+    kilometers: data.kilometers,
+    hero: data.images?.purchased?.[0] || null,
+    conditionType: data.conditionType,
+    years: `${data.manufacturingYear}/${data.modelYear}`,
+    totalCost: 0,
+    totalPaid: data.payment.total,
+    createdAt: today,
+    updatedAt: today
+  }
+
+  return await addVehicleDoc(TEAM_ID, documentId, data, vehicleSummaryDocData)
 }

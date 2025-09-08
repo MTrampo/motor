@@ -5,7 +5,7 @@ import { VehicleFormInputs } from "@/commons/models/Vehicle";
 import { Input } from "@/components/ui/input";
 import { useFormContext, UseFormReturn } from "react-hook-form";
 import { ComboboxBrand } from "@/components/ui/combobox-brand";
-import { formatCurrencyInput, normalizeCurrencyValue } from "@/commons/utils/formatter";
+import { formatCurrencyInput, formatNumber, normalizeCurrencyValue } from "@/commons/utils/formatter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { carConditionTypeTranslations } from "@/commons/utils/enum-helpers";
 
@@ -108,7 +108,7 @@ export function BasicForm() {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Condição*</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={String(field.value)}>
+            <Select onValueChange={field.onChange} defaultValue={String(field.value)} value={String(field.value)}>
               <FormControl>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Selecione a condição do veículo" />
@@ -160,7 +160,18 @@ export function BasicForm() {
           <FormItem>
             <FormLabel>KM</FormLabel>
             <FormControl>
-              <Input type="text" inputMode="numeric" placeholder="Ex: 130.000" {...field}/>
+              <Input 
+                type="text" 
+                inputMode="numeric" 
+                placeholder="Ex: 130.000" 
+                {...field}
+                value={formatNumber.format(field.value ?? 0)}
+                onChange={(e) => {
+                  const cleaned = e.target.value.replace(/\D/g, '')
+                  const numericValue = parseFloat(cleaned)
+                  field.onChange(numericValue)
+                }}
+              />
             </FormControl>
             <FormMessage/>
           </FormItem>

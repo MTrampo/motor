@@ -9,69 +9,32 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { BasicForm } from '@/components/forms/Vehicle/basic-form';
 import { Button } from '@/components/ui/button';
-import { FaBrazilianRealSign, FaCarOn, FaFileLines } from 'react-icons/fa6';
+import { FaArrowLeft, FaArrowRight, FaBrazilianRealSign, FaCarOn, FaFileLines, FaFloppyDisk, FaTrash } from 'react-icons/fa6';
 import { PaymentForm } from '@/components/forms/Vehicle/payment-form';
-import { paymentFormSchema, vehicleFormSchema, vehicleMainFormSchema } from "@/commons/validations/Vehicle";
+import { PAYMENT, paymentDefaultValues, paymentFormSchema, SUMMARY, VEHICLE, vehicleDefaultValues, vehicleFormSchema, vehicleMainFormSchema } from "@/commons/validations/Vehicle";
 import { SummaryForm } from "@/components/forms/Vehicle/summary-form";
-import { CarOrigenEnum } from "@/commons/enums/Car";
-import { PaymentFormInputs, VehicleFormInputs, VehicleMainFormInputs } from "@/commons/models/Vehicle";
-
-const unifiedDefaultValues = {
-  origin: String(CarOrigenEnum.THIRD),
-  // defaultValues third
-  cpfCnpj: '',
-  name: '',
-  paid: 0,
-  paymentDate: new Date(),
-  refPlate: '',
-  notes: '',
-
-  // defaultValues auction
-  code: '',
-  auctionName: '',
-  consignor: '',
-  functional: 0,
-  damageType: 0,
-  bid: 0,
-  commission: 0,
-  administrative: 0,
-  others: 0,
-  totalPaid: 0,
-}
-
-const VEHICLE = "vehicle" as const
-const PAYMENT = "payment" as const
-const SUMMARY = "summary" as const
+import { VehicleMainFormInputs } from "@/commons/models/Vehicle";
+import { addVehicle } from "./action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const { Stepper, useStepper } = defineStepper(
   {
     id: VEHICLE,
     icon: <FaCarOn/>,
     title: "Veículo",
-    description: "Adicione as informações básicas do veículo.",
+    description: "Adicione informações do veículo.",
     schema: vehicleFormSchema,
-    defaultValues: {
-      licensePlate: '',
-      color: '',
-      brand: '',
-      model: '',
-      version: '',
-      manufacturingYear: '',
-      modelYear: '',
-      kilometers: '',
-      conditionType: 0,
-      chassis: '',
-      fipe: 0
-    },
+    defaultValues: vehicleDefaultValues,
     Component: BasicForm,
   },
   {
     id: PAYMENT,
     icon: <FaBrazilianRealSign />,
     title: "Pagamento",
-    description: "Adicione as informações de pagamento e a origem do veículo.",
+    description: "Adicione informações de pagamento e origem do veículo.",
     schema: paymentFormSchema,
-    defaultValues: unifiedDefaultValues,
+    defaultValues: paymentDefaultValues,
     Component: PaymentForm,
   },
   {
@@ -80,7 +43,7 @@ const { Stepper, useStepper } = defineStepper(
     title: "Resumo",
     description: "Revise as informações adicionadas.",
     schema: vehicleMainFormSchema,
-    defaultValues: unifiedDefaultValues,
+    defaultValues: paymentDefaultValues,
     Component: SummaryForm,
   },
 );
@@ -99,7 +62,10 @@ export default function NewVehicle() {
 }
 
 export function StepperForm() {
+  const route = useRouter()
   const methods = useStepper()
+
+  const [disableReset, setDisableReset] = useState(true)
   const [summaryData, setSummaryData] = useState<VehicleMainFormInputs | null>(null)
 
   const form = useForm<z.infer<typeof methods.current.schema>>({
@@ -116,12 +82,15 @@ export function StepperForm() {
       try {
         const parsed = JSON.parse(saved)
         form.reset({ ...defaults, ...parsed }, { keepDefaultValues: true })
+        setDisableReset(false)
       } catch (e) {
         console.error("Falha ao carregar dados:", e)
         form.reset(defaults, { keepDefaultValues: true })
+        setDisableReset(true)
       }
     } else {
       form.reset(defaults, { keepDefaultValues: true })
+      setDisableReset(true)
     }
   }
 
@@ -142,17 +111,15 @@ export function StepperForm() {
     if (methods.current.id === 'summary') loadSummaryData()
   }, [methods.current.id])
 
-  const handleNextStep = async() => {
-    const valid = await form.trigger();
-    if (!valid) return
-    
-    console.log(methods.current.id)
-    console.log('dados estão aquyi: ', form.getValues())
-    
-    const currentData = form.getValues()
-    localStorage.setItem(methods.current.id, JSON.stringify(currentData));
+  const saveDataForm = async() => {
+    if (!summaryData) {
+      toast.error('Dados incompletos. Verifique as informações do veículo e pagamento.')
+      return
+    }
 
-    methods.next()
+    await addVehicle(summaryData)
+    resetDataForm()
+    route.push('/dashboard/vehicles')
   }
 
   const resetDataForm = () => {
@@ -161,21 +128,19 @@ export function StepperForm() {
     
     const defaults = methods.current.defaultValues
     form.reset(defaults, { keepDefaultValues: true })
+    setDisableReset(true)
     methods.reset()
   }
 
-  const onSubmit = (values: z.infer<typeof methods.current.schema>) => {
-    console.log('bateu aqui')
-    console.log(`Form values for step ${methods.current.id}: ${JSON.stringify(values)}`)
-    alert(
-      `Form values for step ${methods.current.id}: ${JSON.stringify(values)}`
-    );
-    if (methods.isLast) return methods.reset()
-  };
+  const handleNextStep = (values: z.infer<typeof methods.current.schema>) => {
+    localStorage.setItem(methods.current.id, JSON.stringify(values))
+    setDisableReset(false)
+    methods.next()
+  }
 
   return (
     <Form {...form} key={methods.current.id}>
-      <form className="flex flex-col h-full" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="flex flex-col h-full" onSubmit={form.handleSubmit(handleNextStep)}>
         <Stepper.Navigation>
           {methods.all.map((step) => (
             <Stepper.Step
@@ -195,23 +160,34 @@ export function StepperForm() {
             summary: ({ Component }) => <Component summary={summaryData} />,
           })}
         </Stepper.Panel>
-        <Stepper.Controls>
+        <Stepper.Controls className="justify-between">
           <Button
-            variant="secondary"
-            onClick={methods.prev}
-            disabled={methods.isFirst}
+            type="button"
+            variant="destructive"
+            disabled={disableReset}
+            onClick={resetDataForm}
           >
-            Anterior
+            <FaTrash /> Excluir
           </Button>
-          {!methods.isLast ? (
-            <Button type="button" onClick={handleNextStep}>
-              Próximo
+          <div className="flex gap-6">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={methods.prev}
+              disabled={methods.isFirst}
+            >
+              <FaArrowLeft /> Voltar
             </Button>
-          ) : (
-            <Button variant="emphasis" type="submit">
-              Salvar
-            </Button>
-          )}
+            {!methods.isLast ? (
+              <Button type="submit">
+                Continuar <FaArrowRight />
+              </Button>
+            ) : (
+              <Button variant="emphasis" type="button" onClick={saveDataForm}>
+                <FaFloppyDisk /> Salvar
+              </Button>
+            )}
+          </div>
         </Stepper.Controls>
       </form>
     </Form>

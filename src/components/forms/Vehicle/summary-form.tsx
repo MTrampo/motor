@@ -1,10 +1,9 @@
 "use client"
 
 import { CarOrigenEnum } from "@/commons/enums/Car"
-import { AuctionFormInputs, ThirdFormInputs, VehicleFormInputs, VehicleMainFormInputs } from "@/commons/models/Vehicle"
+import { VehicleAuctionFormInputs, VehicleMainFormInputs, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
 import { translateEnum } from "@/commons/utils/enum-helpers"
-import { currencyFormatter, dateFormatter, formatNumber } from "@/commons/utils/formatter"
-import { useFormContext } from "react-hook-form"
+import { currencyFormatter, dateFormatter, formatNumber, formatCpfCnpj } from "@/commons/utils/formatter"
 
 type SummaryFormProps = {
   summary: VehicleMainFormInputs | null
@@ -15,13 +14,11 @@ export function SummaryForm({ summary }: SummaryFormProps) {
     return <div className="text-center text-gray-500">Nenhum dado para exibir.</div>;
   }
 
-  console.log(summary.paymentDate)
-
-  function isAuction(summary: VehicleMainFormInputs): summary is VehicleFormInputs & AuctionFormInputs {
+  function isAuction(summary: VehicleMainFormInputs): summary is VehicleAuctionFormInputs {
     return summary.origin === String(CarOrigenEnum.AUCTION);
   }
 
-  function isThird(summary: VehicleMainFormInputs): summary is VehicleFormInputs & ThirdFormInputs {
+  function isThird(summary: VehicleMainFormInputs): summary is VehicleThirdFormInputs {
     return summary.origin === String(CarOrigenEnum.THIRD);
   }
 
@@ -95,7 +92,7 @@ export function SummaryForm({ summary }: SummaryFormProps) {
           </div>
           <div>
             <span className="block text-muted-foreground">CPF/CNPJ</span>
-            <span className="block font-semibold">{summary.cpfCnpj}</span>
+            <span className="block font-semibold">{formatCpfCnpj(summary.cpfCnpj)}</span>
           </div>
           <div>
             <span className="block text-muted-foreground">Data de Pagamento</span>
@@ -103,7 +100,7 @@ export function SummaryForm({ summary }: SummaryFormProps) {
           </div>
           <div>
             <span className="block text-muted-foreground">Valor pago</span>
-            <span className="block font-semibold">{summary.paid}</span>
+            <span className="block font-semibold">{currencyFormatter.format(summary.paid)}</span>
           </div>
         </div>
       )}
@@ -111,7 +108,7 @@ export function SummaryForm({ summary }: SummaryFormProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
           <div>
             <span className="block text-muted-foreground">Nome do Leilão</span>
-            <span className="block font-semibold">{summary.auctionName}</span>
+            <span className="block font-semibold">{summary.name}</span>
           </div>
           <div>
             <span className="block text-muted-foreground">Código</span>
