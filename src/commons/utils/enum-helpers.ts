@@ -9,7 +9,7 @@ export const originTypeTranslations: Record<CarOrigenEnum, string> = {
 
 export const carStatusTranslations: Record<CarStatusEnum, string> = {
   [CarStatusEnum.EVALUATING]: "Em Avaliação",
-  [CarStatusEnum.PURCHASED]: "Comprado",
+  [CarStatusEnum.PURCHASED]: "Garagem",
   [CarStatusEnum.WINCH]: "Em tranporte",
   [CarStatusEnum.MAINTENANCE]: "Em Manutenção",
   [CarStatusEnum.AVAILABLE]: "Disponível",

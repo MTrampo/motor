@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { FaCar, FaChartPie } from "react-icons/fa6"
+import { BiSolidCarGarage } from "react-icons/bi";
 
 // import { NavDocuments } from "@/components/nav-documents"
 // import { NavSecondary } from "@/components/nav-secondary"
@@ -63,9 +64,9 @@ const data = {
       // ],
     },
     {
-      title: "Veículos",
-      url: "/dashboard/vehicles",
-      icon: <FaCar />,
+      title: "Garagem",
+      url: "/dashboard/garage",
+      icon: <BiSolidCarGarage />,
       isActive: true,
     },
     // {

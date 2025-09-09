@@ -1,5 +1,5 @@
-import { formatVehicle, formatVehicles, VehicleAuctionFormInputs, VehicleDocData, VehicleRequestBody, VehicleSummaryDocData, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
-import { addVehicleDoc, getAllVehiclesDocs, getVehicleByIdDocs } from "./vehicle.firestore"
+import { formatVehicle, formatVehicles, formatVehiclesSummary, VehicleAuctionFormInputs, VehicleDocData, VehicleRequestBody, VehicleSummaryDocData, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
+import { addVehicleDoc, getAllVehiclesDocs, getAllVehiclesSummaryDocs, getVehicleByIdDocs } from "./vehicle.firestore"
 import globalResponses from "@/commons/utils/responses"
 import { CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car"
 
@@ -24,11 +24,11 @@ export const getAllVehicles = async () => {
     
   //const budgets = await getAllBudgetDocs(authVerification.decodedToken.uid)
 
-  const vehicles = await getAllVehiclesDocs(TEAM_ID)
+  const vehicles = await getAllVehiclesSummaryDocs(TEAM_ID)
   if (!vehicles) return globalResponses.vehicleNotFound()
 
-  const formattedData = formatVehicles(vehicles)
-  return globalResponses.vehicleFound(formattedData)
+  const formattedData = formatVehiclesSummary(vehicles)
+  return globalResponses.vehicleSummaryFound(formattedData)
 }
 
 export const addVehicle = async (data: VehicleRequestBody) => {

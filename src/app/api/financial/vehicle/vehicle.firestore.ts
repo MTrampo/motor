@@ -1,5 +1,5 @@
 import { firebaseAdmin } from "@/commons/lib/firebase/server";
-import { VehicleDocData, VehicleFistore, VehicleSummaryDocData } from "@/commons/models/Vehicle";
+import { VehicleDocData, VehicleFistore, VehicleSummaryDocData, VehicleSummaryFirestore } from "@/commons/models/Vehicle";
 
 const getVehicleDocRef = (teamId: string, documentId: string) => {
   return firebaseAdmin.db.collection(firebaseAdmin.getPath.vehicle(teamId)).doc(documentId);
@@ -18,6 +18,22 @@ export async function getVehicleByIdDocs(teamId: string, documentId: string) {
   const data = docSnap.data() as VehicleFistore;
   data.id = docSnap.id;
   return data;
+}
+
+export async function getAllVehiclesSummaryDocs(teamId: string) {
+  const querySnapshot = await firebaseAdmin.db.collection(firebaseAdmin.getPath.vehicleSummary(teamId)).get()
+  
+  const documents: Array<VehicleSummaryFirestore> = [];
+  if (querySnapshot.empty) return null;
+
+  for (const doc of querySnapshot.docs) {
+    const data = doc.data() as VehicleSummaryFirestore;
+    data.id = doc.id as string;
+
+    documents.push(data);
+  }
+
+  return documents;
 }
 
 export async function getAllVehiclesDocs(teamId: string) {

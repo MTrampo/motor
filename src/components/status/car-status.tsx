@@ -2,7 +2,8 @@ import { JSX } from "react";
 import { CarStatusEnum } from "@/commons/enums/Car";
 import { Badge } from "../ui/badge";
 import { translateEnum } from "@/commons/utils/enum-helpers";
-import { FaCarBurst, FaCarOn, FaCartShopping, FaNewspaper, FaSearchengin, FaTag, FaTruckPickup } from "react-icons/fa6";
+import { BiSolidCarGarage } from "react-icons/bi";
+import { FaCarBurst, FaCarOn, FaNewspaper, FaSearchengin, FaTag, FaTruckPickup } from "react-icons/fa6";
 
 interface CarStatusBadgeProps {
   status: CarStatusEnum
@@ -12,7 +13,7 @@ interface CarStatusBadgeProps {
 export function CarStatusBadge({ status, className }: CarStatusBadgeProps) {
   const statusIconMap: Record<CarStatusEnum, JSX.Element> = {
     [CarStatusEnum.EVALUATING]: <FaSearchengin />,
-    [CarStatusEnum.PURCHASED]: <FaCartShopping />,
+    [CarStatusEnum.PURCHASED]: <BiSolidCarGarage />,
     [CarStatusEnum.WINCH]: <FaTruckPickup />,
     [CarStatusEnum.MAINTENANCE]: <FaCarBurst />,
     [CarStatusEnum.AVAILABLE]: <FaCarOn />,
@@ -36,7 +37,7 @@ export function CarStatusBadge({ status, className }: CarStatusBadgeProps) {
   return (
     <Badge variant="outline" className={`px-1.5 ${statusColorMap[status]} ${className}`}>
       {statusIcon}
-      <span className="ml-1.5">{statusText}</span>
+      <span>{statusText}</span>
     </Badge>
   );
 }

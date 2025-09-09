@@ -28,21 +28,30 @@ interface PaymentDocData extends Omit<PaymentFirestore, 'paymentDate'> {
   paymentDate: Date;
 }
 
-export interface VehicleSummaryFirestore {
-  id: string;
-  brand: string;
-  model: string;
-  version: string;
-  kilometers: number | null;
+// export interface VehicleSummaryFirestore {
+//   id: string;
+//   brand: string;
+//   model: string;
+//   version: string;
+//   kilometers: number | null;
+//   years: string;
+//   color: string;
+//   hero: string | null;
+//   status: CarStatusEnum;
+//   conditionType: CarConditionTypeEnum;
+//   totalPaid: number;
+//   totalCost: number;
+//   createdAt: Timestamp;
+//   updatedAt: Timestamp;
+// }
+
+export interface VehicleSummaryFirestore extends Omit<VehicleFistore,
+    'images' | 'payment' | 'fipe' | 'chassis' | 'manufacturingYear' | 'modelYear' | 'statusHistory'
+> {
   years: string;
-  color: string;
   hero: string | null;
-  status: CarStatusEnum;
-  conditionType: CarConditionTypeEnum;
   totalPaid: number;
   totalCost: number;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
 }
 
 export interface VehicleFistore {
@@ -97,6 +106,18 @@ interface AuctionFirestore {
 interface StatusHistoryFirestore {
   status: CarStatusEnum;
   createdAt: Timestamp;
+}
+
+export interface VehicleSummaryFormatted extends Omit<VehicleFormatted,
+  'images' | 'payment' | 'fipe' | 'chassis' | 'manufacturingYear' | 'modelYear' | 'statusHistory' |
+  'fipeFormatted'
+> {
+  years: string;
+  hero: string | null;
+  totalPaid: number;
+  totalCost: number;
+  totalPaidFormatted: string;
+  totalCostFormatted: string;
 }
 
 export interface VehicleFormatted {
@@ -226,6 +247,31 @@ export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
     createdAtFormatted: dateFormatter.format(vehicle.createdAt.toDate()),
     updatedAtFormatted: dateFormatter.format(vehicle.updatedAt.toDate()),
   }  
+}
+
+export function formatVehiclesSummary(vehicles: VehicleSummaryFirestore[]): VehicleSummaryFormatted[] {
+  return vehicles.map(vehicle => ({
+    id: vehicle.id.toUpperCase(),
+    brand: vehicle.brand,
+    model: vehicle.model,
+    version: vehicle.version ? vehicle.version : '-',
+    color: vehicle.color,
+    kilometers: vehicle.kilometers ? `${formatNumber.format(vehicle.kilometers)} Km` : '-',
+    conditionType: vehicle.conditionType,
+    status: vehicle.status,
+    years: vehicle.years,
+    hero: vehicle.hero,
+    totalPaid: vehicle.totalPaid,
+    totalCost: vehicle.totalCost,
+    createdAt: vehicle.createdAt.toDate(),
+    updatedAt: vehicle.updatedAt.toDate(),
+    statusFormatted: translateEnum('CarStatus', vehicle.status),
+    conditionTypeFormatted: translateEnum('CarConditionType', vehicle.conditionType),
+    totalPaidFormatted: currencyFormatter.format(vehicle.totalPaid),
+    totalCostFormatted: currencyFormatter.format(vehicle.totalCost),
+    createdAtFormatted: dateFormatter.format(vehicle.createdAt.toDate()),
+    updatedAtFormatted: dateFormatter.format(vehicle.updatedAt.toDate()),
+  }))
 }
 
 export function formatVehicles(vehicles: VehicleFistore[]): VehicleFormatted[] {

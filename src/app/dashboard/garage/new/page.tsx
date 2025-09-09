@@ -1,22 +1,26 @@
 "use client"
 
+import z from 'zod';
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
 import Header from "@/components/header";
 import { defineStepper } from "@/components/ui/stepper";
-import { useEffect, useState } from 'react';
-import z from 'zod'
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { BasicForm } from '@/components/forms/Vehicle/basic-form';
 import { Button } from '@/components/ui/button';
-import { FaArrowLeft, FaArrowRight, FaBrazilianRealSign, FaCarOn, FaFileLines, FaFloppyDisk, FaTrash } from 'react-icons/fa6';
+import { 
+  FaArrowLeft, FaArrowRight, FaBrazilianRealSign, FaCarOn, FaFileLines, FaFloppyDisk, FaTrash
+} from 'react-icons/fa6';
 import { PaymentForm } from '@/components/forms/Vehicle/payment-form';
-import { PAYMENT, paymentDefaultValues, paymentFormSchema, SUMMARY, VEHICLE, vehicleDefaultValues, vehicleFormSchema, vehicleMainFormSchema } from "@/commons/validations/Vehicle";
+import { 
+  PAYMENT, paymentDefaultValues, paymentFormSchema, SUMMARY, VEHICLE, vehicleDefaultValues, vehicleFormSchema, vehicleMainFormSchema
+} from "@/commons/validations/Vehicle";
 import { SummaryForm } from "@/components/forms/Vehicle/summary-form";
 import { VehicleMainFormInputs } from "@/commons/models/Vehicle";
 import { addVehicle } from "./action";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 const { Stepper, useStepper } = defineStepper(
   {

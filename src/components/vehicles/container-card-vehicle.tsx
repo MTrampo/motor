@@ -2,8 +2,7 @@
 
 import { useGetAllVehicles } from "@/hooks/swr/use-vehicle";
 import CardVehicles from "./card-vehicle";
-import { FaFilter, FaMagnifyingGlass } from "react-icons/fa6";
-import { BiSolidCarGarage } from "react-icons/bi";
+import { FaCarOn, FaFilter, FaMagnifyingGlass } from "react-icons/fa6";
 import { InputIcon } from "../ui/input-icon";
 import { Button } from "../ui/button";
 import Link from "next/link";
@@ -25,7 +24,7 @@ export default function ContainerCardVehicle() {
         </div>
         <Button variant='default' size="icon" asChild>
           <Link href='/dashboard/vehicles/new'>
-            <BiSolidCarGarage />
+            <FaCarOn />
           </Link>
         </Button>
       </div>

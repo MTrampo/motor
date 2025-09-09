@@ -1,15 +1,15 @@
 import { useRouter } from "next/navigation"
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { VehicleFormatted } from "@/commons/models/Vehicle"
+import { VehicleSummaryFormatted } from "@/commons/models/Vehicle"
 import { CarStatusBadge } from "@/components/status/car-status"
 import { FaEye } from "react-icons/fa6"
 
-export const columns: ColumnDef<VehicleFormatted>[] = [
+export const columns: ColumnDef<VehicleSummaryFormatted>[] = [
   {
-    accessorKey: "licensePlate",
+    accessorKey: "id",
     header: "Placa",
-    cell: ({ row }) => <div className="uppercase">{row.getValue("licensePlate")}</div>,
+    cell: ({ row }) => <div className="uppercase">{row.getValue("id")}</div>,
     enableSorting: false,
     enableHiding: false,
   },
@@ -34,14 +34,14 @@ export const columns: ColumnDef<VehicleFormatted>[] = [
     cell: ({ row }) => <CarStatusBadge status={row.original.status} />,
   },
   {
-    accessorKey: "paidFormatted",
+    accessorKey: "totalPaidFormatted",
     header: "Pagamento",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("paidFormatted")}</div>,
+    cell: ({ row }) => <div className="font-medium">{row.getValue("totalPaidFormatted")}</div>,
   },
   {
-    accessorKey: "maintenance.totalFormatted",
-    header: "Manutenção",
-    cell: ({ row }) => <div className="font-medium">{row.original.maintenance.totalFormatted}</div>,
+    accessorKey: "totalCostFormatted",
+    header: "Custos",
+    cell: ({ row }) => <div className="font-medium">{row.getValue("totalCostFormatted")}</div>,
   },
   {
     id: "actions",

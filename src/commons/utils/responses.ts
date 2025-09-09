@@ -1,6 +1,6 @@
 import { ResponseProps } from "../models/Api"
 //import { getFirebaseAuthErrorMessage } from "../validations/User"
-import { VehicleFormatted } from "../models/Vehicle"
+import { VehicleFormatted, VehicleSummaryFormatted } from "../models/Vehicle"
 import { HttpStatusEnum } from "../enums/Api"
 import { CostFormatted } from "../models/Cost"
 
@@ -41,7 +41,15 @@ const globalResponses = {
     message: isPlural ? 'Veículos recuperados com sucesso' : 'Veículo recuperado com sucesso',
     data: formattedData
   }),
-
+  vehicleSummaryFound: (
+    formattedData: VehicleSummaryFormatted | VehicleSummaryFormatted[],
+    isPlural = true
+  ): ResponseProps<VehicleSummaryFormatted | VehicleSummaryFormatted[]> => ({
+    status: HttpStatusEnum.OK,
+    title: isPlural ? 'Veículos Encontrados' : 'Veículo Encontrado',
+    message: isPlural ? 'Veículos recuperados com sucesso' : 'Veículo recuperado com sucesso',
+    data: formattedData
+  }),
   // budgetPageFound: (
   //   pageData: ReturnPageBudgets,
   //   isPlural = true

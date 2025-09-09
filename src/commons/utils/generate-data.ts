@@ -1,8 +1,7 @@
 import { addDays, format, startOfWeek } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { it } from "node:test";
-import { currencyFormatter } from "./formatter";
 import { PaginatedResult, ProfitCalculation } from "../models/Data";
+import imgRedCar from '@/commons/assets/imgs/red-car.png';
+import imgBlueCar from '@/commons/assets/imgs/blue-car.png';
 
 export function generateServiceWeek() {
   const today = new Date();
@@ -80,4 +79,14 @@ export function paginate<T>(array: T[], pageNumber: number, pageSize: number = 1
     totalPages: totalPages,
     totalItems: totalItems,
   };
+}
+
+export function getRandomCarImage() {
+  const images = [imgRedCar, imgBlueCar];
+
+  // Gera um índice aleatório: 0 ou 1
+  const randomIndex = Math.floor(Math.random() * images.length);
+  
+  // Retorna a imagem correspondente ao índice
+  return images[randomIndex];
 }
