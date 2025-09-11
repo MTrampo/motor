@@ -6,7 +6,7 @@ import { ItemsCostFormatted } from "@/commons/models/Cost"
 import { CostTypeBadge } from "../cost-type"
 import { FaTrash } from "react-icons/fa6"
 import { ActionDialog } from "@/components/dialogs/ActionDialog"
-import { killCost } from "@/app/dashboard/vehicles/[id]/action"
+import { killCost } from "@/app/dashboard/garage/[id]/action"
 
 export const getColumns = (plate: string): ColumnDef<ItemsCostFormatted>[] => {
   return [

@@ -1,6 +1,6 @@
-import { getFinanceById } from "./summary.api"
+import { getFinanceById, getQuarterlyFinanceComparison } from "./summary.api"
 
 export async function GET() {
-  const result = await getFinanceById()
+  const result = await getQuarterlyFinanceComparison()
   return Response.json(result)
 }

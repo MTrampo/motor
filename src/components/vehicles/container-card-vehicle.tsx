@@ -23,7 +23,7 @@ export default function ContainerCardVehicle() {
           </Button>
         </div>
         <Button variant='default' size="icon" asChild>
-          <Link href='/dashboard/vehicles/new'>
+          <Link href='/dashboard/garage/new'>
             <FaCarOn />
           </Link>
         </Button>

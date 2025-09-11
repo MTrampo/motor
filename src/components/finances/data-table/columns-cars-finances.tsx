@@ -50,7 +50,7 @@ export const columns: ColumnDef<VehicleSummaryFormatted>[] = [
       const router = useRouter()
 
       return (
-        <Button variant="ghost" size="icon" className="cursor-pointer" onClick={() => router.push(`/dashboard/vehicles/${row.original.id}`)}>
+        <Button variant="ghost" size="icon" className="cursor-pointer" onClick={() => router.push(`/dashboard/garage/${row.original.id}`)}>
           <FaEye/>
         </Button>
       )

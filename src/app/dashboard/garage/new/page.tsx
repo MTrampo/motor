@@ -123,7 +123,7 @@ export function StepperForm() {
 
     await addVehicle(summaryData)
     resetDataForm()
-    route.push('/dashboard/vehicles')
+    route.push('/dashboard/garage')
   }
 
   const resetDataForm = () => {

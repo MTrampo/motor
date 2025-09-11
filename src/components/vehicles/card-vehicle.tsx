@@ -14,7 +14,7 @@ export default function CardVehicles({ vehicle }: CardVehiclesProps) {
   const imgFallback = getRandomCarImage()
   
   return (
-    <Link href={`/dashboard/vehicles/${vehicle.id}`} className="hover:scale-[1.02] transition-transform duration-200 ease-in-out">
+    <Link href={`/dashboard/garage/${vehicle.id}`} className="hover:scale-[1.02] transition-transform duration-200 ease-in-out">
       <Card className="sm:h-full grid grid-cols-2 sm:flex sm:grid-cols-none p-0 overflow-hidden gap-0 hover:shadow-md">
         <CardHeader className="gap-0 p-0 relative">
           <div className="relative sm:absolute sm:top-2 sm:right-2 sm:z-10">

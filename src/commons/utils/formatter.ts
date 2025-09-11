@@ -1,6 +1,7 @@
 import { format, formatDistanceToNow, isThisWeek, isToday, isYesterday, parse } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Timestamp } from 'firebase-admin/firestore'
+import { StatusComparisonEnum } from '../enums/Finance'
 
 // Formatação de datas e horas
 
@@ -44,22 +45,22 @@ export const formatLastUpdated = (date: Date | null): string => {
   
   const diffInHours = diffInMinutes / 60;
   if (diffInHours < 24) {
-    return `atualizado a ${Math.round(diffInHours)}h atrás`;
+    return `Atualizado a ${Math.round(diffInHours)}h atrás`;
   }
   
   if (isToday(date)) {
-    return `atualizado hoje às ${format(date, 'HH:mm', { locale: ptBR })}`;
+    return `Atualizado hoje às ${format(date, 'HH:mm', { locale: ptBR })}`;
   }
   
   if (isYesterday(date)) {
-    return `atualizado ontem às ${format(date, 'HH:mm', { locale: ptBR })}`;
+    return `Atualizado ontem às ${format(date, 'HH:mm', { locale: ptBR })}`;
   }
   
   if (isThisWeek(date)) {
-    return `atualizado ${format(date, 'EEEE', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
+    return `Atualizado ${format(date, 'EEEE', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
   }
   
-  return `atualizado em ${format(date, 'dd/MM/yyyy', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
+  return `Atualizado em ${format(date, 'dd/MM', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
 };
 
 export const timeToDisplayFormatter = (timeString: string): string => {
@@ -147,6 +148,27 @@ export const formatCurrencyInput = (value: string | number): string => {
     currency: 'BRL',
     minimumFractionDigits: 2,
   })
+}
+
+export const formatFinanceDifference = (status: StatusComparisonEnum, isCurrency: boolean, difference: number) => {
+  let text;
+  let formattedDifference;
+
+  if (isCurrency) {
+    formattedDifference = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(difference));
+  } else {
+    formattedDifference = Math.abs(difference).toLocaleString('pt-BR');
+  }
+  
+  if (status === StatusComparisonEnum.HIGH) {
+    text = `Alta de ${formattedDifference} em comparação com o último trimestre.`;
+  } else if (status === StatusComparisonEnum.LOW) {
+    text = `Queda de ${formattedDifference} em comparação com o último trimestre.`;
+  } else {
+    text = `Estável em comparação com o último trimestre.`;
+  }
+  
+  return text;
 }
 
 // Formatação de textos
