@@ -1,14 +1,37 @@
 "use client";
 
+import Link from "next/link";
+import Image from "next/image";
 import { useGetAllVehicles } from "@/hooks/swr/use-vehicle";
-import CardVehicles from "./card-vehicle";
 import { FaCarOn, FaFilter, FaMagnifyingGlass } from "react-icons/fa6";
+import CardVehicles from "./card-vehicle";
 import { InputIcon } from "../ui/input-icon";
 import { Button } from "../ui/button";
-import Link from "next/link";
+import svgWinch from '@/commons/assets/svgs/winch.svg';
 
 export default function ContainerCardVehicle() {
   const { vehicles, isLoading } = useGetAllVehicles();
+
+  if (!vehicles) {
+    return (
+      <div className="flex flex-col gap-10 pt-12">
+        <Image src={svgWinch} className="mx-auto" alt="carro em manutenção" width={600} height={600}/>
+        <div className="text-center text-muted-foreground">
+          <p>
+            Ué, guincharam todos os carros? A sua garagem está vazia. Vamos começar a encher o seu pátio.
+          </p>
+          <p>
+            Clique no botão abaixo para adicionar seu primeiro veículo!
+          </p>
+        </div>
+        <Button className="mx-auto" variant='emphasis' asChild>
+          <Link href='/dashboard/garage/new'>
+            <FaCarOn /> Adicionar Veículo
+          </Link>
+        </Button>
+      </div>
+    )
+  }
 
   return (
     <>

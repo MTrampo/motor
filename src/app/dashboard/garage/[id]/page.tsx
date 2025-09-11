@@ -6,6 +6,7 @@ import Image from "next/image"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { useGetVehicleById } from "@/hooks/swr/use-vehicle"
 import VehicleDetails from "./details";
+import { getRandomCarImage } from "@/commons/utils/generate-data";
 
 
 type VehicleProps = {
@@ -15,12 +16,15 @@ type VehicleProps = {
 export default function Page({ params }: VehicleProps) {
   const { id } = use(params)
   const { vehicle } = useGetVehicleById(id)
+  const imgFallback = getRandomCarImage()
+
+  console.log('vehicle', vehicle)
 
   if (!vehicle) {
     return <div className="p-6">Não encontrado...</div>
   }
 
-  const showCarousel = vehicle.images.length >= 3
+  const showCarousel = (vehicle.images?.purchased?.length ?? 0) >= 3
 
   return (
     <>
@@ -29,7 +33,7 @@ export default function Page({ params }: VehicleProps) {
         {showCarousel ? (
           <Carousel className="w-full">
             <CarouselContent>
-              {vehicle?.images.map(image => (
+              {vehicle.images.purchased?.map(image => (
                 <CarouselItem key={image} className="w-full md:basis-1/2 lg:basis-1/3">
                   <Image className="w-full" src={image} alt={vehicle.model} width={400} height={400} />
                 </CarouselItem>
@@ -40,8 +44,8 @@ export default function Page({ params }: VehicleProps) {
           </Carousel>
         ) : (
           <>
-            <Image className="w-fit h-full absolute z-10 left-1/2 -translate-x-1/2" src={vehicle.images[0]} alt={vehicle.model} width={400} height={400} />
-            <Image className="w-full object-contain blur-sm" src={vehicle.images[0]} alt={vehicle.model} width={400} height={400} />
+            <Image className="w-fit h-full absolute z-10 left-1/2 -translate-x-1/2" src={vehicle.images.purchased?.[0] || imgFallback} alt={vehicle.model} width={400} height={400} />
+            <Image className="w-full object-contain blur-sm" src={vehicle.images.purchased?.[0] || imgFallback} alt={vehicle.model} width={400} height={400} />
           </>
         )}
       </section>

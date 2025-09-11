@@ -55,8 +55,8 @@ export function ChartBarProfitProjection({ vehicle }: ChartBarProfitProjectionPr
   const { projection } = useMemo(() => {
     return calculateProfitProjection({ 
       fipeValue: vehicle.fipe, 
-      paidValue: vehicle.paid || 0, 
-      totalCosts: vehicle.maintenance.total
+      paidValue: vehicle.payment.total || 0, 
+      totalCosts: 1000 //vehicle.maintenance.total
     })
   }, [vehicle])
 
