@@ -31,7 +31,7 @@ export function CarStatusBadge({ status, className }: CarStatusBadgeProps) {
     [CarStatusEnum.SOLD]: 'text-red-800 bg-red-100',
   };
 
-  const statusText = translateEnum('CarStatus', status);
+  const statusText = translateEnum('CarStatusType', status);
   const statusIcon = statusIconMap[status];
 
   return (

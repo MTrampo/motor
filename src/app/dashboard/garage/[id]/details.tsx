@@ -17,14 +17,14 @@ import { RegisterCostFormInputs } from "@/commons/models/Cost";
 import { addCost } from "./action";
 import { currencyFormatter } from "@/commons/utils/formatter";
 import { ChartCostAnalysis } from "@/components/vehicles/chart/chart-cost-analysis";
-import { useGetCostByPlate } from '@/hooks/swr/use-cost'
+import { useGetCostByPlateSWR } from '@/hooks/swr/use-cost'
 
 type VehicleDetailsProps = {
   vehicle: VehicleFormatted
 }
 
 export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
-  const { cost, isLoading } = useGetCostByPlate(vehicle.id)
+  const { cost, isLoading } = useGetCostByPlateSWR(vehicle.id)
 
   const formRef = useRef<SheetFormRef>(null)
 

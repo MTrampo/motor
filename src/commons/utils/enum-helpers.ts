@@ -1,13 +1,14 @@
 import { AuctionTypeEnum, DamageTypeEnum } from "@/commons/enums/Auction";
 import { CarConditionTypeEnum, CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car";
 import { CostTypeEnum } from "../enums/Cost";
+import { RoleEnum } from "../enums/Organization";
 
 export const originTypeTranslations: Record<CarOrigenEnum, string> = {
   [CarOrigenEnum.AUCTION]: "Adquirido do leilão",
   [CarOrigenEnum.THIRD]: "Adquirido de terceiros"
 }
 
-export const carStatusTranslations: Record<CarStatusEnum, string> = {
+export const carStatusTypeTranslations: Record<CarStatusEnum, string> = {
   [CarStatusEnum.EVALUATING]: "Em Avaliação",
   [CarStatusEnum.PURCHASED]: "Garagem",
   [CarStatusEnum.WINCH]: "Em tranporte",
@@ -63,12 +64,20 @@ export const costTypeTranslations: Record<CostTypeEnum, string> = {
   [CostTypeEnum.INSURANCE]: "Seguro"
 }
 
+export const roleTypeTranslations: Record<RoleEnum, string> = {
+  [RoleEnum.OWNER]: "Proprietário",
+  [RoleEnum.MANAGER]: "Gerente",
+  [RoleEnum.BILLING]: "Financeiro",
+  [RoleEnum.SELLER]: "Vendedor",
+}
+
 const translations = {
   CostType: costTypeTranslations,
-  CarStatus: carStatusTranslations,
+  RoleType: roleTypeTranslations,
   OriginType: originTypeTranslations,
   DamageType: damageTypeTranslations,
   AuctionType: auctionTypeTranslations,
+  CarStatusType: carStatusTypeTranslations,
   CarConditionType: carConditionTypeTranslations,
 };
 

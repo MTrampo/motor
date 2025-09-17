@@ -26,8 +26,8 @@ export async function getFinanceDocByFlexibleOrFixedPeriods(teamId: string, star
 
   const docSnapshot = await querySnap.get();
 
-  const documents: Array<FinanceFirestore> = [];
   if (docSnapshot.empty) return null;
+  const documents: Array<FinanceFirestore> = [];
 
   for (const doc of docSnapshot.docs) {
     const data = doc.data() as FinanceFirestore;

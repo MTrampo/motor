@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useGetAllVehicles } from "@/hooks/swr/use-vehicle";
+import { useGetAllVehiclesSWR } from "@/hooks/swr/use-vehicle";
 import { FaCarOn, FaFilter, FaMagnifyingGlass } from "react-icons/fa6";
 import CardVehicles from "./card-vehicle";
 import { InputIcon } from "../ui/input-icon";
@@ -10,7 +10,7 @@ import { Button } from "../ui/button";
 import svgWinch from '@/commons/assets/svgs/winch.svg';
 
 export default function ContainerCardVehicle() {
-  const { vehicles, isLoading } = useGetAllVehicles();
+  const { vehicles, isLoading } = useGetAllVehiclesSWR();
 
   if (!vehicles) {
     return (

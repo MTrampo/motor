@@ -3,13 +3,13 @@
 import { FaArrowTrendDown, FaArrowTrendUp, FaGripLines } from "react-icons/fa6";
 import { Badge } from "../ui/badge";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { useGetFinancialSummary } from "@/hooks/swr/use-summary";
+import { useGetFinancialSummarySWR } from "@/hooks/swr/use-summary";
 import { CardFinance } from "./card-finance";
 import { StatusComparisonEnum } from "@/commons/enums/Finance";
 import { PercentageBadge } from "./percentage-finance";
 
 export default function OverviewFinances() {
-  const { finance, isLoading } = useGetFinancialSummary()
+  const { finance, isLoading } = useGetFinancialSummarySWR()
 
   console.log('dados finanças', finance)
 

@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "pt-BR",
     name: "Motor",
     short_name: "Motor",
-    description: "Uma plataforma de gerenciamento de veículos.",
+    description: "Uma plataforma de gerenciamento e gestão veicular.",
     start_url: "/",
     background_color: "#00abed",
     theme_color: "#ffffff",

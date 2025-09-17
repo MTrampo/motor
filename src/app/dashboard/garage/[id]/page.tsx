@@ -4,7 +4,7 @@ import { use, useMemo } from "react";
 import Header from "@/components/header";
 import Image from "next/image"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { useGetVehicleById } from "@/hooks/swr/use-vehicle"
+import { useGetVehicleByIdSWR } from "@/hooks/swr/use-vehicle"
 import VehicleDetails from "./details";
 import { getRandomCarImage } from "@/commons/utils/generate-data";
 
@@ -15,7 +15,7 @@ type VehicleProps = {
 
 export default function Page({ params }: VehicleProps) {
   const { id } = use(params)
-  const { vehicle } = useGetVehicleById(id)
+  const { vehicle } = useGetVehicleByIdSWR(id)
   const imgFallback = getRandomCarImage()
 
   console.log('vehicle', vehicle)

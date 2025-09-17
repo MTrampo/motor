@@ -1,11 +1,11 @@
-const CACHE_STATIC_NAME = 'static-v0.0.4';
-const CACHE_DYNAMIC_NAME = 'dynamic-v0.0.4';
+const CACHE_STATIC_NAME = 'static-v0.0.5';
+const CACHE_DYNAMIC_NAME = 'dynamic-v0.0.5';
 
 const urlsToCache = [
   "/", // Página inicial
   "/manifest.webmanifest",
-  "/web-app-manifest-192x192.png",
-  "/web-app-manifest-512x512.png"
+  "/imgs/web-app-manifest-192x192.png",
+  "/imgs/web-app-manifest-512x512.png"
 ];
 
 self.addEventListener('install', (event) => {

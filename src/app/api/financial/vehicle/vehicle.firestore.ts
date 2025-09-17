@@ -23,8 +23,8 @@ export async function getVehicleByIdDocs(teamId: string, documentId: string) {
 export async function getAllVehiclesSummaryDocs(teamId: string) {
   const querySnapshot = await firebaseAdmin.db.collection(firebaseAdmin.getPath.vehicleSummary(teamId)).get()
   
-  const documents: Array<VehicleSummaryFirestore> = [];
   if (querySnapshot.empty) return null;
+  const documents: Array<VehicleSummaryFirestore> = [];
 
   for (const doc of querySnapshot.docs) {
     const data = doc.data() as VehicleSummaryFirestore;
@@ -39,9 +39,8 @@ export async function getAllVehiclesSummaryDocs(teamId: string) {
 export async function getAllVehiclesDocs(teamId: string) {
   const querySnapshot = await firebaseAdmin.db.collection(firebaseAdmin.getPath.vehicle(teamId)).get()
   
-  const documents: Array<VehicleFistore> = [];
-
   if (querySnapshot.empty) return null;
+  const documents: Array<VehicleFistore> = [];
 
   for (const doc of querySnapshot.docs) {
     const data = doc.data() as VehicleFistore;

@@ -3,7 +3,7 @@ import { fetcher } from "@/commons/lib/fetcher/swr"
 import { ResponseProps, SWRAPIError } from "@/commons/models/Api"
 import { VehicleFormatted, VehicleSummaryFormatted } from "@/commons/models/Vehicle"
 
-export function useGetAllVehicles() {
+export function useGetAllVehiclesSWR() {
   const { data, error, isLoading } = useSWR<ResponseProps<VehicleSummaryFormatted[]>, SWRAPIError>('/api/financial/vehicle', fetcher)
  
   return {
@@ -13,7 +13,7 @@ export function useGetAllVehicles() {
   }
 }
 
-export function useGetVehicleById(id: string) {
+export function useGetVehicleByIdSWR(id: string) {
   const { data, error, isLoading } = useSWR<ResponseProps<VehicleFormatted>, SWRAPIError>(`/api/financial/vehicle/${id}`, fetcher)
  
   return {

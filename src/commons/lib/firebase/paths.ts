@@ -1,16 +1,16 @@
 type FirestorePaths = {
-  [K in keyof typeof subCollection]: (userId: string) => string;
+  [K in keyof typeof collection]: string;
 } & {
-  custom?: (userId: string, path: string) => string; // Método extra
+  [K in keyof typeof subCollection]: (userId: string) => string;
 }
 
 const collection = {
   user: process.env.FIRESTORE_COLLECTION_USER as string,
   team: process.env.FIRESTORE_COLLECTION_TEAM as string,
+  teamMembers: process.env.FIRESTORE_COLLECTION_TEAM_MEMBERS as string,
 }
 
 const subCollection = {
-  user: process.env.FIRESTORE_SUB_COLLECTION_USER as string,
   vehicle: process.env.FIRESTORE_SUB_COLLECTION_VEHICLES as string,
   vehicleSummary: process.env.FIRESTORE_SUB_COLLECTION_VEHICLE_SUMMARY as string,
   cost: process.env.FIRESTORE_SUB_COLLECTION_COST as string,
@@ -19,14 +19,15 @@ const subCollection = {
 }
 
 export const getPath: FirestorePaths = {
-  // Métodos diretos para cada tipo
-  user: (teamId: string): string => `${collection.team}/${teamId}`,
+  // Coleções principais
+  user: `${collection.user}`,
+  team: `${collection.team}`,
+  teamMembers: `${collection.teamMembers}`,
+
+  // Sub-coleções
   vehicle: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.vehicle}`,
   vehicleSummary: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.vehicleSummary}`,
   cost: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.cost}`,
   finance: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.finance}`,
   customer: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.customer}`,
-
-  // (Opcional) Método genérico se precisar
-  custom: (userId: string, path: string): string => `exemplo/${userId}/${path}`,
 }

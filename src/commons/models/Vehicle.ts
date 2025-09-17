@@ -243,7 +243,7 @@ export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
     updatedAt: vehicle.updatedAt.toDate(),
     fipeFormatted: vehicle.fipe ? currencyFormatter.format(vehicle.fipe) : 'Não informado',
     conditionTypeFormatted: translateEnum('CarConditionType', vehicle.conditionType),
-    statusFormatted: translateEnum('CarStatus', vehicle.status),
+    statusFormatted: translateEnum('CarStatusType', vehicle.status),
     createdAtFormatted: dateFormatter.format(vehicle.createdAt.toDate()),
     updatedAtFormatted: dateFormatter.format(vehicle.updatedAt.toDate()),
   }  
@@ -265,7 +265,7 @@ export function formatVehiclesSummary(vehicles: VehicleSummaryFirestore[]): Vehi
     totalCost: vehicle.totalCost,
     createdAt: vehicle.createdAt.toDate(),
     updatedAt: vehicle.updatedAt.toDate(),
-    statusFormatted: translateEnum('CarStatus', vehicle.status),
+    statusFormatted: translateEnum('CarStatusType', vehicle.status),
     conditionTypeFormatted: translateEnum('CarConditionType', vehicle.conditionType),
     totalPaidFormatted: currencyFormatter.format(vehicle.totalPaid),
     totalCostFormatted: currencyFormatter.format(vehicle.totalCost),
@@ -321,7 +321,7 @@ export function formatVehicles(vehicles: VehicleFistore[]): VehicleFormatted[] {
     updatedAt: vehicle.updatedAt.toDate(),
     fipeFormatted: vehicle.fipe ? currencyFormatter.format(vehicle.fipe) : 'Não informado',
     conditionTypeFormatted: translateEnum('CarConditionType', vehicle.conditionType),
-    statusFormatted: translateEnum('CarStatus', vehicle.status),
+    statusFormatted: translateEnum('CarStatusType', vehicle.status),
     createdAtFormatted: dateFormatter.format(vehicle.createdAt.toDate()),
     updatedAtFormatted: dateFormatter.format(vehicle.updatedAt.toDate()),
   }))
