@@ -35,7 +35,7 @@ export default function OverviewFinances() {
   return(
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <CardFinance 
-        title="Comprados" 
+        title="Adquiridos" 
         description={(
           <>
             {finance.countPurchased > 0 && finance.countPurchased} {carsPurchasedText} {' '}
@@ -62,7 +62,8 @@ export default function OverviewFinances() {
         amount={finance.amountCostFormatted} 
         last={finance.lastCostFormatted}
         percentage={(
-          <PercentageBadge 
+          <PercentageBadge
+            negative
             status={finance.comparison.amountCost.status}
             statusText={`${finance.comparison.amountCost.percentage}%`}
           />

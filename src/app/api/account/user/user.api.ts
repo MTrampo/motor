@@ -1,16 +1,13 @@
-import { formatUser, formatUserAndTeams, UserFormatted } from "@/commons/models/User"
+import { formatUserAndTeams, UserFormatted, UserSession } from "@/commons/models/User"
 import { HttpStatusEnum } from "@/commons/enums/Api"
 import { ResponseProps } from "@/commons/models/Api"
 import { getUserByIdDoc } from "./user.firestore"
-import globalResponses from "@/commons/utils/responses"
-import { getAuthenticatedUser } from "@/commons/lib/firebase/authentication"
 import { getUserTeams } from "../team/team.firestore"
 
-export const getLoggedInUserById = async () => {
-  const authVerification = await getAuthenticatedUser()
-  if (!authVerification.decodedToken) return globalResponses.unauthorizedUser(authVerification.code)
+export const getLoggedInUserById = async (session: UserSession) => {
+  const userId = session.decodedToken!.uid;
 
-  const user = await getUserByIdDoc(authVerification.decodedToken.uid)
+  const user = await getUserByIdDoc(userId)
   if (user === null) {
     const result: ResponseProps<null> = {
       status: HttpStatusEnum.NOT_FOUND,
@@ -22,7 +19,7 @@ export const getLoggedInUserById = async () => {
     return result
   }
 
-  const userTeams = await getUserTeams(authVerification.decodedToken.uid)
+  const userTeams = await getUserTeams(userId)
   const formattedData = formatUserAndTeams(user, userTeams)
   
   const result: ResponseProps<UserFormatted> = {

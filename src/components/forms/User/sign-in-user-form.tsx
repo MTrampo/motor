@@ -11,10 +11,18 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useUser } from "@/hooks/use-user";
 import { useState } from "react";
 import { GiCarSeat } from "react-icons/gi";
+import { useRedirect } from "@/hooks/use-redirect";
 
 export function SignInUserForm() {
+  const { redirectToPathRequestedOrDefault } = useRedirect()
+  
   const [viewPassword, setViewPassword] = useState(false)
   const { handleSignInUser } = useUser()
+
+  const signInUser = async (data: UserSignInFormInputs) => {
+    await handleSignInUser(data)
+    redirectToPathRequestedOrDefault('/dashboard')
+  }
 
   const formUser = useForm<UserSignInFormInputs>({
     resolver: zodResolver(userSignInFormSchema),
@@ -26,7 +34,7 @@ export function SignInUserForm() {
 
   return(
     <Form {...formUser}>
-      <form className="space-y-3 my-6" onSubmit={formUser.handleSubmit(handleSignInUser)}>
+      <form className="space-y-3 my-6" onSubmit={formUser.handleSubmit(signInUser)}>
         <FormField
           name="email"
           control={formUser.control}

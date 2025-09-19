@@ -3,6 +3,7 @@
 import * as React from "react"
 import { FaCar, FaChartPie } from "react-icons/fa6"
 import { BiSolidCarGarage } from "react-icons/bi";
+import { AiFillDashboard } from "react-icons/ai";
 
 // import { NavDocuments } from "@/components/nav-documents"
 // import { NavSecondary } from "@/components/nav-secondary"
@@ -12,10 +13,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarRail,
 } from "@/components/ui/sidebar"
 import { NavMain } from "./nav-main"
 import { TeamSwitcher } from "./team-switcher"
@@ -49,7 +46,7 @@ const data = {
     {
       title: "Painel",
       url: "/dashboard",
-      icon: <FaChartPie />,
+      icon: <AiFillDashboard />,
       // items: [
       //   {
       //     title: "Visão Geral",
@@ -175,7 +172,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <NavUser />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   )
 }

@@ -7,9 +7,10 @@ import { fullNameFormatter } from '../utils/formatter';
 import { TeamMemberFirestore, TeamMemberFormatted } from './Team';
 import { translateEnum } from '../utils/enum-helpers';
 
-export interface AuthVerificationResult {
+export interface UserSession {
   code: AuthenticationCodeEnum
   decodedToken: DecodedIdToken | null
+  selectedTeamId: string | null
 }
 
 export interface UserFistore {

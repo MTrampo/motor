@@ -15,7 +15,7 @@ export default function ContainerCardVehicle() {
   if (!vehicles) {
     return (
       <div className="flex flex-col gap-10 pt-12">
-        <Image src={svgWinch} className="mx-auto" alt="carro em manutenção" width={600} height={600}/>
+        <Image src={svgWinch} className="mx-auto w-auto" alt="carro em manutenção" width={600} height={600} priority/>
         <div className="text-center text-muted-foreground">
           <p>
             Ué, guincharam todos os carros? A sua garagem está vazia. Vamos começar a encher o seu pátio.

@@ -14,11 +14,12 @@ export function useGetAllVehiclesSWR() {
 }
 
 export function useGetVehicleByIdSWR(id: string) {
-  const { data, error, isLoading } = useSWR<ResponseProps<VehicleFormatted>, SWRAPIError>(`/api/financial/vehicle/${id}`, fetcher)
+  const { data, error, isLoading, mutate } = useSWR<ResponseProps<VehicleFormatted>, SWRAPIError>(`/api/financial/vehicle/${id}`, fetcher)
  
   return {
     vehicle: data?.data,
     isLoading,
+    mutate,
     error: error
   }
 }

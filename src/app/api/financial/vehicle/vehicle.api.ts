@@ -2,9 +2,10 @@ import { formatVehicle, formatVehicles, formatVehiclesSummary, VehicleAuctionFor
 import { addVehicleDoc, getAllVehiclesDocs, getAllVehiclesSummaryDocs, getVehicleByIdDocs } from "./vehicle.firestore"
 import globalResponses from "@/commons/utils/responses"
 import { CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car"
-import { processFinanceBasedVehicle } from "../summary/summary.api"
+import { processFinanceAccordingToTypeRequested } from "../summary/summary.api"
 import { ResponseProps } from "@/commons/models/Api"
 import { HttpStatusEnum } from "@/commons/enums/Api"
+import { FinanceTypeEnum } from "@/commons/enums/Finance"
 
 const TEAM_ID = "CRFAZy0GNVARC8eAxjMG"
 
@@ -157,7 +158,7 @@ const syncAndAddVehicle = async (documentId: string, data: VehicleDocData) => {
   }
 
   const vehicleId = await addVehicleDoc(TEAM_ID, documentId, data, vehicleSummaryDocData);
-  await processFinanceBasedVehicle(data.payment.total, data.payment.paymentDate);
+  await processFinanceAccordingToTypeRequested(data.payment.total, data.payment.paymentDate, FinanceTypeEnum.PURCHASED);
 
   return vehicleId
 }

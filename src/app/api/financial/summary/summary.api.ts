@@ -104,12 +104,12 @@ export const getFinanceByFlexiblePeriods = async (months: number) => {
 
 // }
 
-export const processFinanceBasedVehicle = async (payment: number, paymentDate: Date) => {
+export const processFinanceAccordingToTypeRequested = async (payment: number, paymentDate: Date, type: FinanceTypeEnum) => {
   // const authVerification = await getAuthenticatedUser()
   // if (!authVerification.decodedToken) return globalResponses.unauthorizedUser(authVerification.code)
 
   const periodFinance = 
-    await createOrUpdateFinancialPeriodCorrespondingPaymentDate(payment, paymentDate, FinanceTypeEnum.PURCHASED);
+    await createOrUpdateFinancialPeriodCorrespondingPaymentDate(payment, paymentDate, type);
 
   const result: ResponseProps<string> = {
     status: HttpStatusEnum.CREATED,

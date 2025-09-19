@@ -4,6 +4,8 @@ import globalResponses from "@/commons/utils/responses"
 import { addCostDoc, addCostDocAndUpdateTotal, getCostByIdDocs, killCostDoc } from "./cost.firestore"
 import { ResponseProps } from "@/commons/models/Api"
 import { HttpStatusEnum } from "@/commons/enums/Api"
+import { processFinanceAccordingToTypeRequested } from "../summary/summary.api"
+import { FinanceTypeEnum } from "@/commons/enums/Finance"
 
 const TEAM_ID = "CRFAZy0GNVARC8eAxjMG"
 
@@ -29,7 +31,7 @@ export const addCost = async (data: CostRequestBody) => {
   const result: ResponseProps<string> = {
     status: HttpStatusEnum.CREATED,
     title: 'Cadastrado',
-    message: `Orçamento cadastrado com sucesso! 🤠`,
+    message: `Custo cadastrado com sucesso!`,
     data: id,
   }
 
@@ -68,9 +70,14 @@ const processAddNewCostOrNewCostItem = async (data: CostRequestBody) => {
       }
     })
 
-    const total = docItemData.reduce((acc, item) => acc + item.value, checkCostsExist.total)
-    return await addCostDocAndUpdateTotal(TEAM_ID, data.documentId, docItemData, total)
-
+    const paymentDate = docItemData.map(item => item.paymentDate).sort((a, b) => b.getTime() - a.getTime())[0];
+    const totalItems = docItemData.reduce((acc, item) => acc + item.value, 0);
+    const total = (totalItems + checkCostsExist.total);
+    
+    const id = await addCostDocAndUpdateTotal(TEAM_ID, data.documentId, docItemData, total);
+    await processFinanceAccordingToTypeRequested(totalItems, paymentDate, FinanceTypeEnum.COST);
+    
+    return id;
   } else {
     const docData: CostDocData = {
       items: data.items!.map(item => ({
@@ -85,6 +92,11 @@ const processAddNewCostOrNewCostItem = async (data: CostRequestBody) => {
       updatedAt: new Date()
     }
 
-    return await addCostDoc(TEAM_ID, data.documentId, docData)
+    const id = await addCostDoc(TEAM_ID, data.documentId, docData)
+    
+    const paymentDate = docData.items.map(item => item.paymentDate).sort((a, b) => b.getTime() - a.getTime())[0];
+    await processFinanceAccordingToTypeRequested(docData.total, paymentDate, FinanceTypeEnum.COST);
+
+    return id;
   }
 }

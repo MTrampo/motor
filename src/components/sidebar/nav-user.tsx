@@ -7,11 +7,18 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "../
 import { useUser } from "@/hooks/use-user";
 import imgRedCar from '@/commons/assets/imgs/red-car.png';
 import { ChevronsUpDown } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function NavUser() {
   const { user, signOutUser } = useUser()
   const { isMobile } = useSidebar()
+  const router = useRouter()
   
+  const handleSignOut = async () => {
+    // await signOutUser()
+    // router.push('/')
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -65,7 +72,7 @@ export function NavUser() {
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <FaIdCard />
-                Conta
+                Habilitação
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <FaCreditCard />
@@ -73,7 +80,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer" variant='destructive' onSelect={signOutUser}>
+            <DropdownMenuItem className="cursor-pointer" variant='destructive' onSelect={handleSignOut}>
               <FaPersonWalkingArrowRight />
               Freiar e Sair do Piloto
             </DropdownMenuItem>

@@ -1,17 +1,17 @@
 'use client'
 
-import { createContext, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import { LoggedInUserFormatted, UserSignInFormInputs } from "@/commons/models/User";
 import { FaEnvelopeCircleCheck, FaUserXmark } from "react-icons/fa6";
 import { AuthError, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User, UserCredential } from "firebase/auth";
 import { firebase } from "@/commons/lib/firebase/client";
-import { useRouter } from "next/navigation";
-import { clearToken, setToken, verifyAndSetAuthenticatedUserToken } from "@/commons/lib/firebase/authentication";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { clearToken, createAuthenticatedUserSession } from "@/commons/lib/firebase/authentication";
 import { ResponseFirebaseProps } from "@/commons/models/Api";
 import { getFirebaseAuthErrorMessage } from "@/commons/validations/User";
 import { HttpStatusEnum } from "@/commons/enums/Api";
 import { useTriggerGetRegisteredUser } from "@/hooks/swr/use-user";
-import { checkIfHaveTeamSelectedAndIfNotSelectOne, setTeamCookie } from "@/commons/lib/cookies";
+import { checkIfHaveTeamSelectedAndIfNotSelectOne } from "@/commons/lib/firebase/authentication";
 
 type UserProviderProps = {
   children: ReactNode
@@ -27,26 +27,55 @@ type UserContextData = {
 
 export const UserContext = createContext<UserContextData>({} as UserContextData)
 
-const UserProvider = ({ children }: UserProviderProps) => {
-  const router = useRouter()
+const UserProvider = ({ children }: UserProviderProps) => {  
   const [user, setUser] = useState<LoggedInUserFormatted | null>(null)
-
-  const refreshIntervalIdRef = useRef<NodeJS.Timeout | null>(null)
   const { triggerGetRegisteredUser } = useTriggerGetRegisteredUser()
 
-  const signOutUser = useCallback(async () =>{
+  const clearUserCache = useCallback(async () => {
+    if (!('serviceWorker' in navigator)) {
+      return
+    }
+
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      const serviceWorker = registration.active;
+
+      if (!serviceWorker) {
+        return
+      }
+
+      await new Promise<void>((resolve, reject) => {
+        const messageChannel = new MessageChannel()
+        const timeout = setTimeout(() => {
+          console.error("Service Worker não respondeu a tempo.")
+          reject(new Error("Service Worker timeout"))
+        }, 5000)
+
+        messageChannel.port1.onmessage = (event) => {
+          clearTimeout(timeout)
+          if (event.data && event.data.type === 'CACHE_CLEARED') {
+              console.log('Cache limpo com sucesso.')
+              resolve()
+          } else {
+            reject(new Error("Resposta do Service Worker inesperada."))
+          }
+        }
+
+        serviceWorker.postMessage({ type: 'CACHE_CLEAR' }, [messageChannel.port2])
+      })
+    } catch (error) {
+      console.log("Erro ao limpar o cache:", error)
+    }
+  }, [])
+
+  const signOutUser = useCallback(async () => {
+    await clearUserCache()
     await signOut(firebase.auth)
     await clearToken()
     setUser(null)
-    router.push('/')
-  }, [router])
+  }, [])
 
   const handleUnauthenticatedUser = useCallback(async (title?: string, message?: string) => {
-    if (refreshIntervalIdRef.current) {
-      clearInterval(refreshIntervalIdRef.current)
-      refreshIntervalIdRef.current = null
-    }
-
     await signOutUser()
 
     // toast({
@@ -57,69 +86,29 @@ const UserProvider = ({ children }: UserProviderProps) => {
     // })
   }, [signOutUser])
 
-  const executeSessionRefresh = useCallback(async (loggedInUser: User): Promise<boolean> => {
-    try {
-      const refreshIdToken = await loggedInUser.getIdToken(true)
-      const isTokenUpdated = await verifyAndSetAuthenticatedUserToken(refreshIdToken)
-      
-      if (!isTokenUpdated) {
-        handleUnauthenticatedUser(
-          'Sessão Expirada', 
-          'Não foi possível verificar sua sessão. Por favor, faça login novamente.'
+  const getUserDataAndSyncSession = useCallback(async (loggedInUser: User) => {
+    if (loggedInUser) {
+      const idToken = await loggedInUser.getIdToken();
+      const isSessionValid = await createAuthenticatedUserSession(idToken);
+      if (!isSessionValid) {
+        return await handleUnauthenticatedUser(
+          "Falha na Sessão",
+          "Não foi possível criar sua sessão. Faça login novamente."
         );
-        
-        return false;
       }
-
-      return true
-    } catch (error) {
-      console.log('Erro ao atualizar a sessão:', error)
-      handleUnauthenticatedUser(
-        'Erro na Sessão', 
-        'Não foi possível renovar sua sessão. Por favor, faça login novamente.'
-      );
-      return false;
     }
-  }, [handleUnauthenticatedUser])
-
-  const scheduleSessionRefresh = useCallback(() => {
-    if (refreshIntervalIdRef.current) {
-      clearInterval(refreshIntervalIdRef.current)
-      refreshIntervalIdRef.current = null
-    }
-
-    refreshIntervalIdRef.current = setInterval(async () => {
-      const currentUser = firebase.auth.currentUser
-      if (currentUser) {
-        await executeSessionRefresh(currentUser)
-      } else {
-        if (refreshIntervalIdRef.current) {
-          clearInterval(refreshIntervalIdRef.current)
-          refreshIntervalIdRef.current = null
-        }
-      }
-    }, 50 * 60 * 1000); // A cada 50 minutos
-  }, [executeSessionRefresh]);
-
-  const getUserDataAndSetState = useCallback(async (loggedInUser: User) => {
-    const refreshSuccess = await executeSessionRefresh(loggedInUser);
-    if (!refreshSuccess) return
 
     const userFound = await triggerGetRegisteredUser()
     if (userFound?.status === HttpStatusEnum.UNAUTHORIZED || userFound.data === null) {
-      await handleUnauthenticatedUser(userFound.title, userFound.message)
-      return
+      return await handleUnauthenticatedUser(userFound.title, userFound.message)  
     }
 
-    console.log('usuário encontrado: ', userFound)
-
-    if (userFound.data.teams && userFound.data.teams.length > 0)
+    if (userFound.data.teams && userFound.data.teams.length > 0) {
       await checkIfHaveTeamSelectedAndIfNotSelectOne(userFound.data.teams[0].team.id)
+    }
 
     setUser(userFound.data)
-    router.push('/dashboard')
-    scheduleSessionRefresh()
-  }, [executeSessionRefresh, handleUnauthenticatedUser, scheduleSessionRefresh, router])
+  }, [handleUnauthenticatedUser])
 
   const signInUserWithEmailAndPassword = useCallback(async (data: UserSignInFormInputs) => {
     try {
@@ -142,7 +131,6 @@ const UserProvider = ({ children }: UserProviderProps) => {
   }, [])
 
   const handleSignInUser = useCallback(async (data: UserSignInFormInputs) => {
-    console.log('tentando logar com: ', data)
     const credential = await signInUserWithEmailAndPassword(data)
     if (credential.data === null) {
       // toast({
@@ -154,21 +142,9 @@ const UserProvider = ({ children }: UserProviderProps) => {
       return
     }
     
-    const userCredential = await credential.data.user.getIdToken(true)
-    const isTokenValid = await verifyAndSetAuthenticatedUserToken(userCredential)
-    if (!isTokenValid) return await handleUnauthenticatedUser('Falha no Login', 'Não foi possível estabelecer sua sessão. Tente novamente.')
+    await getUserDataAndSyncSession(credential.data.user)
 
-    const loggedInUser = await triggerGetRegisteredUser()
-
-    if (loggedInUser?.status === HttpStatusEnum.UNAUTHORIZED || loggedInUser.data === null)
-      return await handleUnauthenticatedUser(loggedInUser.title, loggedInUser?.message)
-
-    if (loggedInUser.data.teams && loggedInUser.data.teams.length > 0)
-      await checkIfHaveTeamSelectedAndIfNotSelectOne(loggedInUser.data.teams[0].team.id)
-    
-    setUser(loggedInUser.data)
-    router.push('/dashboard')
-  }, [handleUnauthenticatedUser, signInUserWithEmailAndPassword, router]);
+  }, [handleUnauthenticatedUser, signInUserWithEmailAndPassword]);
 
   const passwordResetRequest = useCallback(async (email: string) => {
     await sendPasswordResetEmail(firebase.auth, email)
@@ -184,20 +160,14 @@ const UserProvider = ({ children }: UserProviderProps) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebase.auth, async (loggedInUser) => {
       if (loggedInUser) {
-        await getUserDataAndSetState(loggedInUser)
+        await getUserDataAndSyncSession(loggedInUser)
       } else {
         await handleUnauthenticatedUser()
       }
     })
 
-    return () => {
-      unsubscribe()
-      if (refreshIntervalIdRef.current) {
-        clearInterval(refreshIntervalIdRef.current)
-        refreshIntervalIdRef.current = null
-      }
-    }
-  }, [getUserDataAndSetState, handleUnauthenticatedUser])
+    return () => unsubscribe()
+  }, [getUserDataAndSyncSession])
 
   // TODO: Implementar lógica para cadastro de usuário
   // TODO: Implementar lógica para trabalhar com o mercado pago, criar planos e assinaturas para o usuário
