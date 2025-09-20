@@ -74,54 +74,60 @@ export async function verifyAndSetAuthenticatedUserToken(token: string) {
 }
 
 export async function getAuthenticatedUserSession(): Promise<UserSession> {
-  let result: UserSession = {
-    code: AuthenticationCodeEnum.DEFAULT,
-    decodedToken: null,
-    selectedTeamId: null,
-  }
-
   try {
     const token = await getToken();
     if (!token) {
-      result.code = AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND;
-      return result;
+      return {
+        code: AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND,
+        decodedToken: null,
+        selectedTeamId: null,
+      };
     }
 
-    result.decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
-    return result;
+    const decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
+    return {
+      code: AuthenticationCodeEnum.DEFAULT,
+      decodedToken,
+      selectedTeamId: null,
+    };
   } catch (error) {
     const errorCode = (error as { code?: keyof typeof AuthenticationCodeEnum }).code;
-    if (errorCode && errorCode in AuthenticationCodeEnum) {
-      result.code = AuthenticationCodeEnum[errorCode];
-    }
-    console.log('Falha ao verificar sessão e obter token:', error)
-    return result;
+    const code = (errorCode && errorCode in AuthenticationCodeEnum) ? AuthenticationCodeEnum[errorCode] : AuthenticationCodeEnum.DEFAULT;
+    console.log('Falha ao verificar sessão e obter token:', error);
+    return {
+      code,
+      decodedToken: null,
+      selectedTeamId: null,
+    };
   }
 }
 
 export async function getAuthenticatedUser(): Promise<UserSession> {
-  let result: UserSession = {
-    code: AuthenticationCodeEnum.DEFAULT,
-    decodedToken: null,
-    selectedTeamId: null,
-  }
-
   try {
     const token = await getToken();
     if (!token) {
-      result.code = AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND;
-      return result;
+      return {
+        code: AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND,
+        decodedToken: null,
+        selectedTeamId: null,
+      };
     }
 
-    result.decodedToken = await firebaseAdmin.auth.verifyIdToken(token);
-    return result;
+    const decodedToken = await firebaseAdmin.auth.verifyIdToken(token);
+    return {
+      code: AuthenticationCodeEnum.DEFAULT,
+      decodedToken,
+      selectedTeamId: null,
+    };
   } catch (error) {
     const errorCode = (error as { code?: keyof typeof AuthenticationCodeEnum }).code;
-    if (errorCode && errorCode in AuthenticationCodeEnum) {
-      result.code = AuthenticationCodeEnum[errorCode];
-    }
-    console.log('Falha ao verificar token:', error)
-    return result;
+    const code = (errorCode && errorCode in AuthenticationCodeEnum) ? AuthenticationCodeEnum[errorCode] : AuthenticationCodeEnum.DEFAULT;
+    console.log('Falha ao verificar token:', error);
+    return {
+      code,
+      decodedToken: null,
+      selectedTeamId: null,
+    };
   }
 }
 
@@ -169,24 +175,24 @@ export async function checkIfHaveTeamSelectedAndIfNotSelectOne(team: string) {
 }
 
 export async function withAuth(handler: (session: UserSession) => Promise<Response>) {
-  let result: UserSession = {
-    code: AuthenticationCodeEnum.DEFAULT,
-    decodedToken: null,
-    selectedTeamId: null,
-  }
-
   try {
-    const token = await getToken()
+    const token = await getToken();
     if (!token) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
 
-    result.selectedTeamId = await getTeamCookie();
-    result.decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
+    const selectedTeamId = await getTeamCookie();
+    const decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
+    
+    const result: UserSession = {
+      code: AuthenticationCodeEnum.DEFAULT,
+      decodedToken,
+      selectedTeamId,
+    };
 
-    return handler(result)
+    return handler(result);
   } catch (err) {
-    console.error('Auth error:', err)
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+    console.error('Auth error:', err);
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
   }
 }
