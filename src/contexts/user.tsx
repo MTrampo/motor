@@ -2,11 +2,9 @@
 
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import { LoggedInUserFormatted, UserSignInFormInputs } from "@/commons/models/User";
-import { FaEnvelopeCircleCheck, FaUserXmark } from "react-icons/fa6";
 import { AuthError, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User, UserCredential } from "firebase/auth";
 import { firebase } from "@/commons/lib/firebase/client";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { clearAuthenticatedUserSession, clearToken, createAuthenticatedUserSession } from "@/commons/lib/firebase/authentication";
+import { clearAuthenticatedUserSession, createAuthenticatedUserSession } from "@/commons/lib/firebase/authentication";
 import { ResponseFirebaseProps } from "@/commons/models/Api";
 import { getFirebaseAuthErrorMessage } from "@/commons/validations/User";
 import { HttpStatusEnum } from "@/commons/enums/Api";
