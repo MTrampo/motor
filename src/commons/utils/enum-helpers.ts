@@ -1,10 +1,16 @@
 import { AuctionTypeEnum, DamageTypeEnum } from "@/commons/enums/Auction";
-import { CarConditionTypeEnum, CarStatusEnum } from "@/commons/enums/Car";
+import { CarConditionTypeEnum, CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car";
 import { CostTypeEnum } from "../enums/Cost";
+import { RoleEnum } from "../enums/Organization";
 
-export const carStatusTranslations: Record<CarStatusEnum, string> = {
+export const originTypeTranslations: Record<CarOrigenEnum, string> = {
+  [CarOrigenEnum.AUCTION]: "Adquirido do leilão",
+  [CarOrigenEnum.THIRD]: "Adquirido de terceiros"
+}
+
+export const carStatusTypeTranslations: Record<CarStatusEnum, string> = {
   [CarStatusEnum.EVALUATING]: "Em Avaliação",
-  [CarStatusEnum.PURCHASED]: "Comprado",
+  [CarStatusEnum.PURCHASED]: "Garagem",
   [CarStatusEnum.WINCH]: "Em tranporte",
   [CarStatusEnum.MAINTENANCE]: "Em Manutenção",
   [CarStatusEnum.AVAILABLE]: "Disponível",
@@ -13,23 +19,28 @@ export const carStatusTranslations: Record<CarStatusEnum, string> = {
 };
 
 export const carConditionTypeTranslations: Record<CarConditionTypeEnum, string> = {
+  [CarConditionTypeEnum.NEW]: "Novo",
+  [CarConditionTypeEnum.NEUTRAL]: "Boa",
+  [CarConditionTypeEnum.FLAWLESS]: "Impecável",
   [CarConditionTypeEnum.COLLISION]: "Colisão",
   [CarConditionTypeEnum.THEFT]: "Roubo/Furto",
   [CarConditionTypeEnum.FLOOD]: "Enchente",
   [CarConditionTypeEnum.FIRE]: "Incêndio",
-  [CarConditionTypeEnum.FINANCIAL]: "Financeiro",
+  [CarConditionTypeEnum.FINANCIAL]: "Financiado",
   [CarConditionTypeEnum.CONSORTIUM]: "Consórcio",
-  [CarConditionTypeEnum.VMC]: "VMC",
-  [CarConditionTypeEnum.OTHER]: "Outro",
+  [CarConditionTypeEnum.DEBT]: "Débito em aberto",
+  [CarConditionTypeEnum.RESTRICTION]: "Restrição em aberto",
+  [CarConditionTypeEnum.NOT_EVALUATED]: "Não avaliado",
 };
 
 export const auctionTypeTranslations: Record<AuctionTypeEnum, string> = {
   [AuctionTypeEnum.START]: "Motor dá partida",
   [AuctionTypeEnum.START_AND_GEAR]: "Motor dá partida e engrena",
-  [AuctionTypeEnum.DOESNT_START]: "Veículo não Liga",
+  [AuctionTypeEnum.DOESNT_START]: "Veículo não liga",
 };
 
 export const damageTypeTranslations: Record<DamageTypeEnum, string> = {
+  [DamageTypeEnum.FINANCE_CAR]: "Financeira",
   [DamageTypeEnum.SMALL_VALUE]: "Pequena Monta",
   [DamageTypeEnum.MEDIUM_VALUE]: "Média Monta",
   [DamageTypeEnum.BIG_VALUE]: "Grande Monta",
@@ -53,12 +64,21 @@ export const costTypeTranslations: Record<CostTypeEnum, string> = {
   [CostTypeEnum.INSURANCE]: "Seguro"
 }
 
+export const roleTypeTranslations: Record<RoleEnum, string> = {
+  [RoleEnum.OWNER]: "Proprietário",
+  [RoleEnum.MANAGER]: "Gerente",
+  [RoleEnum.BILLING]: "Financeiro",
+  [RoleEnum.SELLER]: "Vendedor",
+}
+
 const translations = {
-  CarStatus: carStatusTranslations,
-  CarConditionType: carConditionTypeTranslations,
-  AuctionType: auctionTypeTranslations,
-  DamageType: damageTypeTranslations,
   CostType: costTypeTranslations,
+  RoleType: roleTypeTranslations,
+  OriginType: originTypeTranslations,
+  DamageType: damageTypeTranslations,
+  AuctionType: auctionTypeTranslations,
+  CarStatusType: carStatusTypeTranslations,
+  CarConditionType: carConditionTypeTranslations,
 };
 
 export function translateEnum<T extends keyof typeof translations, K extends keyof typeof translations[T]>(

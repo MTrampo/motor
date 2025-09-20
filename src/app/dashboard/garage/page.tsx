@@ -1,5 +1,4 @@
 import Header from "@/components/header";
-import CardVehicles from "@/components/vehicles/card-vehicle";
 import ContainerCardVehicle from "@/components/vehicles/container-card-vehicle";
 
 export default async function Vehicles() {

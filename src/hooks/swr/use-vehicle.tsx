@@ -1,10 +1,10 @@
 import useSWR from "swr"
 import { fetcher } from "@/commons/lib/fetcher/swr"
 import { ResponseProps, SWRAPIError } from "@/commons/models/Api"
-import { VehicleFormatted } from "@/commons/models/Vehicle"
+import { VehicleFormatted, VehicleSummaryFormatted } from "@/commons/models/Vehicle"
 
-export function useGetAllVehicles() {
-  const { data, error, isLoading } = useSWR<ResponseProps<VehicleFormatted[]>, SWRAPIError>('/api/financial/vehicle', fetcher)
+export function useGetAllVehiclesSWR() {
+  const { data, error, isLoading } = useSWR<ResponseProps<VehicleSummaryFormatted[]>, SWRAPIError>('/api/financial/vehicle', fetcher)
  
   return {
     vehicles: data?.data,
@@ -13,12 +13,13 @@ export function useGetAllVehicles() {
   }
 }
 
-export function useGetVehicleById(id: string) {
-  const { data, error, isLoading } = useSWR<ResponseProps<VehicleFormatted>, SWRAPIError>(`/api/financial/vehicle/${id}`, fetcher)
+export function useGetVehicleByIdSWR(id: string) {
+  const { data, error, isLoading, mutate } = useSWR<ResponseProps<VehicleFormatted>, SWRAPIError>(`/api/financial/vehicle/${id}`, fetcher)
  
   return {
     vehicle: data?.data,
     isLoading,
+    mutate,
     error: error
   }
 }

@@ -37,11 +37,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { columns } from "./columns-cars-finances"
-import { FaChevronDown } from 'react-icons/fa6'
-import { useGetAllVehicles } from '@/hooks/swr/use-vehicle'
+import { FaArrowLeft, FaArrowRight, FaChevronDown, FaMagnifyingGlass } from 'react-icons/fa6'
+import { useGetAllVehiclesSWR } from '@/hooks/swr/use-vehicle'
+import { InputIcon } from '@/components/ui/input-icon'
 
 export default function OverviewCarsFinances() {
-  const { vehicles, isLoading } = useGetAllVehicles()
+  const { vehicles, isLoading } = useGetAllVehiclesSWR()
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -74,19 +75,20 @@ export default function OverviewCarsFinances() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
+      <div className="flex items-center justify-between py-4 gap-6">
+        <InputIcon
           placeholder="Buscar por veículo..."
           value={(table.getColumn("version")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("version")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
+          iconLeft={<FaMagnifyingGlass/>}
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Editar <FaChevronDown />
+            <Button variant="outline">
+              Colunas <FaChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -156,7 +158,7 @@ export default function OverviewCarsFinances() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Nenhum resultado encontrado.
+                  Nenhum veículo encontrado.
                 </TableCell>
               </TableRow>
             )}
@@ -164,10 +166,6 @@ export default function OverviewCarsFinances() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} de{" "}
-          {table.getFilteredRowModel().rows.length} linha(s) selecionadas.
-        </div>
         <div className="space-x-2">
           <Button
             variant="outline"
@@ -175,7 +173,7 @@ export default function OverviewCarsFinances() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Anterio
+            <FaArrowLeft /> Anterio
           </Button>
           <Button
             variant="outline"
@@ -183,7 +181,7 @@ export default function OverviewCarsFinances() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Próximo
+            Próximo <FaArrowRight />
           </Button>
         </div>
       </div>

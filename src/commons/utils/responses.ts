@@ -1,16 +1,16 @@
 import { ResponseProps } from "../models/Api"
-//import { getFirebaseAuthErrorMessage } from "../validations/User"
-import { VehicleFormatted } from "../models/Vehicle"
+import { getFirebaseAuthErrorMessage } from "../validations/User"
+import { VehicleFormatted, VehicleSummaryFormatted } from "../models/Vehicle"
 import { HttpStatusEnum } from "../enums/Api"
 import { CostFormatted } from "../models/Cost"
 
 const globalResponses = {
-  // unauthorizedUser: (code: string): ResponseProps<null> => ({
-  //   status: HttpStatusEnum.UNAUTHORIZED,
-  //   title: 'Usuário não autenticado',
-  //   message: getFirebaseAuthErrorMessage(code),
-  //   data: null
-  // }),
+  unauthorizedUser: (code: string): ResponseProps<null> => ({
+    status: HttpStatusEnum.UNAUTHORIZED,
+    title: 'Usuário não autenticado',
+    message: getFirebaseAuthErrorMessage(code),
+    data: null
+  }),
   costNotFound: (isPlural = true): ResponseProps<null> => ({
     status: HttpStatusEnum.NOT_FOUND,
     title: isPlural ? 'Custos dos Veículo não Encontrados' : 'Custo do Veículo não Encontrado',
@@ -41,7 +41,15 @@ const globalResponses = {
     message: isPlural ? 'Veículos recuperados com sucesso' : 'Veículo recuperado com sucesso',
     data: formattedData
   }),
-
+  vehicleSummaryFound: (
+    formattedData: VehicleSummaryFormatted | VehicleSummaryFormatted[],
+    isPlural = true
+  ): ResponseProps<VehicleSummaryFormatted | VehicleSummaryFormatted[]> => ({
+    status: HttpStatusEnum.OK,
+    title: isPlural ? 'Veículos Encontrados' : 'Veículo Encontrado',
+    message: isPlural ? 'Veículos recuperados com sucesso' : 'Veículo recuperado com sucesso',
+    data: formattedData
+  }),
   // budgetPageFound: (
   //   pageData: ReturnPageBudgets,
   //   isPlural = true

@@ -1,74 +1,186 @@
-// 'use server'
+'use server'
 
-// import { cookies } from 'next/headers'
-// import { firebaseAdmin } from './server'
-// import { AuthVerificationResult } from '@/commons/models/User'
-// import { AuthenticationCodeEnum } from '@/commons/enums/Authentication'
+import { cookies } from 'next/headers'
+import { firebaseAdmin } from './server'
+import { UserSession } from '@/commons/models/User'
+import { AuthenticationCodeEnum } from '@/commons/enums/Authentication'
 
-// const COOKIE_NAME = 'MTOAIUSRCRTKN'
-// //const COOKIE_NAME = '__Secure-mtoaiusrcrtkn'
+const COOKIE_TK = process.env.COOKIE_TK || '';
+const COOKIE_TEAM = process.env.COOKIE_TEAM || '';
+const expiresIn = 60 * 60 * 24 * 14 * 1000; // 14 dias em ms
+//const COOKIE_NAME = '__Secure-mtoaiusrcrtkn'
 
-// export async function setToken(token: string): Promise<void> {
-//   try {
-//     const cookieStore = await cookies()
-//     cookieStore.set(COOKIE_NAME, token, {
-//         httpOnly: true,
-//         secure: process.env.NODE_ENV === 'production',
-//         maxAge: 60 * 60 * 24 * 15, // 15 dias
-//         path: '/',
-//         sameSite: 'strict',
-//     })
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
+export async function setToken(token: string): Promise<void> {
+  try {
+    const cookieStore = await cookies()
+    cookieStore.set(COOKIE_TK, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: expiresIn / 1000, // segundos
+      path: '/',
+      sameSite: 'strict',
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-// export async function getToken(): Promise<string | null> {
-//   const cookieStore = await cookies()
-//   const cookieValue = cookieStore.get(COOKIE_NAME)?.value
-//   return cookieValue || null
-// }
+export async function getToken(): Promise<string | null> {
+  const cookieStore = await cookies()
+  const cookieValue = cookieStore.get(COOKIE_TK)?.value
+  return cookieValue || null
+}
 
-// export async function clearToken(): Promise<void> {
-//   const cookieStore = await cookies()
-//   cookieStore.delete(COOKIE_NAME)
-// }
+export async function clearAuthenticatedUserSession(uid?: string): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete(COOKIE_TK);
 
-// export async function hasToken(): Promise<boolean> {
-//   const cookieStore = await cookies()
-//   return !!cookieStore.get(COOKIE_NAME)?.value
-// }
+  if (uid) {
+    await firebaseAdmin.auth.revokeRefreshTokens(uid);
+  }
+}
 
-// export async function verifyAndSetAuthenticatedUserToken(token: string) {
-//   try {
-//     await firebaseAdmin.auth.verifyIdToken(token)
-//     await setToken(token)
+export async function clearToken(): Promise<void> {
+  const cookieStore = await cookies()
+  cookieStore.delete(COOKIE_TK)
+}
 
-//     return true
-//   } catch (error: any) {
-//     console.error('Erro ao verificar e setar o token:', error)
-//     return false
-//   }
-// }
+export async function hasToken(): Promise<boolean> {
+  const cookieStore = await cookies()
+  return !!cookieStore.get(COOKIE_TK)?.value
+}
 
-// export async function getAuthenticatedUser(): Promise<AuthVerificationResult> {
-//   let result: AuthVerificationResult = {
-//     code: AuthenticationCodeEnum.DEFAULT,
-//     decodedToken: null,
-//   }
+export async function createAuthenticatedUserSession(token: string) {
+  try {
+    const session = await firebaseAdmin.auth.createSessionCookie(token, { expiresIn });
+    await setToken(session)
+    return true
+  } catch (error) {
+    console.log('Erro ao criar sessão: ', error);
+    return false;
+  }
+}
 
-//   try {
-//     const token = await getToken();
-//     if (!token) {
-//       result.code = AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND;
-//       return result;
-//     }
+export async function verifyAndSetAuthenticatedUserToken(token: string) {
+  try {
+    await firebaseAdmin.auth.verifyIdToken(token)
+    await setToken(token)
 
-//     result.decodedToken = await firebaseAdmin.auth.verifyIdToken(token);
-//     return result;
-//   } catch (err: any) {
-//     result.code = err.code;
-//     console.log('Falha ao verificar token:', err)
-//     return result;
-//   }
-// }
+    return true
+  } catch (error: any) {
+    console.error('Erro ao verificar e setar o token:', error)
+    return false
+  }
+}
+
+export async function getAuthenticatedUserSession(): Promise<UserSession> {
+  let result: UserSession = {
+    code: AuthenticationCodeEnum.DEFAULT,
+    decodedToken: null,
+    selectedTeamId: null,
+  }
+
+  try {
+    const token = await getToken();
+    if (!token) {
+      result.code = AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND;
+      return result;
+    }
+
+    result.decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
+    return result;
+  } catch (err: any) {
+    result.code = err.code;
+    console.log('Falha ao verificar sessão e obter token:', err)
+    return result;
+  }
+}
+
+export async function getAuthenticatedUser(): Promise<UserSession> {
+  let result: UserSession = {
+    code: AuthenticationCodeEnum.DEFAULT,
+    decodedToken: null,
+    selectedTeamId: null,
+  }
+
+  try {
+    const token = await getToken();
+    if (!token) {
+      result.code = AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND;
+      return result;
+    }
+
+    result.decodedToken = await firebaseAdmin.auth.verifyIdToken(token);
+    return result;
+  } catch (err: any) {
+    result.code = err.code;
+    console.log('Falha ao verificar token:', err)
+    return result;
+  }
+}
+
+export async function setTeamCookie(team: string): Promise<void> {
+  try {
+    const cookieStore = await cookies()
+    cookieStore.set(COOKIE_TEAM, team, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 60, // 60 dias
+      path: '/',
+      sameSite: 'strict',
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function getTeamCookie(): Promise<string | null> {
+  const cookieStore = await cookies()
+  const cookieValue = cookieStore.get(COOKIE_TEAM)?.value
+  return cookieValue || null
+}
+
+export async function clearTeamCookie(): Promise<void> {
+  const cookieStore = await cookies()
+  cookieStore.delete(COOKIE_TEAM)
+}
+
+export async function hasTeamCookie(): Promise<boolean> {
+  const cookieStore = await cookies()
+  return !!cookieStore.get(COOKIE_TEAM)?.value
+}
+
+export async function checkIfHaveTeamSelectedAndIfNotSelectOne(team: string) {
+  try {
+    if (await hasTeamCookie()) return true
+
+    await setTeamCookie(team)
+    return true
+  } catch (error: any) {
+    console.error('Erro ao verificar ou selecionar time:', error)
+    return false
+  }
+}
+
+export async function withAuth(handler: (session: UserSession) => Promise<Response>) {
+  let result: UserSession = {
+    code: AuthenticationCodeEnum.DEFAULT,
+    decodedToken: null,
+    selectedTeamId: null,
+  }
+
+  try {
+    const token = await getToken()
+    if (!token) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+    }
+
+    result.selectedTeamId = await getTeamCookie();
+    result.decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
+
+    return handler(result)
+  } catch (err) {
+    console.error('Auth error:', err)
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+  }
+}

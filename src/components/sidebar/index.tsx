@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { FaCar, FaChartPie } from "react-icons/fa6"
+import { BiSolidCarGarage } from "react-icons/bi";
+import { AiFillDashboard } from "react-icons/ai";
 
 // import { NavDocuments } from "@/components/nav-documents"
 // import { NavSecondary } from "@/components/nav-secondary"
@@ -11,12 +13,10 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { NavMain } from "./nav-main"
 import { TeamSwitcher } from "./team-switcher"
+import { NavUser } from "./nav-user";
 
 
 const data = {
@@ -46,7 +46,7 @@ const data = {
     {
       title: "Painel",
       url: "/dashboard",
-      icon: <FaChartPie />,
+      icon: <AiFillDashboard />,
       // items: [
       //   {
       //     title: "Visão Geral",
@@ -63,9 +63,9 @@ const data = {
       // ],
     },
     {
-      title: "Veículos",
-      url: "/dashboard/vehicles",
-      icon: <FaCar />,
+      title: "Garagem",
+      url: "/dashboard/garage",
+      icon: <BiSolidCarGarage />,
       isActive: true,
     },
     // {
@@ -170,7 +170,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        {/* <NavUser user={data.user} /> */}
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )

@@ -138,7 +138,7 @@ export function ChartCostAnalysis({ cost }: ChartCostAnalysisProps) {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[250px] pb-0"
+          className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[300px] pb-0"
           ref={chartRef}
         >
           <PieChart
@@ -177,7 +177,7 @@ export function ChartCostAnalysis({ cost }: ChartCostAnalysisProps) {
           <div className="flex items-center gap-2 leading-6 sm:leading-none font-medium text-muted-foreground">
             <span>
               Gastos em <CostTypeBadge type={highestPercentageInfo.type}/> representam{' '}
-              {(highestPercentageInfo.percentage * 100).toFixed(0)}% do total porjetado.
+              {(highestPercentageInfo.percentage * 100).toFixed(0)}% do total projetado.
             </span>
           </div>
         )}

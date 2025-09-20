@@ -9,7 +9,8 @@ import { PaginatedResult } from "./Data"
 
 export interface CostRequestBody {
   documentId: string
-  items: CostItemRequestBody[]
+  guidItem?: string
+  items?: CostItemRequestBody[]
 }
 
 export interface CostItemRequestBody {

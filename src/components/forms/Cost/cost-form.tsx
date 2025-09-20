@@ -122,7 +122,7 @@ const RegisterCostForm = forwardRef<SheetFormRef, RegisterCostFormProps>(({ onHa
           name="paymentDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date of birth</FormLabel>
+              <FormLabel>Pagamento</FormLabel>
               <SelectCalendar field={field} />
               <FormMessage />
             </FormItem>

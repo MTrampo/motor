@@ -1,6 +1,7 @@
 import { format, formatDistanceToNow, isThisWeek, isToday, isYesterday, parse } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Timestamp } from 'firebase-admin/firestore'
+import { StatusComparisonEnum } from '../enums/Finance'
 
 // Formatação de datas e horas
 
@@ -44,22 +45,22 @@ export const formatLastUpdated = (date: Date | null): string => {
   
   const diffInHours = diffInMinutes / 60;
   if (diffInHours < 24) {
-    return `atualizado a ${Math.round(diffInHours)}h atrás`;
+    return `Atualizado a ${Math.round(diffInHours)}h atrás`;
   }
   
   if (isToday(date)) {
-    return `atualizado hoje às ${format(date, 'HH:mm', { locale: ptBR })}`;
+    return `Atualizado hoje às ${format(date, 'HH:mm', { locale: ptBR })}`;
   }
   
   if (isYesterday(date)) {
-    return `atualizado ontem às ${format(date, 'HH:mm', { locale: ptBR })}`;
+    return `Atualizado ontem às ${format(date, 'HH:mm', { locale: ptBR })}`;
   }
   
   if (isThisWeek(date)) {
-    return `atualizado ${format(date, 'EEEE', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
+    return `Atualizado ${format(date, 'EEEE', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
   }
   
-  return `atualizado em ${format(date, 'dd/MM/yyyy', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
+  return `Atualizado em ${format(date, 'dd/MM', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
 };
 
 export const timeToDisplayFormatter = (timeString: string): string => {
@@ -105,6 +106,31 @@ export const timeFormatter = (time: string) => {
 
 // Formatação de moeda e números
 
+export const formatCpfCnpj = (value: string | number | undefined) => {
+  if (value === undefined || value === null) {
+    return '';
+  }
+
+  const numericValue = String(value).replace(/\D/g, '');
+
+  if (numericValue.length <= 11) {
+    // Formata como CPF: 000.000.000-00
+    return numericValue
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1');
+  } else {
+    // Formata como CNPJ: 00.000.000/0000-00
+    return numericValue
+      .replace(/^(\d{2})(\d)/, '$1.$2')
+      .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+      .replace(/\.(\d{3})(\d)/, '.$1/$2')
+      .replace(/(\d{4})(\d)/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1');
+  }
+};
+
 export const formatNumber = new Intl.NumberFormat('pt-BR')
 
 export const currencyFormatter = new Intl.NumberFormat('pt-BR', {
@@ -122,6 +148,27 @@ export const formatCurrencyInput = (value: string | number): string => {
     currency: 'BRL',
     minimumFractionDigits: 2,
   })
+}
+
+export const formatFinanceDifference = (status: StatusComparisonEnum, isCurrency: boolean, difference: number) => {
+  let text;
+  let formattedDifference;
+
+  if (isCurrency) {
+    formattedDifference = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(difference));
+  } else {
+    formattedDifference = Math.abs(difference).toLocaleString('pt-BR');
+  }
+  
+  if (status === StatusComparisonEnum.HIGH) {
+    text = `Alta de ${formattedDifference} em comparação com o último trimestre.`;
+  } else if (status === StatusComparisonEnum.LOW) {
+    text = `Queda de ${formattedDifference} em comparação com o último trimestre.`;
+  } else {
+    text = `Estável em comparação com o último trimestre.`;
+  }
+  
+  return text;
 }
 
 // Formatação de textos

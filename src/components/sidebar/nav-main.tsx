@@ -17,13 +17,14 @@ import {
 } from "@/components/ui/sidebar"
 import { NavSectionItem } from "@/commons/types/sidebar";
 import { FaChevronRight } from "react-icons/fa6";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export type NavMainProps = {
   items: NavSectionItem[];
 }
 
 export function NavMain({ items }: NavMainProps) {
+  const searchParams = useSearchParams()
   const pathname = usePathname()
   const isActive = (url: string) => pathname === url
 

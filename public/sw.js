@@ -1,11 +1,12 @@
-const CACHE_STATIC_NAME = 'static-v0.0.4';
-const CACHE_DYNAMIC_NAME = 'dynamic-v0.0.4';
+const CACHE_STATIC_NAME = 'static-v0.0.5-beta';
+const CACHE_DYNAMIC_NAME = 'dynamic-v0.0.5-beta';
 
 const urlsToCache = [
   "/", // Página inicial
+  "/signin",
   "/manifest.webmanifest",
-  "/web-app-manifest-192x192.png",
-  "/web-app-manifest-512x512.png"
+  "/imgs/web-app-manifest-192x192.png",
+  "/imgs/web-app-manifest-512x512.png"
 ];
 
 self.addEventListener('install', (event) => {
@@ -24,7 +25,7 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = event.request.url
-
+  
   if (url.includes('/api/')) {
     event.respondWith(
       // Estratégia "Network First" para conteúdo dinâmico
@@ -70,4 +71,23 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'CACHE_CLEAR') {
+    event.waitUntil(
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            return caches.delete(cacheName);
+          })
+        );
+      }).then(() => {
+        if (event.ports && event.ports[0]) {
+          event.ports[0].postMessage({ type: 'CACHE_CLEARED' });
+        }
+        console.log('Service Worker: Todos os caches foram limpos.');
+      })
+    );
+  }
 });
