@@ -1,9 +1,25 @@
 import { useRouter } from "next/navigation"
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef, Row } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { VehicleSummaryFormatted } from "@/commons/models/Vehicle"
 import { CarStatusBadge } from "@/components/status/car-status"
 import { FaEye } from "react-icons/fa6"
+
+const ActionsCell = ({ row }: { row: Row<VehicleSummaryFormatted> }) => {
+  const router = useRouter()
+  const vehicleId = row.original.id
+
+  return (
+    <Button 
+      variant="ghost" 
+      size="icon" 
+      className="cursor-pointer" 
+      onClick={() => router.push(`/dashboard/garage/${vehicleId}`)}
+    >
+      <FaEye/>
+    </Button>
+  )
+}
 
 export const columns: ColumnDef<VehicleSummaryFormatted>[] = [
   {
@@ -46,14 +62,6 @@ export const columns: ColumnDef<VehicleSummaryFormatted>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const router = useRouter()
-
-      return (
-        <Button variant="ghost" size="icon" className="cursor-pointer" onClick={() => router.push(`/dashboard/garage/${row.original.id}`)}>
-          <FaEye/>
-        </Button>
-      )
-    },
+    cell: ({ row }) => <ActionsCell row={row}/>
   },
 ]

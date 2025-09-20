@@ -67,55 +67,67 @@ export async function verifyAndSetAuthenticatedUserToken(token: string) {
     await setToken(token)
 
     return true
-  } catch (error: any) {
+  } catch (error) {
     console.error('Erro ao verificar e setar o token:', error)
     return false
   }
 }
 
 export async function getAuthenticatedUserSession(): Promise<UserSession> {
-  let result: UserSession = {
-    code: AuthenticationCodeEnum.DEFAULT,
-    decodedToken: null,
-    selectedTeamId: null,
-  }
-
   try {
     const token = await getToken();
     if (!token) {
-      result.code = AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND;
-      return result;
+      return {
+        code: AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND,
+        decodedToken: null,
+        selectedTeamId: null,
+      };
     }
 
-    result.decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
-    return result;
-  } catch (err: any) {
-    result.code = err.code;
-    console.log('Falha ao verificar sessão e obter token:', err)
-    return result;
+    const decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
+    return {
+      code: AuthenticationCodeEnum.DEFAULT,
+      decodedToken,
+      selectedTeamId: null,
+    };
+  } catch (error) {
+    const errorCode = (error as { code?: keyof typeof AuthenticationCodeEnum }).code;
+    const code = (errorCode && errorCode in AuthenticationCodeEnum) ? AuthenticationCodeEnum[errorCode] : AuthenticationCodeEnum.DEFAULT;
+    console.log('Falha ao verificar sessão e obter token:', error);
+    return {
+      code,
+      decodedToken: null,
+      selectedTeamId: null,
+    };
   }
 }
 
 export async function getAuthenticatedUser(): Promise<UserSession> {
-  let result: UserSession = {
-    code: AuthenticationCodeEnum.DEFAULT,
-    decodedToken: null,
-    selectedTeamId: null,
-  }
-
   try {
     const token = await getToken();
     if (!token) {
-      result.code = AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND;
-      return result;
+      return {
+        code: AuthenticationCodeEnum.ID_TOKEN_NOT_FOUND,
+        decodedToken: null,
+        selectedTeamId: null,
+      };
     }
 
-    result.decodedToken = await firebaseAdmin.auth.verifyIdToken(token);
-    return result;
-  } catch (err: any) {
-    result.code = err.code;
-    console.log('Falha ao verificar token:', err)
-    return result;
+    const decodedToken = await firebaseAdmin.auth.verifyIdToken(token);
+    return {
+      code: AuthenticationCodeEnum.DEFAULT,
+      decodedToken,
+      selectedTeamId: null,
+    };
+  } catch (error) {
+    const errorCode = (error as { code?: keyof typeof AuthenticationCodeEnum }).code;
+    const code = (errorCode && errorCode in AuthenticationCodeEnum) ? AuthenticationCodeEnum[errorCode] : AuthenticationCodeEnum.DEFAULT;
+    console.log('Falha ao verificar token:', error);
+    return {
+      code,
+      decodedToken: null,
+      selectedTeamId: null,
+    };
   }
 }
 
@@ -156,31 +168,31 @@ export async function checkIfHaveTeamSelectedAndIfNotSelectOne(team: string) {
 
     await setTeamCookie(team)
     return true
-  } catch (error: any) {
+  } catch (error) {
     console.error('Erro ao verificar ou selecionar time:', error)
     return false
   }
 }
 
 export async function withAuth(handler: (session: UserSession) => Promise<Response>) {
-  let result: UserSession = {
-    code: AuthenticationCodeEnum.DEFAULT,
-    decodedToken: null,
-    selectedTeamId: null,
-  }
-
   try {
-    const token = await getToken()
+    const token = await getToken();
     if (!token) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
 
-    result.selectedTeamId = await getTeamCookie();
-    result.decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
+    const selectedTeamId = await getTeamCookie();
+    const decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
+    
+    const result: UserSession = {
+      code: AuthenticationCodeEnum.DEFAULT,
+      decodedToken,
+      selectedTeamId,
+    };
 
-    return handler(result)
+    return handler(result);
   } catch (err) {
-    console.error('Auth error:', err)
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+    console.error('Auth error:', err);
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
   }
 }

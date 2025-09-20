@@ -115,14 +115,14 @@ export const addAndSynchronizeVehicleFinances = async (teamId: string, item: Syn
   await processFinanceAccordingToTypeRequested(teamId, item.payment, item.paymentDate, item.type, false, item.countItems);
 
   const newValue = item.cost || item.payment
-  await updateVehicleCost(item.plate, newValue)
+  await updateVehicleCost(teamId, item.plate, newValue)
 }
 
 export const removeAndSynchronizeVehicleFinances = async (teamId: string, item: SynchronizeFinanceAndVehicleData) => {
   await processFinanceAccordingToTypeRequested(teamId, item.payment, item.paymentDate, item.type, true);
 
   const newValue = item.cost ?? item.payment
-  await updateVehicleCost(item.plate, newValue)
+  await updateVehicleCost(teamId, item.plate, newValue)
 }
 
 async function processFinanceAccordingToTypeRequested (

@@ -44,7 +44,6 @@ export interface LoggedInUserFormatted extends UserFormatted {
 
 export type UserSignInFormInputs = z.infer<typeof userSignInFormSchema>
 export type ForgotPasswordFormInputs = z.infer<typeof forgotPasswordFormSchema>
-export interface UserSignInRequestBody extends UserSignInFormInputs {}
 
 export function formatUser(user: UserFistore): UserFormatted {
   return {

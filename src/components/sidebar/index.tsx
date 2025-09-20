@@ -17,6 +17,7 @@ import {
 import { NavMain } from "./nav-main"
 import { TeamSwitcher } from "./team-switcher"
 import { NavUser } from "./nav-user";
+import { VERSION } from "@/commons/constants/version";
 
 
 const data = {
