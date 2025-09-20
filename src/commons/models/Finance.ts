@@ -1,30 +1,19 @@
 import { Timestamp } from "firebase/firestore"
 import { dateFormatter, currencyFormatter, formatLastUpdated, formatFinanceDifference } from "../utils/formatter"
-import { StatusComparisonEnum } from "../enums/Finance";
+import { FinanceTypeEnum, StatusComparisonEnum } from "../enums/Finance";
 
-// export interface FinanceRequestBody {
-//   period: string
-//   budgetAmount: number
-//   budgetCount: number
-//   serviceAmount: number
-//   serviceCount: number
-// }
+export interface SynchronizeFinanceAndVehicleData {
+  plate: string,
+  cost?: number,
+  countItems?: number,
+  payment: number,
+  paymentDate: Date,
+  type: FinanceTypeEnum
+}
 
-// export interface FinanceDocData {
-//   period: string
-//   lastBudget: Date
-//   lastService: Date
-//   disabled: boolean
-//   budgetedCount: number
-//   budgetedAmount: number
-//   servicesCount: number
-//   servicesAmount: number
-//   createdAt: Date
-//   updatedAt: Date
-// }
-
-export interface FinanceDocData  extends Omit<FinanceFirestore, 'id' | 'createdAt' | 'updatedAt' |
-'lastProfit' | 'lastPurchased' | 'lastSold' | 'lastCost'> {
+export interface FinanceDocData extends Omit<FinanceFirestore, 
+  'id' | 'createdAt' | 'updatedAt' | 'lastProfit' | 'lastPurchased' | 'lastSold' | 'lastCost'
+> {
   lastPurchased: Date | Timestamp | null;
   lastCost: Date | Timestamp | null;
   lastSold: Date | Timestamp | null;

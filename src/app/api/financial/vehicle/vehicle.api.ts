@@ -1,52 +1,38 @@
 import { formatVehicle, formatVehicles, formatVehiclesSummary, VehicleAuctionFormInputs, VehicleDocData, VehicleRequestBody, VehicleSummaryDocData, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
-import { addVehicleDoc, getAllVehiclesDocs, getAllVehiclesSummaryDocs, getVehicleByIdDocs } from "./vehicle.firestore"
+import { addVehicleDoc, getAllVehiclesDocs, getAllVehiclesSummaryDocs, getVehicleByIdDocs, updateVehicleCostDoc } from "./vehicle.firestore"
 import globalResponses from "@/commons/utils/responses"
 import { CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car"
-import { processFinanceAccordingToTypeRequested } from "../summary/summary.api"
+import { addFinanceAccordingToTypeRequested } from "../summary/summary.api"
 import { ResponseProps } from "@/commons/models/Api"
 import { HttpStatusEnum } from "@/commons/enums/Api"
 import { FinanceTypeEnum } from "@/commons/enums/Finance"
 
 const TEAM_ID = "CRFAZy0GNVARC8eAxjMG"
 
-export const getVehicleById = async (documentId: string) => {
-  // const authVerification = await getAuthenticatedUser()
-  // if (!authVerification.decodedToken) return globalResponses.unauthorizedUser(authVerification.code)
-    
-  //const budgets = await getAllBudgetDocs(authVerification.decodedToken.uid)
-
-  const vehicle = await getVehicleByIdDocs(TEAM_ID, documentId)
+export const getVehicleById = async (teamId: string, documentId: string) => {
+  const vehicle = await getVehicleByIdDocs(teamId, documentId)
   if (!vehicle) return globalResponses.vehicleNotFound(false)
 
   const formattedData = formatVehicle(vehicle)
   return globalResponses.vehicleFound(formattedData)
 }
 
-export const getAllVehicles = async () => {
-  // const authVerification = await getAuthenticatedUser()
-  // if (!authVerification.decodedToken) return globalResponses.unauthorizedUser(authVerification.code)
-    
-  //const budgets = await getAllBudgetDocs(authVerification.decodedToken.uid)
-
-  const vehicles = await getAllVehiclesSummaryDocs(TEAM_ID)
+export const getAllVehicles = async (teamId: string) => {
+  const vehicles = await getAllVehiclesSummaryDocs(teamId)
   if (!vehicles) return globalResponses.vehicleNotFound()
 
   const formattedData = formatVehiclesSummary(vehicles)
   return globalResponses.vehicleSummaryFound(formattedData)
 }
 
-export const addVehicle = async (data: VehicleRequestBody) => {
-  // const authVerification = await getAuthenticatedUser()
-  // if (!authVerification.decodedToken) return globalResponses.unauthorizedUser(authVerification.code)
-  // const decodedToken = authVerification.decodedToken
-
+export const addVehicle = async (teamId: string, data: VehicleRequestBody) => {
   let docData: VehicleDocData
   if (data.origin === CarOrigenEnum.THIRD)
     docData = createDocDataVehicleThird(data.vehicleThird!)
   else
     docData = createDocDataVehicleAuction(data.VehicleAuction!)
 
-  const vehicleId = await syncAndAddVehicle(data.documentId, docData)
+  const vehicleId = await syncAndAddVehicle(teamId, data.documentId, docData)
   const result: ResponseProps<boolean> = {
     status: HttpStatusEnum.CREATED,
     title: 'Atualizado',
@@ -55,6 +41,10 @@ export const addVehicle = async (data: VehicleRequestBody) => {
   }
 
   return result
+}
+
+export const updateVehicleCost = async (documentId: string, value: number) => {
+  await updateVehicleCostDoc(TEAM_ID, documentId, value)
 }
 
 const createDocDataVehicleThird = (vehicle: VehicleThirdFormInputs) => {
@@ -138,7 +128,7 @@ const createDocDataVehicleAuction = (vehicle: VehicleAuctionFormInputs) => {
   return docData
 }
 
-const syncAndAddVehicle = async (documentId: string, data: VehicleDocData) => {
+const syncAndAddVehicle = async (teamId: string, documentId: string, data: VehicleDocData) => {
   const today = new Date();
 
   const vehicleSummaryDocData: VehicleSummaryDocData = {
@@ -157,8 +147,8 @@ const syncAndAddVehicle = async (documentId: string, data: VehicleDocData) => {
     updatedAt: today
   }
 
-  const vehicleId = await addVehicleDoc(TEAM_ID, documentId, data, vehicleSummaryDocData);
-  await processFinanceAccordingToTypeRequested(data.payment.total, data.payment.paymentDate, FinanceTypeEnum.PURCHASED);
+  const vehicleId = await addVehicleDoc(teamId, documentId, data, vehicleSummaryDocData);
+  await addFinanceAccordingToTypeRequested(teamId, data.payment.total, data.payment.paymentDate, FinanceTypeEnum.PURCHASED);
 
   return vehicleId
 }

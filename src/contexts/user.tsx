@@ -6,7 +6,7 @@ import { FaEnvelopeCircleCheck, FaUserXmark } from "react-icons/fa6";
 import { AuthError, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User, UserCredential } from "firebase/auth";
 import { firebase } from "@/commons/lib/firebase/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { clearToken, createAuthenticatedUserSession } from "@/commons/lib/firebase/authentication";
+import { clearAuthenticatedUserSession, clearToken, createAuthenticatedUserSession } from "@/commons/lib/firebase/authentication";
 import { ResponseFirebaseProps } from "@/commons/models/Api";
 import { getFirebaseAuthErrorMessage } from "@/commons/validations/User";
 import { HttpStatusEnum } from "@/commons/enums/Api";
@@ -71,7 +71,7 @@ const UserProvider = ({ children }: UserProviderProps) => {
   const signOutUser = useCallback(async () => {
     await clearUserCache()
     await signOut(firebase.auth)
-    await clearToken()
+    await clearAuthenticatedUserSession(user?.id)
     setUser(null)
   }, [])
 

@@ -12,7 +12,7 @@ export default function Home() {
             NOVA VERSÃO
           </Link>
         </Button>
-        {/* <InstallPrompt/> */}
+        <InstallPrompt/>
       </div>
     </main>
   );

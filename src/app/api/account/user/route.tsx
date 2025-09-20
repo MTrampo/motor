@@ -7,7 +7,5 @@ export async function GET(request: NextRequest) {
     const result = await getLoggedInUserById(session)
     return Response.json(result)
   })
-  
-  
 }
 

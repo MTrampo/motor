@@ -9,8 +9,6 @@ const urlsToCache = [
   "/imgs/web-app-manifest-512x512.png"
 ];
 
-const routesToExcludeFromCache = ['/dashboard'];
-
 self.addEventListener('install', (event) => {
   console.log('Service Worker: Instalação iniciada');
   event.waitUntil(
@@ -27,11 +25,7 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = event.request.url
-
-  if (routesToExcludeFromCache.some(route => url.includes(route))) {
-    return fetch(event.request);
-  }
-
+  
   if (url.includes('/api/')) {
     event.respondWith(
       // Estratégia "Network First" para conteúdo dinâmico

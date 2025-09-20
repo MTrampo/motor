@@ -1,20 +1,17 @@
 import { ResponseProps } from "@/commons/models/Api";
-import { FinanceDocData, FinanceFirestore, formatFinance, formatFinanceWithComparison } from "@/commons/models/Finance";
+import { FinanceDocData, FinanceFirestore, formatFinance, formatFinanceWithComparison, SynchronizeFinanceAndVehicleData } from "@/commons/models/Finance";
 import { getCurrentPeriod } from "@/commons/utils/generate-data";
 import { createFinanceDoc, getFinanceDocByPeriod, getFinanceDocByFlexibleOrFixedPeriods, updateFinanceDoc } from "./summary.firestore";
 import { HttpStatusEnum } from "@/commons/enums/Api";
 import { FinanceTypeEnum } from "@/commons/enums/Finance";
 import { getFinancialValuesByTypeFactory } from "./summary.factory";
 import { endOfQuarter, startOfQuarter, subMonths, subQuarters } from "date-fns";
+import { updateVehicleCost } from "../vehicle/vehicle.api";
 
-const TEAM_ID = "CRFAZy0GNVARC8eAxjMG"
 
-export const getFinanceById = async () => {
-  // const authVerification = await getAuthenticatedUser()
-  // if (!authVerification.decodedToken) return globalResponses.unauthorizedUser(authVerification.code)
-
+export const getFinanceById = async (teamId: string) => {
   const periodId = getCurrentPeriod();
-  const finance = await getFinanceDocByPeriod(TEAM_ID, periodId);
+  const finance = await getFinanceDocByPeriod(teamId, periodId);
 
   if (!finance) {
     return {
@@ -34,7 +31,7 @@ export const getFinanceById = async () => {
   };
 }
 
-export const getQuarterlyFinanceComparison = async () => {
+export const getQuarterlyFinanceComparison = async (teamId: string) => {
   const today = new Date();
 
   // Define o período atual (trimestre)
@@ -42,7 +39,7 @@ export const getQuarterlyFinanceComparison = async () => {
   const currentQuarterEnd = endOfQuarter(today);
 
   // Busca os dados do trimestre atual
-  const currentData = await getFinanceDocByFlexibleOrFixedPeriods(TEAM_ID, currentQuarterStart, currentQuarterEnd);
+  const currentData = await getFinanceDocByFlexibleOrFixedPeriods(teamId, currentQuarterStart, currentQuarterEnd);
   if (!currentData) {
     return {
       status: HttpStatusEnum.NOT_FOUND,
@@ -57,7 +54,7 @@ export const getQuarterlyFinanceComparison = async () => {
   const previousQuarterEnd = endOfQuarter(subQuarters(today, 1));
 
   // Busca os dados do trimestre anterior
-  const previousData = await getFinanceDocByFlexibleOrFixedPeriods(TEAM_ID, previousQuarterStart, previousQuarterEnd);
+  const previousData = await getFinanceDocByFlexibleOrFixedPeriods(teamId, previousQuarterStart, previousQuarterEnd);
 
 
   // Agrega os dados do trimestre atual e anterior
@@ -75,11 +72,11 @@ export const getQuarterlyFinanceComparison = async () => {
   };
 }
 
-export const getFinanceByFlexiblePeriods = async (months: number) => {
+export const getFinanceByFlexiblePeriods = async (teamId: string, months: number) => {
   const today = new Date();
   const startDate = subMonths(today, months);
 
-  const finances = await getFinanceDocByFlexibleOrFixedPeriods(TEAM_ID, startDate, today);
+  const finances = await getFinanceDocByFlexibleOrFixedPeriods(teamId, startDate, today);
   if (!finances) {
     return {
       status: HttpStatusEnum.NOT_FOUND,
@@ -100,16 +97,42 @@ export const getFinanceByFlexiblePeriods = async (months: number) => {
   };
 }
 
-// export const getFinanceByFixedPeriods = async (months: number) => {
+export const addFinanceAccordingToTypeRequested = (
+  teamId: string,
+  payment: number,
+  paymentDate: Date,
+  type: FinanceTypeEnum
+) => processFinanceAccordingToTypeRequested(teamId, payment, paymentDate, type, false);
 
-// }
+export const removeFinanceAccordingToTypeRequested = (
+  teamId: string,
+  payment: number,
+  paymentDate: Date,
+  type: FinanceTypeEnum
+) => processFinanceAccordingToTypeRequested(teamId, payment, paymentDate, type, true);
 
-export const processFinanceAccordingToTypeRequested = async (payment: number, paymentDate: Date, type: FinanceTypeEnum) => {
-  // const authVerification = await getAuthenticatedUser()
-  // if (!authVerification.decodedToken) return globalResponses.unauthorizedUser(authVerification.code)
+export const addAndSynchronizeVehicleFinances = async (teamId: string, item: SynchronizeFinanceAndVehicleData) => {
+  await processFinanceAccordingToTypeRequested(teamId, item.payment, item.paymentDate, item.type, false, item.countItems);
+
+  const newValue = item.cost || item.payment
+  await updateVehicleCost(item.plate, newValue)
+}
+
+export const removeAndSynchronizeVehicleFinances = async (teamId: string, item: SynchronizeFinanceAndVehicleData) => {
+  await processFinanceAccordingToTypeRequested(teamId, item.payment, item.paymentDate, item.type, true);
+
+  const newValue = item.cost ?? item.payment
+  await updateVehicleCost(item.plate, newValue)
+}
+
+async function processFinanceAccordingToTypeRequested (
+  teamId: string, payment: number, paymentDate: Date,
+  type: FinanceTypeEnum, isDecrement: boolean = false, count: number = 1
+) {
+  const factor = isDecrement ? -1 : 1;
 
   const periodFinance = 
-    await createOrUpdateFinancialPeriodCorrespondingPaymentDate(payment, paymentDate, type);
+    await createOrUpdateFinancialPeriodCorrespondingPaymentDate(teamId, payment, paymentDate, type, count, factor);
 
   const result: ResponseProps<string> = {
     status: HttpStatusEnum.CREATED,
@@ -121,23 +144,26 @@ export const processFinanceAccordingToTypeRequested = async (payment: number, pa
   return result
 }
 
-export const createOrUpdateFinancialPeriodCorrespondingPaymentDate = async (payment: number, paymentDate: Date, financeType: FinanceTypeEnum) => {
+async function createOrUpdateFinancialPeriodCorrespondingPaymentDate (
+  teamId: string, payment: number, paymentDate: Date, 
+  financeType: FinanceTypeEnum, count: number = 1, factor: number = 1
+) {
   const today = new Date();
   const date = new Date(paymentDate);
   const periodId = getCurrentPeriod(date);
 
-  const financeDoc = await getFinanceDocByPeriod(TEAM_ID, periodId);
+  const financeDoc = await getFinanceDocByPeriod(teamId, periodId);
   const financeValues = getFinancialValuesByTypeFactory.get(financeType)!;
-  const updatedValues  = financeValues(payment, paymentDate, financeDoc)
+  const updatedValues = financeValues(payment, paymentDate, financeDoc, count, factor)
 
   if (financeDoc) {
-    const updatedFinanceDoc: FinanceDocData = {
+    const updatedFinanceDoc: Omit<FinanceDocData, 'id'> = {
       ...financeDoc,
       ...updatedValues,
       updatedAt: today,
     };
 
-    return await updateFinanceDoc(TEAM_ID, periodId, updatedFinanceDoc);
+    return await updateFinanceDoc(teamId, periodId, updatedFinanceDoc);
   }
 
   const newFinanceData: FinanceDocData = {
@@ -145,10 +171,10 @@ export const createOrUpdateFinancialPeriodCorrespondingPaymentDate = async (paym
     ...updatedValues,
   };
 
-  return await createFinanceDoc(TEAM_ID, periodId, newFinanceData);
+  return await createFinanceDoc(teamId, periodId, newFinanceData);
 }
 
-const aggregateFinances = (finances: FinanceFirestore[]) => {
+function aggregateFinances (finances: FinanceFirestore[]) {
   const initialData: FinanceFirestore = {
     ...baseFinanceData(new Date()),
     id: finances[0].id,
@@ -190,19 +216,21 @@ const aggregateFinances = (finances: FinanceFirestore[]) => {
   return aggregated;
 }
 
-const baseFinanceData = (now: Date): FinanceDocData => ({
-  countCost: 0,
-  countProfit: 0,
-  countPurchased: 0,
-  countSold: 0,
-  amountCost: 0,
-  amountProfit: 0,
-  amountPurchased: 0,
-  amountSold: 0,
-  lastCost: null,
-  lastSold: null,
-  lastProfit: null,
-  lastPurchased: null,
-  createdAt: now,
-  updatedAt: now
-})
+function baseFinanceData(now: Date): FinanceDocData {
+  return {
+    countCost: 0,
+    countProfit: 0,
+    countPurchased: 0,
+    countSold: 0,
+    amountCost: 0,
+    amountProfit: 0,
+    amountPurchased: 0,
+    amountSold: 0,
+    lastCost: null,
+    lastSold: null,
+    lastProfit: null,
+    lastPurchased: null,
+    createdAt: now,
+    updatedAt: now
+  };
+}

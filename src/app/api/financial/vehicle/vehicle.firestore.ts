@@ -1,5 +1,6 @@
 import { firebaseAdmin } from "@/commons/lib/firebase/server";
 import { VehicleDocData, VehicleFistore, VehicleSummaryDocData, VehicleSummaryFirestore } from "@/commons/models/Vehicle";
+import { Timestamp } from "firebase-admin/firestore";
 
 const getVehicleDocRef = (teamId: string, documentId: string) => {
   return firebaseAdmin.db.collection(firebaseAdmin.getPath.vehicle(teamId)).doc(documentId);
@@ -60,4 +61,14 @@ export async function addVehicleDoc(teamId: string, documentId: string, vehicleD
   await summaryDocRef.set(vehicleSummaryDocData);
 
   return true;
+}
+
+export async function updateVehicleCostDoc(teamId: string, documentId: string, newValue: number) {
+  const docRef = getVehicleSummaryDocRef(teamId, documentId);
+  await docRef.update({ 
+    totalCost: newValue, 
+    updatedAt: Timestamp.now() 
+  });
+  
+  return docRef.id;
 }

@@ -1,8 +1,7 @@
 "use client"
 
-import Link from "next/link";
-import Image from "next/image";
 import { useRef } from "react";
+import Image from "next/image";
 import svgCarRepair from "@/commons/assets/svgs/car-repair.svg";
 import { VehicleFormatted } from "@/commons/models/Vehicle";
 import { ButtonIcon } from "@/components/buttons/button-icon";
@@ -24,16 +23,14 @@ type VehicleDetailsProps = {
 }
 
 export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
-  const { cost, isLoading } = useGetCostByPlateSWR(vehicle.id)
+  const { mutate, cost, isLoading } = useGetCostByPlateSWR(vehicle.id)
 
   const formRef = useRef<SheetFormRef>(null)
 
   const handleAddCost = async (data: RegisterCostFormInputs[]) => {
     await addCost(vehicle.id, data)
+    await mutate()
   }
-
-  const total = 1000//vehicle.maintenance.total + (vehicle.paid || 0)
-  const totalFormatted = currencyFormatter.format(total)
 
   return (
     <main className="max-[374]:p-2 p-6 flex flex-col xl:flex-row xl:items-start gap-6">
@@ -196,7 +193,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                   <FaSackDollar />
                   Gasto Total
                 </span>
-                <span className="block font-semibold">{totalFormatted}</span>
+                <span className="block font-semibold">{cost?.totalFormatted}</span>
               </div>
             </div>
             <ChartBarProfitProjection vehicle={vehicle}/>

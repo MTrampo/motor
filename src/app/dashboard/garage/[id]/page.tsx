@@ -18,8 +18,6 @@ export default function Page({ params }: VehicleProps) {
   const { vehicle } = useGetVehicleByIdSWR(id)
   const imgFallback = getRandomCarImage()
 
-  console.log('vehicle', vehicle)
-
   if (!vehicle) {
     return <div className="p-6">Não encontrado...</div>
   }
