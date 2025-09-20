@@ -1,5 +1,5 @@
-const CACHE_STATIC_NAME = 'static-v0.0.5-beta';
-const CACHE_DYNAMIC_NAME = 'dynamic-v0.0.5-beta';
+const CACHE_STATIC_NAME = 'static-v0.0.5-alpha';
+const CACHE_DYNAMIC_NAME = 'dynamic-v0.0.5-alpha';
 
 const urlsToCache = [
   "/", // Página inicial

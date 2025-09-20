@@ -7,7 +7,6 @@ import { ResponseProps } from "@/commons/models/Api"
 import { HttpStatusEnum } from "@/commons/enums/Api"
 import { FinanceTypeEnum } from "@/commons/enums/Finance"
 
-const TEAM_ID = "CRFAZy0GNVARC8eAxjMG"
 
 export const getVehicleById = async (teamId: string, documentId: string) => {
   const vehicle = await getVehicleByIdDocs(teamId, documentId)
@@ -43,8 +42,8 @@ export const addVehicle = async (teamId: string, data: VehicleRequestBody) => {
   return result
 }
 
-export const updateVehicleCost = async (documentId: string, value: number) => {
-  await updateVehicleCostDoc(TEAM_ID, documentId, value)
+export const updateVehicleCost = async (teamId: string, documentId: string, value: number) => {
+  await updateVehicleCostDoc(teamId, documentId, value)
 }
 
 const createDocDataVehicleThird = (vehicle: VehicleThirdFormInputs) => {

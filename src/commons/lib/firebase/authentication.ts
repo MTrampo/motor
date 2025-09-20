@@ -67,7 +67,7 @@ export async function verifyAndSetAuthenticatedUserToken(token: string) {
     await setToken(token)
 
     return true
-  } catch (error: any) {
+  } catch (error) {
     console.error('Erro ao verificar e setar o token:', error)
     return false
   }
@@ -89,9 +89,12 @@ export async function getAuthenticatedUserSession(): Promise<UserSession> {
 
     result.decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
     return result;
-  } catch (err: any) {
-    result.code = err.code;
-    console.log('Falha ao verificar sessão e obter token:', err)
+  } catch (error) {
+    const errorCode = (error as { code?: keyof typeof AuthenticationCodeEnum }).code;
+    if (errorCode && errorCode in AuthenticationCodeEnum) {
+      result.code = AuthenticationCodeEnum[errorCode];
+    }
+    console.log('Falha ao verificar sessão e obter token:', error)
     return result;
   }
 }
@@ -112,9 +115,12 @@ export async function getAuthenticatedUser(): Promise<UserSession> {
 
     result.decodedToken = await firebaseAdmin.auth.verifyIdToken(token);
     return result;
-  } catch (err: any) {
-    result.code = err.code;
-    console.log('Falha ao verificar token:', err)
+  } catch (error) {
+    const errorCode = (error as { code?: keyof typeof AuthenticationCodeEnum }).code;
+    if (errorCode && errorCode in AuthenticationCodeEnum) {
+      result.code = AuthenticationCodeEnum[errorCode];
+    }
+    console.log('Falha ao verificar token:', error)
     return result;
   }
 }
@@ -156,7 +162,7 @@ export async function checkIfHaveTeamSelectedAndIfNotSelectOne(team: string) {
 
     await setTeamCookie(team)
     return true
-  } catch (error: any) {
+  } catch (error) {
     console.error('Erro ao verificar ou selecionar time:', error)
     return false
   }
