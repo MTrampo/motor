@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { SignInUserForm } from "@/components/forms/User/sign-in-user-form"
-import { Separator } from "@/components/ui/separator";
 import { ForgotPasswordForm } from "@/components/forms/User/forgot-password-form";
 
 
@@ -27,11 +26,13 @@ export default function SignIn() {
             </p>
           </div>
 
-          {forgotPassword ? (
-            <ForgotPasswordForm />
-          ) : (
-            <SignInUserForm />
-          )}
+          <Suspense>
+            {forgotPassword ? (
+              <ForgotPasswordForm />
+            ) : (
+              <SignInUserForm />
+            )}
+          </Suspense>
           
           <>
             {forgotPassword ? (
