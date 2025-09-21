@@ -24,6 +24,7 @@ export default function CardVehicles({ vehicle }: CardVehiclesProps) {
             src={vehicle.hero || imgFallback}
             alt={`${vehicle.brand} ${vehicle.model}`}
             placeholder="blur"
+            blurDataURL={vehicle.hero ?? undefined}
             width={150}
             height={150}
             loading="lazy"
