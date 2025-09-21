@@ -79,7 +79,7 @@ export type RegisterCostFormInputs = z.infer<typeof registerCostFormSchema>;
 export function formatCost(cost: CostFistore): CostFormatted {
   return {
     id: cost.id,
-    total: cost.total,
+    total: cost.total || 0,
     items: cost.items
       .sort((a, b) => b.paymentDate.toDate().getTime() - a.paymentDate.toDate().getTime())
       .map((item) => ({
@@ -94,7 +94,7 @@ export function formatCost(cost: CostFistore): CostFormatted {
       })),
     createdAt: cost.createdAt.toDate(),
     updatedAt: cost.updatedAt.toDate(),
-    totalFormatted: currencyFormatter.format(cost.total),
+    totalFormatted: currencyFormatter.format(cost.total || 0),
     createdAtFormatted: dateFormatter.format(cost.createdAt.toDate()),
     updatedAtFormatted: dateFormatter.format(cost.updatedAt.toDate()),
   }

@@ -30,9 +30,9 @@ export default function Page({ params }: VehicleProps) {
       <section className={showCarousel ? '' : 'relative w-full h-[400px] overflow-hidden'}>
         {showCarousel ? (
           <Carousel className="w-full">
-            <CarouselContent>
+            <CarouselContent className="h-[400px]">
               {vehicle.images.purchased?.map(image => (
-                <CarouselItem key={image} className="w-full md:basis-1/2 lg:basis-1/3">
+                <CarouselItem key={image} className="md:basis-1/2 lg:basis-1/3 ">
                   <Image className="w-full" src={image} alt={vehicle.model} width={400} height={400} />
                 </CarouselItem>
               ))}

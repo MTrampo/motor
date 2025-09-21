@@ -193,7 +193,9 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                   <FaSackDollar />
                   Gasto Total
                 </span>
-                <span className="block font-semibold">{cost?.totalFormatted}</span>
+                <span className="block font-semibold">
+                  {cost?.totalFormatted ?? 'R$ 0,00'}
+                </span>
               </div>
             </div>
             <ChartBarProfitProjection vehicle={vehicle} cost={cost}/>

@@ -73,6 +73,10 @@ export default function OverviewCarsFinances() {
     return <div className="text-center py-10">Carregando veículos...</div>
   }
 
+  if (!vehicles) {
+    return
+  }
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4 gap-6">
