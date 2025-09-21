@@ -60,7 +60,7 @@ export function ChartBarProfitProjection({ vehicle, cost }: ChartBarProfitProjec
       paidValue: vehicle.payment.total ?? 0, 
       totalCosts: cost?.total ?? 0
     })
-  }, [vehicle])
+  }, [vehicle, cost])
 
   return (
     <Card className="py-0 sm:gap-0 shadow-none" ref={chartRef}>

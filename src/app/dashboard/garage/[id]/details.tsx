@@ -11,7 +11,7 @@ import { CarStatusBadge } from "@/components/status/car-status";
 import { Button } from "@/components/ui/button";
 import { ChartBarProfitProjection } from "@/components/vehicles/chart/chart-profit-projection-vehicle";
 import TableCostsVehicle from "@/components/vehicles/data-table/table-costs-vehicle";
-import { FaCartArrowDown, FaFileCirclePlus, FaMagnifyingGlassDollar, FaMoneyBillTrendUp, FaPenToSquare, FaSackDollar, FaScrewdriverWrench } from "react-icons/fa6";
+import { FaCartArrowDown, FaEllipsisVertical, FaFileCirclePlus, FaMagnifyingGlassDollar, FaMoneyBillTrendUp, FaPenToSquare, FaSackDollar, FaScrewdriverWrench } from "react-icons/fa6";
 import { RegisterCostFormInputs } from "@/commons/models/Cost";
 import { addCost } from "./action";
 import { currencyFormatter } from "@/commons/utils/formatter";
@@ -49,7 +49,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
               </div>
               <div className="flex justify-between pb-6 lg:block lg:space-x-10">
                 <CarStatusBadge status={vehicle.status}/>
-                <ButtonIcon icon={<FaPenToSquare />} info="Editar Carro" />
+                <ButtonIcon icon={<FaEllipsisVertical />} info="Ações" />
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
