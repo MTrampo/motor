@@ -60,7 +60,7 @@ export const formatLastUpdated = (date: Date | null): string => {
     return `Atualizado ${format(date, 'EEEE', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
   }
   
-  return `Atualizado em ${format(date, 'dd/MM', { locale: ptBR })} às ${format(date, 'HH:mm', { locale: ptBR })}`;
+  return `Atualizado em ${format(date, 'dd/MM', { locale: ptBR })}`;
 };
 
 export const timeToDisplayFormatter = (timeString: string): string => {
