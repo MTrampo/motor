@@ -1,5 +1,5 @@
-const CACHE_STATIC_NAME = 'static-v0.0.5-alpha';
-const CACHE_DYNAMIC_NAME = 'dynamic-v0.0.5-alpha';
+const CACHE_STATIC_NAME = 'static-v0.0.6-alpha';
+const CACHE_DYNAMIC_NAME = 'dynamic-v0.0.6-alpha';
 
 const urlsToCache = [
   "/", // Página inicial
@@ -21,6 +21,8 @@ self.addEventListener('install', (event) => {
       }
     })
   );
+
+  self.skipWaiting();
 });
 
 self.addEventListener('fetch', (event) => {
@@ -59,10 +61,12 @@ self.addEventListener('fetch', (event) => {
 
 self.addEventListener('activate', (event) => {
   console.log('Service Worker: Ativação iniciada');
+  event.waitUntil(self.clients.claim());
+
   const cacheWhitelist = [CACHE_STATIC_NAME, CACHE_DYNAMIC_NAME];
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
+    caches.keys().then(async (cacheNames) => {
+      return await Promise.all(
         cacheNames.map((cacheName) => {
           if (!cacheWhitelist.includes(cacheName)) {
             return caches.delete(cacheName);
@@ -90,4 +94,21 @@ self.addEventListener('message', (event) => {
       })
     );
   }
+});
+
+self.addEventListener('push', (event) => {
+  console.log('[Service Worker] Push recebido.');
+
+  const payload = event.data.json() || { title: 'Nova Atualização Disponível', body: 'Recarregue o aplicativo para ver as novidades.' };
+
+  const options = {
+    body: payload.body,
+    icon: '/web-app-manifest-192x192.png',
+    vibrate: [200, 100, 200],
+    badge: '/web-app-manifest-512x512.png',
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title, options)
+  );
 });

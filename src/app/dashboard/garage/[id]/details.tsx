@@ -196,7 +196,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                 <span className="block font-semibold">{cost?.totalFormatted}</span>
               </div>
             </div>
-            <ChartBarProfitProjection vehicle={vehicle}/>
+            <ChartBarProfitProjection vehicle={vehicle} cost={cost}/>
           </div>
         )}
         {cost && (
