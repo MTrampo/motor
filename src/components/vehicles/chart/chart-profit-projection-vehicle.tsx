@@ -8,6 +8,7 @@ import { calculateProfitProjection } from "@/commons/utils/generate-data";
 import { VehicleFormatted } from "@/commons/models/Vehicle"
 import { currencyFormatter } from "@/commons/utils/formatter"
 import { FaMoneyBillTrendUp } from "react-icons/fa6"
+import { CostFormatted } from "@/commons/models/Cost"
 
 export const description = "An interactive bar chart"
 
@@ -28,9 +29,10 @@ type ProfitProjectionItem = {
 
 type ChartBarProfitProjectionProps = {
   vehicle: VehicleFormatted
+  cost?: CostFormatted | null
 }
 
-export function ChartBarProfitProjection({ vehicle }: ChartBarProfitProjectionProps) {
+export function ChartBarProfitProjection({ vehicle, cost }: ChartBarProfitProjectionProps) {
   const [clickedTooltip, setClickedTooltip] = useState<ProfitProjectionItem | null>(null)
   const [activeChartType, setActiveChartType] = useState<keyof typeof chartConfig>("resalePrice")
 
@@ -54,9 +56,9 @@ export function ChartBarProfitProjection({ vehicle }: ChartBarProfitProjectionPr
   
   const { projection } = useMemo(() => {
     return calculateProfitProjection({ 
-      fipeValue: vehicle.fipe, 
-      paidValue: vehicle.payment.total || 0, 
-      totalCosts: 1000 //vehicle.maintenance.total
+      fipeValue: vehicle.fipe ?? 0, 
+      paidValue: vehicle.payment.total ?? 0, 
+      totalCosts: cost?.total ?? 0
     })
   }, [vehicle])
 
