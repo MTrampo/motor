@@ -164,13 +164,16 @@ export async function hasTeamCookie(): Promise<boolean> {
 
 export async function checkIfHaveTeamSelectedAndIfNotSelectOne(team: string) {
   try {
-    if (await hasTeamCookie()) return true
+    const teamId = await getTeamCookie()
+    if (!teamId) {
+      await setTeamCookie(team)
+      return team
+    }
 
-    await setTeamCookie(team)
-    return true
+    return teamId;
   } catch (error) {
     console.error('Erro ao verificar ou selecionar time:', error)
-    return false
+    return null
   }
 }
 

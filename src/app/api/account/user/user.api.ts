@@ -2,7 +2,7 @@ import { formatUserAndTeams, UserFormatted, UserSession } from "@/commons/models
 import { HttpStatusEnum } from "@/commons/enums/Api"
 import { ResponseProps } from "@/commons/models/Api"
 import { getUserByIdDoc } from "./user.firestore"
-import { getUserTeams } from "../team/team.firestore"
+import { getTeamsFromLoggedInUser } from "../team/team.api"
 
 export const getLoggedInUserById = async (session: UserSession) => {
   const userId = session.decodedToken!.uid;
@@ -19,8 +19,8 @@ export const getLoggedInUserById = async (session: UserSession) => {
     return result
   }
 
-  const userTeams = await getUserTeams(userId)
-  const formattedData = formatUserAndTeams(user, userTeams)
+  const userTeams = await getTeamsFromLoggedInUser(userId)
+  const formattedData = formatUserAndTeams(user, userTeams);
   
   const result: ResponseProps<UserFormatted> = {
     status: HttpStatusEnum.CREATED,

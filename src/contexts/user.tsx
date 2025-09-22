@@ -4,12 +4,14 @@ import { createContext, ReactNode, useCallback, useEffect, useState } from "reac
 import { LoggedInUserFormatted, UserSignInFormInputs } from "@/commons/models/User";
 import { AuthError, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User, UserCredential } from "firebase/auth";
 import { firebase } from "@/commons/lib/firebase/client";
-import { clearAuthenticatedUserSession, createAuthenticatedUserSession } from "@/commons/lib/firebase/authentication";
+import { clearAuthenticatedUserSession, createAuthenticatedUserSession, setTeamCookie } from "@/commons/lib/firebase/authentication";
 import { ResponseFirebaseProps } from "@/commons/models/Api";
 import { getFirebaseAuthErrorMessage } from "@/commons/validations/User";
 import { HttpStatusEnum } from "@/commons/enums/Api";
 import { useTriggerGetRegisteredUser } from "@/hooks/swr/use-user";
 import { checkIfHaveTeamSelectedAndIfNotSelectOne } from "@/commons/lib/firebase/authentication";
+import { TeamMemberFormatted } from "@/commons/models/Team";
+import { clearServiceWorkerCache } from "@/pwa/register-sw";
 
 type UserProviderProps = {
   children: ReactNode
@@ -17,9 +19,11 @@ type UserProviderProps = {
 
 type UserContextData = {
   user: LoggedInUserFormatted | null
+  activeTeam: TeamMemberFormatted | null
   signOutUser: () => Promise<void>
-  handleSignInUser: (data: UserSignInFormInputs) => Promise<void>
+  selectTeam: (selectedTeamId: string) => Promise<void>
   passwordResetRequest: (email: string) => Promise<void>
+  handleSignInUser: (data: UserSignInFormInputs) => Promise<void>
   handleUnauthenticatedUser: (title?: string, message?: string) => Promise<void>
 }
 
@@ -27,44 +31,12 @@ export const UserContext = createContext<UserContextData>({} as UserContextData)
 
 const UserProvider = ({ children }: UserProviderProps) => {  
   const [user, setUser] = useState<LoggedInUserFormatted | null>(null)
+  const [activeTeam, setActiveTeam] = useState<TeamMemberFormatted | null>(null)
   const { triggerGetRegisteredUser } = useTriggerGetRegisteredUser()
 
   const clearUserCache = useCallback(async () => {
-    if (!('serviceWorker' in navigator)) {
-      return
-    }
-
-    try {
-      const registration = await navigator.serviceWorker.ready;
-      const serviceWorker = registration.active;
-
-      if (!serviceWorker) {
-        return
-      }
-
-      await new Promise<void>((resolve, reject) => {
-        const messageChannel = new MessageChannel()
-        const timeout = setTimeout(() => {
-          console.error("Service Worker não respondeu a tempo.")
-          reject(new Error("Service Worker timeout"))
-        }, 5000)
-
-        messageChannel.port1.onmessage = (event) => {
-          clearTimeout(timeout)
-          if (event.data && event.data.type === 'CACHE_CLEARED') {
-              console.log('Cache limpo com sucesso.')
-              resolve()
-          } else {
-            reject(new Error("Resposta do Service Worker inesperada."))
-          }
-        }
-
-        serviceWorker.postMessage({ type: 'CACHE_CLEAR' }, [messageChannel.port2])
-      })
-    } catch (error) {
-      console.log("Erro ao limpar o cache:", error)
-    }
-  }, [])
+    await clearServiceWorkerCache()
+  }, [activeTeam]) 
 
   const signOutUser = useCallback(async () => {
     await clearUserCache()
@@ -72,6 +44,13 @@ const UserProvider = ({ children }: UserProviderProps) => {
     await clearAuthenticatedUserSession(user?.id)
     setUser(null)
   }, [])
+
+  const selectTeam = async (selectedTeamId: string) => {
+    await clearUserCache()
+    await setTeamCookie(selectedTeamId)
+    const selectedTeam = user?.teams?.find(team => team.team.id === selectedTeamId) ?? null
+    setActiveTeam(selectedTeam)
+  }
 
   const handleUnauthenticatedUser = useCallback(async (title?: string, message?: string) => {
     await signOutUser()
@@ -102,7 +81,9 @@ const UserProvider = ({ children }: UserProviderProps) => {
     }
 
     if (userFound.data.teams && userFound.data.teams.length > 0) {
-      await checkIfHaveTeamSelectedAndIfNotSelectOne(userFound.data.teams[0].team.id)
+      const teamId = await checkIfHaveTeamSelectedAndIfNotSelectOne(userFound.data.teams[0].team.id)
+      const selectedTeam = userFound.data.teams.find(team => team.team.id === teamId) ?? null
+      setActiveTeam(selectedTeam)
     }
 
     setUser(userFound.data)
@@ -171,7 +152,9 @@ const UserProvider = ({ children }: UserProviderProps) => {
   // TODO: Implementar lógica para trabalhar com o mercado pago, criar planos e assinaturas para o usuário
 
   return (
-    <UserContext.Provider value={{ user, signOutUser, handleSignInUser, handleUnauthenticatedUser, passwordResetRequest }}>
+    <UserContext.Provider value={{ 
+      user, activeTeam, signOutUser, selectTeam, handleSignInUser, handleUnauthenticatedUser, passwordResetRequest
+    }}>
       {children}
     </UserContext.Provider>
   )

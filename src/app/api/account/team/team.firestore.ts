@@ -1,7 +1,7 @@
 import { firebaseAdmin } from "@/commons/lib/firebase/server";
 import { TeamMemberFirestore } from "@/commons/models/Team";
 
-export async function getUserTeams(userId: string) {
+export async function getUserTeamsDoc(userId: string) {
   const docsRef = firebaseAdmin.db.collection(firebaseAdmin.getPath.teamMembers);
   const querySnap = docsRef.where('userId', '==', userId);      
   const docSnap = await querySnap.get()
