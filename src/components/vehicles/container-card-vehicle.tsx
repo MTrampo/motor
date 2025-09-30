@@ -4,13 +4,30 @@ import Link from "next/link";
 import Image from "next/image";
 import { useGetAllVehiclesSWR } from "@/hooks/swr/use-vehicle";
 import { FaCarOn, FaFilter, FaMagnifyingGlass } from "react-icons/fa6";
-import CardVehicles from "./card-vehicle";
+import CardVehicle, { CardVehicleLoading } from "./card-vehicle";
 import { InputIcon } from "../ui/input-icon";
 import { Button } from "../ui/button";
 import svgWinch from '@/commons/assets/svgs/winch.svg';
 
 export default function ContainerCardVehicle() {
-  const { vehicles, isLoading } = useGetAllVehiclesSWR();
+  const { vehicles, isLoading } = useGetAllVehiclesSWR()
+
+  if (isLoading) {
+    return(
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
+        <CardVehicleLoading/>
+        <CardVehicleLoading/>
+        <CardVehicleLoading/>
+        <CardVehicleLoading/>
+        <CardVehicleLoading/>
+        <CardVehicleLoading/>
+        <CardVehicleLoading/>
+        <CardVehicleLoading/>
+        <CardVehicleLoading/>
+        <CardVehicleLoading/>
+      </div>
+    )
+  }
 
   if (!vehicles) {
     return (
@@ -45,7 +62,7 @@ export default function ContainerCardVehicle() {
             <FaFilter />
           </Button>
         </div>
-        <Button variant='default' size="icon" asChild>
+        <Button variant='emphasis' size="icon" asChild>
           <Link href='/dashboard/garage/new'>
             <FaCarOn />
           </Link>
@@ -53,7 +70,7 @@ export default function ContainerCardVehicle() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
         {vehicles?.map(vehicle => (
-          <CardVehicles key={vehicle.id} vehicle={vehicle}/>
+          <CardVehicle key={vehicle.id} vehicle={vehicle}/>
         ))}
       </div>
     </>

@@ -72,3 +72,19 @@ export async function updateVehicleCostDoc(teamId: string, documentId: string, n
   
   return docRef.id;
 }
+
+export async function updateCurrentStatusDoc(teamId: string, documentId: string, status: number) {
+  const docVehicleRef = getVehicleDocRef(teamId, documentId);
+  await docVehicleRef.update({ 
+    status, 
+    updatedAt: Timestamp.now() 
+  });
+
+  const docVehicleSummaryRef = getVehicleSummaryDocRef(teamId, documentId);
+  await docVehicleSummaryRef.update({ 
+    status, 
+    updatedAt: Timestamp.now() 
+  });
+  
+  return docVehicleRef.id;
+}

@@ -1,9 +1,7 @@
 "use client"
 
-import useSWR from 'swr'
 import * as React from "react"
 import {
-  ColumnDef,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
@@ -14,20 +12,13 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -37,7 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { columns } from "./columns-cars-finances"
-import { FaArrowLeft, FaArrowRight, FaChevronDown, FaMagnifyingGlass } from 'react-icons/fa6'
+import { FaAngleLeft, FaAngleRight, FaChevronDown, FaMagnifyingGlass } from 'react-icons/fa6'
 import { useGetAllVehiclesSWR } from '@/hooks/swr/use-vehicle'
 import { InputIcon } from '@/components/ui/input-icon'
 
@@ -177,7 +168,7 @@ export default function OverviewCarsFinances() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <FaArrowLeft /> Anterio
+            <FaAngleLeft />
           </Button>
           <Button
             variant="outline"
@@ -185,7 +176,7 @@ export default function OverviewCarsFinances() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Próximo <FaArrowRight />
+            <FaAngleRight />
           </Button>
         </div>
       </div>

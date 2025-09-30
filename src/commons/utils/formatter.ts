@@ -104,6 +104,14 @@ export const timeFormatter = (time: string) => {
   return hours < 1 ? `${minutes}m` : `${hours}h ${minutes}m`
 }
 
+export const dateFormatterStatus = (start: Date, end: Date | null) => {
+  if(end) {
+    return `Iniciado em ${format(start, 'dd/MM/yyyy', { locale: ptBR })} - Finalizado em ${format(end, 'dd/MM/yyyy', { locale: ptBR })}`;
+  }
+
+  return `Iniciado em ${format(start, 'dd/MM/yyyy', { locale: ptBR })} - Em andamento`;
+}
+
 // Formatação de moeda e números
 
 export const formatCpfCnpj = (value: string | number | undefined) => {

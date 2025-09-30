@@ -14,4 +14,9 @@ export enum CostTypeEnum {
   TECHNICIAN,
   KEYCHAIN,
   INSURANCE,
+  DEBITS,
+  AESTHETICS,
+  WASH,
+  FUEL,
+  FINE
 }

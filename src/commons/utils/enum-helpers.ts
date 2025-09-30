@@ -11,10 +11,12 @@ export const originTypeTranslations: Record<CarOrigenEnum, string> = {
 export const carStatusTypeTranslations: Record<CarStatusEnum, string> = {
   [CarStatusEnum.EVALUATING]: "Em Avaliação",
   [CarStatusEnum.PURCHASED]: "Garagem",
-  [CarStatusEnum.WINCH]: "Em tranporte",
+  [CarStatusEnum.WINCH]: "Em Transporte",
   [CarStatusEnum.MAINTENANCE]: "Em Manutenção",
+  [CarStatusEnum.DOCUMENTATION]: "Em Documentação",
   [CarStatusEnum.AVAILABLE]: "Disponível",
   [CarStatusEnum.ANNOUNCED]: "Anunciado",
+  [CarStatusEnum.RENTED]: "Alugado",
   [CarStatusEnum.SOLD]: "Vendido",
 };
 
@@ -61,7 +63,12 @@ export const costTypeTranslations: Record<CostTypeEnum, string> = {
   [CostTypeEnum.MECHANICAL]: "Mecânico",
   [CostTypeEnum.TECHNICIAN]: "Funileiro",
   [CostTypeEnum.KEYCHAIN]: "Chaveiro",
-  [CostTypeEnum.INSURANCE]: "Seguro"
+  [CostTypeEnum.INSURANCE]: "Seguro",
+  [CostTypeEnum.DEBITS]: "Débito/Multa",
+  [CostTypeEnum.AESTHETICS]: "Estética",
+  [CostTypeEnum.WASH]: "Lavagem/Higienização ",
+  [CostTypeEnum.FUEL]: "Combustível",
+  [CostTypeEnum.FINE]: "Detran"
 }
 
 export const roleTypeTranslations: Record<RoleEnum, string> = {

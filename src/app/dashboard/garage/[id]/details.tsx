@@ -3,8 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import svgCarRepair from "@/commons/assets/svgs/car-repair.svg";
-import { VehicleFormatted } from "@/commons/models/Vehicle";
-import { ButtonIcon } from "@/components/buttons/button-icon";
+import { VehicleFormatted, VehicleStatusFormInputs } from "@/commons/models/Vehicle";
 import { RegisterCostForm } from "@/components/forms/Cost/cost-form";
 import { SheetForm, SheetFormRef } from "@/components/forms/sheet-form";
 import { CarStatusBadge } from "@/components/status/car-status";
@@ -13,10 +12,14 @@ import { ChartBarProfitProjection } from "@/components/vehicles/chart/chart-prof
 import TableCostsVehicle from "@/components/vehicles/data-table/table-costs-vehicle";
 import { FaCartArrowDown, FaEllipsisVertical, FaFileCirclePlus, FaMagnifyingGlassDollar, FaMoneyBillTrendUp, FaPenToSquare, FaSackDollar, FaScrewdriverWrench } from "react-icons/fa6";
 import { RegisterCostFormInputs } from "@/commons/models/Cost";
-import { addCost } from "./action";
-import { currencyFormatter } from "@/commons/utils/formatter";
+import { addCost, updatedStatus } from "./action";
 import { ChartCostAnalysis } from "@/components/vehicles/chart/chart-cost-analysis";
 import { useGetCostByPlateSWR } from '@/hooks/swr/use-cost'
+import { ActionMenu } from "@/components/dashboard/action-menu";
+import { TimelineStatus } from "@/components/status/timeline-status";
+import { DialogForm, DialogFormRef } from "@/components/forms/dialog-form";
+import { GiGearStick, GiGearStickPattern } from "react-icons/gi";
+import { StatusForm } from "@/components/forms/Vehicle/status-form";
 
 type VehicleDetailsProps = {
   vehicle: VehicleFormatted
@@ -25,17 +28,25 @@ type VehicleDetailsProps = {
 export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
   const { mutate, cost, isLoading } = useGetCostByPlateSWR(vehicle.id)
 
-  const formRef = useRef<SheetFormRef>(null)
+  const costFormRef = useRef<SheetFormRef>(null)
+  const statusFormRef = useRef<DialogFormRef>(null)
 
   const handleAddCost = async (data: RegisterCostFormInputs[]) => {
     await addCost(vehicle.id, data)
-    await mutate()
+    //await mutate()
+  }
+
+  const handleUpdateStatus = async (data: VehicleStatusFormInputs) => {
+    const history = vehicle.status.history
+    const lastDocumentId = history && history.length > 0 ? history[history.length - 1].id : null
+
+    await updatedStatus(lastDocumentId, vehicle.id, data)
   }
 
   return (
-    <main className="max-[374]:p-2 p-6 flex flex-col xl:flex-row xl:items-start gap-6">
-      <div className="flex flex-col gap-6 w-full">
-        <div className="w-full flex flex-col gap-10 border rounded-xl -mt-16 z-10 bg-white shadow-sm">
+    <main className="flex flex-col p-6 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="col-span-2 flex flex-col gap-10 border rounded-xl bg-white shadow-sm">
           <div className="flex flex-col max-[374]:p-5 p-10 gap-6">
             <div className="flex flex-col-reverse lg:flex-row lg:justify-between">
               <div>
@@ -48,8 +59,8 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                 </h2>
               </div>
               <div className="flex justify-between pb-6 lg:block lg:space-x-10">
-                <CarStatusBadge status={vehicle.status}/>
-                <ButtonIcon icon={<FaEllipsisVertical />} info="Ações" />
+                <CarStatusBadge status={vehicle.status.current}/>
+                {/* <ActionMenu currentStatus={vehicle.status.current}/> */}
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -126,7 +137,36 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-10 border rounded-xl bg-white shadow-sm">
+        {vehicle.status.history && (
+          <div className="border rounded-xl p-10 bg-white shadow-sm">
+            <div className="flex justify-between items-center">
+              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1 mb-6">
+                Histórico de 
+                <span className="block capitalize text-blue-500">Marchas</span>
+              </h3>
+              <div>
+                <DialogForm
+                  formRef={statusFormRef}
+                  triggerComponent={(
+                    <Button variant="outline" size="icon">
+                      <GiGearStickPattern />
+                    </Button>
+                  )}
+                  title={(<><GiGearStickPattern /> Mudar Marcha</>)}
+                  description="Cada marcha representa uma etapa da jornada do seu veículo, do pátio à venda ou aluguel. Mude a marcha para acompanhar o processo e manter tudo atualizado."
+                  formComponent={(
+                    <StatusForm ref={statusFormRef} currentStatus={vehicle.status.current} onHandleSubmit={handleUpdateStatus} />
+                  )}
+                  buttonText={(<>MUDAR <GiGearStick /></>)}
+                />
+              </div>
+            </div>
+            {vehicle.status.history.map(history => (
+              <TimelineStatus key={history.id} history={history}/>
+            ))}
+          </div>
+        )}
+        <div className={`${cost ? 'col-span-2' : 'col-span-3'} flex flex-col gap-10 border rounded-xl bg-white shadow-sm`}>
           <div className="max-[374]:p-5 p-10">
             <div className="flex justify-between items-center">
               <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
@@ -135,7 +175,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
               </h3>
               <div>
                 <SheetForm
-                  formRef={formRef}
+                  formRef={costFormRef}
                   triggerComponent={(
                     <Button variant="outline" size="icon">
                       <FaFileCirclePlus />
@@ -144,7 +184,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                   title="Adicionar Custos"
                   description='Informe qualquer despesa relacionada ao seu veículo, desde manutenções e reparos a gastos com peças, inspeções ou documentação.'
                   formComponent={(
-                    <RegisterCostForm ref={formRef} onHandleSubmitCost={handleAddCost} />
+                    <RegisterCostForm ref={costFormRef} onHandleSubmit={handleAddCost} />
                   )}
                 />
               </div>
@@ -166,53 +206,59 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
             )}
           </div>
         </div>
-      </div>
-      <aside className="xl:w-3/5 max-[374]:p-5 p-10 border rounded-xl xl:-mt-16 xl:z-10 bg-white shadow-sm flex flex-col gap-6">
-        {vehicle.fipe > 0 && (
-          <div className="flex flex-col gap-6">
-            <h2 className="text-xl md:text-2xl font-bold text-muted-foreground">
-              Simulação de Lucro com Desconto FIPE
-            </h2>
-            <div className="grid grid-cols-2 gap-y-2 sm:grid-cols-3 md:gap-y-0">
-              <div className="col-span-2 sm:col-span-1">
-                <span className="flex items-center gap-1 text-muted-foreground">
-                  <FaMagnifyingGlassDollar />
-                  Fipe
-                </span>
-                <span className="block font-semibold">{vehicle.fipeFormatted}</span>
-              </div>
-              <div>
-                <span className="flex items-center gap-1 text-muted-foreground">
-                  <FaCartArrowDown />
-                  Pago
-                </span>
-                <span className="block font-semibold">{vehicle.payment.totalFormatted}</span>
-              </div>
-              <div>
-                <span className="flex items-center gap-1 text-muted-foreground">
-                  <FaSackDollar />
-                  Gasto Total
-                </span>
-                <span className="block font-semibold">
-                  {cost?.totalFormatted ?? 'R$ 0,00'}
-                </span>
-              </div>
-            </div>
-            <ChartBarProfitProjection vehicle={vehicle} cost={cost}/>
-          </div>
-        )}
         {cost && (
-          <div className="flex flex-col gap-6">
-            <h2 className="text-xl md:text-2xl font-bold text-muted-foreground">
-              Análise de Gastos por Categoria
-            </h2>
-            <p>
-              Entenda como o capital investido se distribuiu para as diferentes categorias de custos.
-            </p>
-            <ChartCostAnalysis cost={cost}/>
+          <div className="border rounded-xl p-10 bg-white shadow-sm">
+            <div className="flex flex-col gap-6">
+              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1 mb-6">
+                Análise de 
+                <span className="block capitalize text-blue-500">Gastos por Categoria</span>
+              </h3>
+              <p>
+                Entenda como o capital investido se distribuiu para as diferentes categorias de custos.
+              </p>
+              <ChartCostAnalysis cost={cost}/>
+            </div>
           </div>
         )}
-      </aside>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {vehicle.fipe > 0 && (
+          <div className="col-span-2 border rounded-xl p-10 bg-white shadow-sm">
+            <div className="flex flex-col gap-6">
+              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1 mb-6">
+                Simulação de 
+                <span className="block capitalize text-blue-500">Lucro com Desconto FIPE</span>
+              </h3>
+              <div className="grid grid-cols-2 gap-y-2 sm:grid-cols-3 md:gap-y-0">
+                <div className="col-span-2 sm:col-span-1">
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <FaMagnifyingGlassDollar />
+                    Fipe
+                  </span>
+                  <span className="block font-semibold">{vehicle.fipeFormatted}</span>
+                </div>
+                <div>
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <FaCartArrowDown />
+                    Pago
+                  </span>
+                  <span className="block font-semibold">{vehicle.payment.totalFormatted}</span>
+                </div>
+                <div>
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <FaSackDollar />
+                    Gasto Total
+                  </span>
+                  <span className="block font-semibold">
+                    {cost?.totalFormatted ?? 'R$ 0,00'}
+                  </span>
+                </div>
+              </div>
+              <ChartBarProfitProjection vehicle={vehicle} cost={cost}/>
+            </div>
+          </div>
+        )}
+      </div>
     </main>
   )
 }

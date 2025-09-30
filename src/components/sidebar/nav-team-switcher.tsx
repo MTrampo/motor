@@ -5,11 +5,11 @@ import { ChevronsUpDown, Plus } from "lucide-react"
 
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -19,15 +19,24 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { NavTeamItem } from "@/commons/types/sidebar"
-import { FaCirclePlus } from "react-icons/fa6"
+import { FaCar, FaCirclePlus } from "react-icons/fa6"
+import { useUser } from "@/hooks/use-user"
+import { useRouter } from "next/navigation"
 
-export type TeamSwitcherProps = {
+export type NavTeamSwitcherProps = {
   teams: NavTeamItem[];
 }
 
-export function TeamSwitcher({ teams }: TeamSwitcherProps) {
+export function NavTeamSwitcher() {
+  const { user, activeTeam, selectTeam } = useUser()
+  
+  const router = useRouter()
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+
+  const selectNewTeam = async (teamId: string) => {
+    await selectTeam(teamId)
+    window.location.reload()
+  }
 
   if (!activeTeam) {
     return null
@@ -44,12 +53,12 @@ export function TeamSwitcher({ teams }: TeamSwitcherProps) {
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                 <span>
-                  {activeTeam.logo}
+                  <FaCar/>
                 </span>
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeTeam.name}</span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                <span className="truncate font-medium">{activeTeam.team.name}</span>
+                <span className="truncate text-xs">{activeTeam.roleFormatted}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -63,19 +72,20 @@ export function TeamSwitcher({ teams }: TeamSwitcherProps) {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Frotas
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
+            {user?.teams && user.teams.map(team => (
+              <DropdownMenuCheckboxItem
+                key={team.id}
                 className="gap-2 p-2"
+                checked={team.team.id === activeTeam.team.id}
+                onCheckedChange={() => selectNewTeam(team.team.id)}
               >
-                <div className="flex size-6 items-center justify-center rounded-md border">
+                <div className="flex p-1 items-center justify-center rounded-md border">
                   <span className="shrink-0">
-                    {team.logo}
+                    <FaCar/>
                   </span>
                 </div>
-                {team.name}
-              </DropdownMenuItem>
+                {team.team.name}
+              </DropdownMenuCheckboxItem>
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">

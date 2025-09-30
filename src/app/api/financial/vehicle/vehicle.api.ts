@@ -1,19 +1,23 @@
 import { formatVehicle, formatVehicles, formatVehiclesSummary, VehicleAuctionFormInputs, VehicleDocData, VehicleRequestBody, VehicleSummaryDocData, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
-import { addVehicleDoc, getAllVehiclesDocs, getAllVehiclesSummaryDocs, getVehicleByIdDocs, updateVehicleCostDoc } from "./vehicle.firestore"
+import { addVehicleDoc, getAllVehiclesDocs, getAllVehiclesSummaryDocs, getVehicleByIdDocs, updateCurrentStatusDoc, updateVehicleCostDoc } from "./vehicle.firestore"
 import globalResponses from "@/commons/utils/responses"
 import { CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car"
 import { addFinanceAccordingToTypeRequested } from "../summary/summary.api"
 import { ResponseProps } from "@/commons/models/Api"
 import { HttpStatusEnum } from "@/commons/enums/Api"
 import { FinanceTypeEnum } from "@/commons/enums/Finance"
+import { getLatestXStatus } from "./status/status.api"
 
 
 export const getVehicleById = async (teamId: string, documentId: string) => {
-  const vehicle = await getVehicleByIdDocs(teamId, documentId)
-  if (!vehicle) return globalResponses.vehicleNotFound(false)
+  const vehicle = await getVehicleByIdDocs(teamId, documentId);
+  if (!vehicle) return globalResponses.vehicleNotFound(false);
 
-  const formattedData = formatVehicle(vehicle)
-  return globalResponses.vehicleFound(formattedData)
+  const statusHistory = await getLatestXStatus(teamId, vehicle.id, 5)
+  console.log('histórico aqui: ', statusHistory)
+  const formattedData = formatVehicle(vehicle, statusHistory);
+  
+  return globalResponses.vehicleFound(formattedData);
 }
 
 export const getAllVehicles = async (teamId: string) => {
@@ -43,7 +47,11 @@ export const addVehicle = async (teamId: string, data: VehicleRequestBody) => {
 }
 
 export const updateVehicleCost = async (teamId: string, documentId: string, value: number) => {
-  await updateVehicleCostDoc(teamId, documentId, value)
+  await updateVehicleCostDoc(teamId, documentId, value);
+}
+
+export const updateVehicleCurrentStatus = async (teamId: string, documentId: string, status: CarStatusEnum) => {
+  await updateCurrentStatusDoc(teamId, documentId, status);
 }
 
 const createDocDataVehicleThird = (vehicle: VehicleThirdFormInputs) => {

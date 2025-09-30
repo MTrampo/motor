@@ -1,5 +1,5 @@
 import z from 'zod'
-import { CarOrigenEnum } from '../enums/Car';
+import { CarOrigenEnum, CarStatusEnum } from '../enums/Car';
 import { isCnpjValid, isCpfValid } from '../utils/validations';
 
 export const vehicleFormSchema = z.object({
@@ -132,3 +132,10 @@ export const paymentDefaultValues = {
 export const VEHICLE = "vehicle" as const
 export const PAYMENT = "payment" as const
 export const SUMMARY = "summary" as const
+
+export const vehicleStatus = z.object({
+  endDatePreviousStatus: z.coerce.date<Date>("Data de pagamento obrigatória."),
+  nextStatusStartDate: z.coerce.date<Date>("Data de pagamento obrigatória."),
+  newStatus: z.coerce.number<CarStatusEnum>("Novo status obrigatório."),
+  reason: z.string().trim().optional()
+});
