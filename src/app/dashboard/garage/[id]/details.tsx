@@ -10,12 +10,11 @@ import { CarStatusBadge } from "@/components/status/car-status";
 import { Button } from "@/components/ui/button";
 import { ChartBarProfitProjection } from "@/components/vehicles/chart/chart-profit-projection-vehicle";
 import TableCostsVehicle from "@/components/vehicles/data-table/table-costs-vehicle";
-import { FaCartArrowDown, FaEllipsisVertical, FaFileCirclePlus, FaMagnifyingGlassDollar, FaMoneyBillTrendUp, FaPenToSquare, FaSackDollar, FaScrewdriverWrench } from "react-icons/fa6";
+import { FaCartArrowDown, FaFileCirclePlus, FaMagnifyingGlassDollar, FaSackDollar } from "react-icons/fa6";
 import { RegisterCostFormInputs } from "@/commons/models/Cost";
 import { addCost, updatedStatus } from "./action";
 import { ChartCostAnalysis } from "@/components/vehicles/chart/chart-cost-analysis";
 import { useGetCostByPlateSWR } from '@/hooks/swr/use-cost'
-import { ActionMenu } from "@/components/dashboard/action-menu";
 import { TimelineStatus } from "@/components/status/timeline-status";
 import { DialogForm, DialogFormRef } from "@/components/forms/dialog-form";
 import { GiGearStick, GiGearStickPattern } from "react-icons/gi";
