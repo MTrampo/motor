@@ -1,9 +1,9 @@
 "use client"
 
-import { use, useMemo } from "react";
+import { use } from "react";
 import Header from "@/components/header";
 import Image from "next/image"
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { useGetVehicleByIdSWR } from "@/hooks/swr/use-vehicle"
 import VehicleDetails from "./details";
 import { getRandomCarImage } from "@/commons/utils/generate-data";
@@ -37,8 +37,6 @@ export default function Page({ params }: VehicleProps) {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            {/* <CarouselPrevious />
-            <CarouselNext /> */}
           </Carousel>
         ) : (
           <>

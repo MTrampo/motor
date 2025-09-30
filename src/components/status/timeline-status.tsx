@@ -1,8 +1,6 @@
 import { cn } from "@/commons/lib/utils"
-import { ReactNode } from "react"
 import { statusIconMap } from "./status-map"
 import { translateEnum } from "@/commons/utils/enum-helpers"
-import { CarStatusEnum } from "@/commons/enums/Car"
 import { VehicleStatusHistoryItemFormatted } from "@/commons/models/Vehicle"
 
 type TimelineProps = {

@@ -1,13 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { FaCar, FaChartPie } from "react-icons/fa6"
+import { FaCar } from "react-icons/fa6"
 import { BiSolidCarGarage } from "react-icons/bi";
 import { AiFillDashboard } from "react-icons/ai";
-
-// import { NavDocuments } from "@/components/nav-documents"
-// import { NavSecondary } from "@/components/nav-secondary"
-// import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -17,8 +13,6 @@ import {
 import { NavMain } from "./nav-main"
 import { NavTeamSwitcher } from "./nav-team-switcher"
 import { NavUser } from "./nav-user";
-import { VERSION } from "@/commons/constants/version";
-
 
 const data = {
   user: {

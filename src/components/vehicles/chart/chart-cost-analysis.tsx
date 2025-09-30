@@ -1,10 +1,8 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
 import { Cell, Pie, PieChart, TooltipProps } from "recharts"
-
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartConfig, ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { CostFormatted } from "@/commons/models/Cost"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { currencyFormatter } from "@/commons/utils/formatter"
