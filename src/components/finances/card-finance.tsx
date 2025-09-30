@@ -1,7 +1,4 @@
-import { FinanceComparisonFormatted } from "@/commons/models/Finance";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { FaArrowTrendUp, FaGripLines } from "react-icons/fa6";
-import { Badge } from "../ui/badge";
 import { ReactNode } from "react";
 import { Skeleton } from "../ui/skeleton";
 

@@ -1,4 +1,3 @@
-import { JSX } from "react";
 import { CarStatusEnum } from "@/commons/enums/Car";
 import { Badge } from "../ui/badge";
 import { translateEnum } from "@/commons/utils/enum-helpers";

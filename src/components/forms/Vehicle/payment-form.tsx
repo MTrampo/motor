@@ -3,18 +3,15 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { AuctionFormInputs, PaymentFormInputs } from "@/commons/models/Vehicle";
 import { Input } from "@/components/ui/input";
-import { useFormContext, UseFormReturn } from "react-hook-form";
-import { ComboboxBrand } from "@/components/ui/combobox-brand";
+import { useFormContext } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CarOrigenEnum } from "@/commons/enums/Car";
 import { SelectCalendar } from "@/components/ui/select-calendar";
 import { formatCpfCnpj, formatCurrencyInput, normalizeCurrencyValue } from "@/commons/utils/formatter";
 import { Textarea } from "@/components/ui/textarea";
 import { auctionTypeTranslations, originTypeTranslations, damageTypeTranslations } from "@/commons/utils/enum-helpers";
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { FaSackDollar } from "react-icons/fa6";
-import { paymentDefaultValues } from "@/commons/validations/Vehicle";
 
 
 export function PaymentForm() {

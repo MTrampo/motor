@@ -3,7 +3,7 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { VehicleFormInputs } from "@/commons/models/Vehicle";
 import { Input } from "@/components/ui/input";
-import { useFormContext, UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { ComboboxBrand } from "@/components/ui/combobox-brand";
 import { formatCurrencyInput, formatNumber, normalizeCurrencyValue } from "@/commons/utils/formatter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

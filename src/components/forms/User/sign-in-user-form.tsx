@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FaEye, FaEyeSlash, FaPersonWalkingArrowRight  } from "react-icons/fa6";
+import { FaEye, FaEyeSlash  } from "react-icons/fa6";
 import { UserSignInFormInputs } from "@/commons/models/User"; 
 import { userSignInFormSchema } from "@/commons/validations/User";
 import { Input } from "../../ui/input";
