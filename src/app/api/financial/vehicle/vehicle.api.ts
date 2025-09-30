@@ -1,5 +1,5 @@
-import { formatVehicle, formatVehicles, formatVehiclesSummary, VehicleAuctionFormInputs, VehicleDocData, VehicleRequestBody, VehicleSummaryDocData, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
-import { addVehicleDoc, getAllVehiclesDocs, getAllVehiclesSummaryDocs, getVehicleByIdDocs, updateCurrentStatusDoc, updateVehicleCostDoc } from "./vehicle.firestore"
+import { formatVehicle, formatVehiclesSummary, VehicleAuctionFormInputs, VehicleDocData, VehicleRequestBody, VehicleSummaryDocData, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
+import { addVehicleDoc, getAllVehiclesSummaryDocs, getVehicleByIdDocs, updateCurrentStatusDoc, updateVehicleCostDoc } from "./vehicle.firestore"
 import globalResponses from "@/commons/utils/responses"
 import { CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car"
 import { addFinanceAccordingToTypeRequested } from "../summary/summary.api"
@@ -14,7 +14,6 @@ export const getVehicleById = async (teamId: string, documentId: string) => {
   if (!vehicle) return globalResponses.vehicleNotFound(false);
 
   const statusHistory = await getLatestXStatus(teamId, vehicle.id, 5)
-  console.log('histórico aqui: ', statusHistory)
   const formattedData = formatVehicle(vehicle, statusHistory);
   
   return globalResponses.vehicleFound(formattedData);

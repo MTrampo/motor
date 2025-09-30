@@ -4,7 +4,7 @@ import globalResponses from "@/commons/utils/responses"
 import { addCostDoc, addCostDocAndUpdateTotal, getCostByIdDocs, killCostDoc } from "./cost.firestore"
 import { ResponseProps } from "@/commons/models/Api"
 import { HttpStatusEnum } from "@/commons/enums/Api"
-import { addAndSynchronizeVehicleFinances, addFinanceAccordingToTypeRequested, removeAndSynchronizeVehicleFinances, removeFinanceAccordingToTypeRequested } from "../summary/summary.api"
+import { addAndSynchronizeVehicleFinances, removeAndSynchronizeVehicleFinances } from "../summary/summary.api"
 import { FinanceTypeEnum } from "@/commons/enums/Finance"
 
 export const getCostById = async (teamId: string, documentId: string) => {

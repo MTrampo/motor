@@ -78,8 +78,8 @@ export const updatedStatus = async (lasDocumentId: string | null, plate: string,
     }
   })(),
   {
-    loading: 'Adicionando Custos...',
-    success: 'Custos adicionados com sucesso!',
+    loading: 'Alterando Marcha...',
+    success: 'Marcha alterada com sucesso!',
       error: (err) => `${err.message}`
   })
 }

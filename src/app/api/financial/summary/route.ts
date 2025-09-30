@@ -1,5 +1,5 @@
 import { withAuth } from "@/commons/lib/firebase/authentication";
-import { getFinanceById, getQuarterlyFinanceComparison } from "./summary.api"
+import { getQuarterlyFinanceComparison } from "./summary.api"
 
 export async function GET() {
   return withAuth(async (session) => {
