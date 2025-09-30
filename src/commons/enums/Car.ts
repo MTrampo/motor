@@ -3,8 +3,10 @@ export enum CarStatusEnum {
   PURCHASED,
   WINCH,
   MAINTENANCE,
+  DOCUMENTATION,
   AVAILABLE,
   ANNOUNCED,
+  RENTED,
   SOLD
 }
 

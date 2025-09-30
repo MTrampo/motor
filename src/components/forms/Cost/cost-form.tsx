@@ -19,10 +19,10 @@ import { SheetFormRef } from "../sheet-form";
 
 
 type RegisterCostFormProps = {
-  onHandleSubmitCost: (data: RegisterCostFormInputs[]) => void
+  onHandleSubmit: (data: RegisterCostFormInputs[]) => void
 }
 
-const RegisterCostForm = forwardRef<SheetFormRef, RegisterCostFormProps>(({ onHandleSubmitCost }, ref) => {
+const RegisterCostForm = forwardRef<SheetFormRef, RegisterCostFormProps>(({ onHandleSubmit }, ref) => {
   const [costs, setCosts] = useState<RegisterCostFormInputs[]>([])
 
   const formCost = useForm<RegisterCostFormInputs>({
@@ -50,7 +50,7 @@ const RegisterCostForm = forwardRef<SheetFormRef, RegisterCostFormProps>(({ onHa
   useImperativeHandle(ref, () => ({
     isValid: costs.length > 0,
     errMessage: 'Por favor, adicione pelo menos um custo.',
-    onSubmit: () => onHandleSubmitCost(costs)
+    onSubmit: () => onHandleSubmit(costs)
   }))
 
   return(

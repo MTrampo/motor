@@ -1,24 +1,39 @@
 "use client";
 
-import { FaArrowTrendDown, FaArrowTrendUp, FaGripLines } from "react-icons/fa6";
-import { Badge } from "../ui/badge";
-import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import Image from "next/image";
 import { useGetFinancialSummarySWR } from "@/hooks/swr/use-summary";
-import { CardFinance } from "./card-finance";
-import { StatusComparisonEnum } from "@/commons/enums/Finance";
+import { CardFinance, CardFinanceLoading } from "./card-finance";
 import { PercentageBadge } from "./percentage-finance";
+import svgFinance from '@/commons/assets/svgs/finance-dashboard.svg'
 
 export default function OverviewFinances() {
   const { finance, isLoading } = useGetFinancialSummarySWR()
 
-  console.log('dados finanças', finance)
-
   if (isLoading) {
-    return <div>Carregando...</div>
+    return(
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <CardFinanceLoading/>
+        <CardFinanceLoading/>
+        <CardFinanceLoading/>
+        <CardFinanceLoading/>
+      </div>
+    )
   }
 
   if (!finance) {
-    return <div>Erro ao carregar dados financeiros.</div>
+    return(
+      <div className="flex flex-col gap-10 mt-16">
+        <Image src={svgFinance} className="mx-auto w-lg" alt="carro em manutenção" width={400} height={400} priority/>
+        <div className="text-center text-muted-foreground">
+          <p>
+            O motor da sua gestão ainda está frio, mas não se preocupe.
+          </p>
+          <p>
+            Registre os primeiros custos e receitas para aquecê-lo e ver os números da sua corrida.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   const carsPurchasedText = finance.countPurchased !== 0 ? 
@@ -29,8 +44,6 @@ export default function OverviewFinances() {
   
   const carsSoldText = finance.countSold !== 0 ? 
     finance.countSold > 1 ? 'carros vendidos. ' : 'carro vendido. ' : 'Nenhum carro vendido. '
-
-  //finance.comparison.amountPurchased
 
   return(
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -16,6 +16,7 @@ const subCollection = {
   cost: process.env.FIRESTORE_SUB_COLLECTION_COST as string,
   finance: process.env.FIRESTORE_SUB_COLLECTION_FINANCE as string,
   customer: process.env.FIRESTORE_SUB_COLLECTION_CUSTOMER as string,
+  statusHistory: process.env.FIRESTORE_SUB_COLLECTION_STATUS_HISTORY as string,
 }
 
 export const getPath: FirestorePaths = {
@@ -30,4 +31,5 @@ export const getPath: FirestorePaths = {
   cost: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.cost}`,
   finance: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.finance}`,
   customer: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.customer}`,
+  statusHistory: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.statusHistory}`
 }

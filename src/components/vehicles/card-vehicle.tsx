@@ -5,12 +5,13 @@ import { FaCalendar, FaCar, FaGaugeSimpleHigh, FaScrewdriverWrench } from "react
 import { CarStatusBadge } from "../status/car-status";
 import Link from "next/link";
 import { getRandomCarImage } from "@/commons/utils/generate-data";
+import { Skeleton } from "../ui/skeleton";
 
-type CardVehiclesProps = {
+type CardVehicleProps = {
   vehicle: VehicleSummaryFormatted;
 }
 
-export default function CardVehicles({ vehicle }: CardVehiclesProps) {
+export default function CardVehicle({ vehicle }: CardVehicleProps) {
   const imgFallback = getRandomCarImage()
   
   return (
@@ -64,5 +65,32 @@ export default function CardVehicles({ vehicle }: CardVehiclesProps) {
         </CardContent>
       </Card>
     </Link>
+  )
+}
+
+export function CardVehicleLoading() {  
+  return (
+    <Card className="sm:h-full grid grid-cols-2 sm:flex sm:grid-cols-none p-0 overflow-hidden gap-0 hover:shadow-md">
+      <CardHeader className="gap-0 p-0">
+        <Skeleton className="h-[250px] w-auto rounded-none" />
+      </CardHeader>
+      <CardContent className="p-3 sm:mb-1">
+        <Skeleton className="h-4 w-[100px]" />
+        <div className="flex flex-col gap-y-2 mt-2">
+          <CardDescription className="max-[400]:hidden block">
+            <Skeleton className="h-2 w-[200px]" />
+          </CardDescription>
+
+          <div className="flex max-[400]:flex-col flex-row justify-between sm:items-center gap-2 sm:gap-0 min-[410]:mt-10 min-[585]:mt-20 sm:mt-4">
+            <Skeleton className="h-2 w-[100px]" />
+            <Skeleton className="h-2 w-[100px]" />
+          </div>
+          <div className="flex max-[400]:flex-col flex-row justify-between sm:items-center gap-2 sm:gap-0">
+            <Skeleton className="h-2 w-[100px]" />
+            <Skeleton className="h-2 w-[100px]" />
+          </div>          
+        </div>
+      </CardContent>
+    </Card>
   )
 }

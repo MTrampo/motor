@@ -1,16 +1,21 @@
 import z from 'zod'
 import { Timestamp } from 'firebase-admin/firestore';
-import { currencyFormatter, dateFormatter, formatCpfCnpj, formatNumber, fullNameFormatter } from '../utils/formatter'
+import { currencyFormatter, dateFormatter, dateFormatterStatus, formatCpfCnpj, formatNumber, fullNameFormatter } from '../utils/formatter'
 import { CarConditionTypeEnum, CarOrigenEnum, CarStatusEnum } from '../enums/Car';
 import { AuctionTypeEnum, DamageTypeEnum } from '../enums/Auction';
 import { translateEnum } from '../utils/enum-helpers';
-import { auctionFormSchema, paymentFormSchema, thirdFormSchema, vehicleFormSchema, vehicleMainFormSchema } from '../validations/Vehicle';
+import { auctionFormSchema, paymentFormSchema, thirdFormSchema, vehicleFormSchema, vehicleMainFormSchema, vehicleStatus } from '../validations/Vehicle';
 
 export interface VehicleRequestBody {
   documentId: string;
   origin: CarOrigenEnum;
   vehicleThird: VehicleThirdFormInputs | null;
   VehicleAuction: VehicleAuctionFormInputs | null;
+}
+
+export interface VehicleStatusHistoryRequestBody extends VehicleStatusFormInputs {
+  documentId: string | null;
+  plate: string;
 }
 
 export interface VehicleSummaryDocData extends Omit<VehicleSummaryFirestore, 'id' | 'createdAt' | 'updatedAt'> {
@@ -28,22 +33,14 @@ interface PaymentDocData extends Omit<PaymentFirestore, 'paymentDate'> {
   paymentDate: Date;
 }
 
-// export interface VehicleSummaryFirestore {
-//   id: string;
-//   brand: string;
-//   model: string;
-//   version: string;
-//   kilometers: number | null;
-//   years: string;
-//   color: string;
-//   hero: string | null;
-//   status: CarStatusEnum;
-//   conditionType: CarConditionTypeEnum;
-//   totalPaid: number;
-//   totalCost: number;
-//   createdAt: Timestamp;
-//   updatedAt: Timestamp;
-// }
+export interface VehicleStatusHistoryDocData extends Omit<VehicleStatusHistoryFirestore, 
+  'id' | 'createdAt' | 'updatedAt' | 'startedAt' | 'endedAt'> {
+  plate: string;
+  startedAt: Date;
+  endedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export interface VehicleSummaryFirestore extends Omit<VehicleFistore,
     'images' | 'payment' | 'fipe' | 'chassis' | 'manufacturingYear' | 'modelYear' | 'statusHistory'
@@ -103,15 +100,22 @@ interface AuctionFirestore {
   others: number;
 }
 
-interface StatusHistoryFirestore {
+export interface VehicleStatusHistoryFirestore {
+  id: string
+  plate: string
   status: CarStatusEnum;
+  startedAt: Timestamp;
+  endedAt: Timestamp;
+  reason?: string;
   createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 export interface VehicleSummaryFormatted extends Omit<VehicleFormatted,
   'images' | 'payment' | 'fipe' | 'chassis' | 'manufacturingYear' | 'modelYear' | 'statusHistory' |
-  'fipeFormatted'
+  'fipeFormatted' | 'status'
 > {
+  status: CarStatusEnum;
   years: string;
   hero: string | null;
   totalPaid: number;
@@ -131,14 +135,13 @@ export interface VehicleFormatted {
   modelYear: string;
   manufacturingYear: string;
   fipe: number;
-  status: CarStatusEnum;
+  status: VehicleStatusHistoryFormatted;
   conditionType: CarConditionTypeEnum;
   images: VehicleImagesFormatted;
   payment: PaymentFormatted;
   createdAt: Date;
   updatedAt: Date;
   fipeFormatted: string;
-  statusFormatted: string;
   conditionTypeFormatted: string;
   updatedAtFormatted: string;
   createdAtFormatted: string;
@@ -182,6 +185,23 @@ export interface AuctionFormatted {
   othersFormatted: string;
 }
 
+interface VehicleStatusHistoryFormatted {
+  current: CarStatusEnum;
+  history: VehicleStatusHistoryItemFormatted[] | null
+}
+
+export interface VehicleStatusHistoryItemFormatted extends Omit<VehicleStatusHistoryFirestore,
+'startedAt' | 'endedAt' | 'createdAt' | 'updatedAt' | 'plate'> {
+  status: CarStatusEnum;
+  startedAt: Date;
+  endedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  startedAtAndendedAtFormatted: string;
+  createdAtFormatted: string,
+  updatedAtFormatted: string,
+}
+
 // export interface ReturnPageBudgets {
 //   formattedData: VehicleFormatted[]
 //   lastDocument: string | null
@@ -196,7 +216,9 @@ export type VehicleMainFormInputs = z.infer<typeof vehicleMainFormSchema>;
 export interface VehicleThirdFormInputs extends VehicleFormInputs, ThirdFormInputs {};
 export interface VehicleAuctionFormInputs extends VehicleFormInputs, AuctionFormInputs {};
 
-export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
+export type VehicleStatusFormInputs = z.infer<typeof vehicleStatus>;
+
+export function formatVehicle(vehicle: VehicleFistore, statusHistory: VehicleStatusHistoryFirestore[] | null): VehicleFormatted {
   return {
     id: vehicle.id.toUpperCase(),
     brand: vehicle.brand.toUpperCase(),
@@ -208,7 +230,22 @@ export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
     modelYear: vehicle.modelYear,
     manufacturingYear: vehicle.manufacturingYear,
     fipe: vehicle.fipe ? vehicle.fipe : 0,
-    status: vehicle.status,
+    status: {
+      current: vehicle.status,
+      history: statusHistory && statusHistory.length > 0 ? statusHistory.map(history => ({
+        id: history.id,
+        status: history.status,
+        startedAt: history.startedAt.toDate(),
+        endedAt: history.endedAt?.toDate() ?? null,
+        reason: history.reason,
+        createdAt: history.createdAt.toDate(),
+        updatedAt: history.updatedAt.toDate(),
+        statusFormatted: translateEnum('CarStatusType', history.status),
+        startedAtAndendedAtFormatted: dateFormatterStatus(history.startedAt.toDate(), history.endedAt?.toDate() ?? null),
+        createdAtFormatted: dateFormatter.format(history.createdAt.toDate()),
+        updatedAtFormatted: dateFormatter.format(history.updatedAt.toDate()),
+      })) : null
+    },
     conditionType: vehicle.conditionType,
     images: vehicle.images,
     payment: {
@@ -243,7 +280,6 @@ export function formatVehicle(vehicle: VehicleFistore): VehicleFormatted {
     updatedAt: vehicle.updatedAt.toDate(),
     fipeFormatted: vehicle.fipe ? currencyFormatter.format(vehicle.fipe) : 'Não informado',
     conditionTypeFormatted: translateEnum('CarConditionType', vehicle.conditionType),
-    statusFormatted: translateEnum('CarStatusType', vehicle.status),
     createdAtFormatted: dateFormatter.format(vehicle.createdAt.toDate()),
     updatedAtFormatted: dateFormatter.format(vehicle.updatedAt.toDate()),
   }  
@@ -274,7 +310,7 @@ export function formatVehiclesSummary(vehicles: VehicleSummaryFirestore[]): Vehi
   }))
 }
 
-export function formatVehicles(vehicles: VehicleFistore[]): VehicleFormatted[] {
+export function formatVehicles(vehicles: VehicleFistore[], statusHistory: VehicleStatusHistoryFirestore[] | null): VehicleFormatted[] {
   return vehicles.map(vehicle => ({
     id: vehicle.id.toUpperCase(),
     brand: vehicle.brand.toUpperCase(),
@@ -286,7 +322,22 @@ export function formatVehicles(vehicles: VehicleFistore[]): VehicleFormatted[] {
     modelYear: vehicle.modelYear,
     manufacturingYear: vehicle.manufacturingYear,
     fipe: vehicle.fipe ? vehicle.fipe : 0,
-    status: vehicle.status,
+    status: {
+      current: vehicle.status,
+      history: statusHistory && statusHistory.length > 0 ? statusHistory.map(history => ({
+        id: history.id,
+        status: history.status,
+        startedAt: history.startedAt.toDate(),
+        endedAt: history.endedAt?.toDate() ?? null,
+        reason: history.reason,
+        createdAt: history.createdAt.toDate(),
+        updatedAt: history.updatedAt.toDate(),
+        statusFormatted: translateEnum('CarStatusType', history.status),
+        startedAtAndendedAtFormatted: dateFormatterStatus(history.startedAt.toDate(), history.endedAt?.toDate() ?? null),
+        createdAtFormatted: dateFormatter.format(history.createdAt.toDate()),
+        updatedAtFormatted: dateFormatter.format(history.updatedAt.toDate()),
+      })) : null
+    },
     conditionType: vehicle.conditionType,
     images: vehicle.images,
     payment: {

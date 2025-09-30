@@ -2,8 +2,8 @@ import { JSX } from "react";
 import { CostTypeEnum } from "@/commons/enums/Cost";
 import { Badge } from "../ui/badge";
 import { translateEnum } from "@/commons/utils/enum-helpers";
-import { FaFileLines, FaFileShield, FaMagnifyingGlassPlus, FaScrewdriverWrench, FaTruckFast } from "react-icons/fa6";
-import { GiCarWheel, GiMechanicGarage, GiSpeedometer, GiSpray, GiTowTruck, GiTurbine } from "react-icons/gi";
+import { FaFileLines, FaFileShield, FaGasPump, FaLandmark, FaMagnifyingGlassPlus, FaReceipt, FaScrewdriverWrench, FaSprayCanSparkles, FaTruckFast } from "react-icons/fa6";
+import { GiCarWheel, GiMechanicGarage, GiSpeedometer, GiSpray, GiTowTruck, GiTurbine, GiVacuumCleaner } from "react-icons/gi";
 import { MdCarRental, MdCarRepair, MdElectricCar, MdEngineering } from "react-icons/md";
 
 interface CostTypeBadgeProps {
@@ -26,6 +26,11 @@ const typeIconMap: Record<CostTypeEnum, JSX.Element> = {
   [CostTypeEnum.TECHNICIAN]: <GiMechanicGarage />,
   [CostTypeEnum.KEYCHAIN]: <MdCarRental />,
   [CostTypeEnum.INSURANCE]: <FaFileShield />,
+  [CostTypeEnum.AESTHETICS]: <FaSprayCanSparkles />,
+  [CostTypeEnum.DEBITS]: <FaReceipt />,
+  [CostTypeEnum.WASH]: <GiVacuumCleaner />,
+  [CostTypeEnum.FUEL]: <FaGasPump />,
+  [CostTypeEnum.FINE]: <FaLandmark />
 }
 
 export function CostTypeBadge({ type }: CostTypeBadgeProps) {
