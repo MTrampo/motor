@@ -45,7 +45,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
   return (
     <main className="flex flex-col p-6 gap-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="col-span-2 flex flex-col gap-10 border rounded-xl bg-white shadow-sm">
+        <div className="col-span-3 md:col-span-2 flex flex-col gap-10 border rounded-xl bg-white shadow-sm">
           <div className="flex flex-col max-[374]:p-5 p-10 gap-6">
             <div className="flex flex-col-reverse lg:flex-row lg:justify-between">
               <div>
@@ -137,7 +137,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
           )}
         </div>
         {vehicle.status.history && (
-          <div className="border rounded-xl p-10 bg-white shadow-sm">
+          <div className="col-span-3 md:col-span-1 border rounded-xl p-10 bg-white shadow-sm">
             <div className="flex justify-between items-center">
               <h3 className="text-muted-foreground text-xl font-semibold flex gap-1 mb-6">
                 Histórico de 
