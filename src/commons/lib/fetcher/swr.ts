@@ -1,31 +1,77 @@
-import { HttpStatusEnum } from "@/commons/enums/Api";
-import { ErrorResponse, ResponseProps, SWRAPIError } from "@/commons/models/Api";
+import { ApiError } from "@/commons/errors/api";
+import { MutatorArgs, ResponseProps } from "@/commons/models/Api";
 
-export const fetcher = async <T>(url: string): Promise<ResponseProps<T>> => {
+export async function fetcherSWR<T>(url: string): Promise<T> {
   const res = await fetch(url);
+  let json: any = null;
+
+  try {
+    json = await res.json();
+  } catch {}
 
   if (!res.ok) {
-    const errorData: ErrorResponse = await res.json();  
-    const error = new Error(errorData.message) as SWRAPIError;
-    error.info = errorData;
-    error.status = res.status;
-
-    throw error;
+    throw new ApiError(
+      json?.title ?? "Erro inesperado",
+      json?.message ?? res.statusText,
+      res.status,
+      json
+    );
   }
 
-  const json = await res.json();
+  return json as T;
+}
+
+export async function mutationSWR<T, K>(
+  url: string,
+  { arg }: MutatorArgs<K>
+): Promise<ResponseProps<T>> {
+  const { method, body, token } = arg;
+  
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  const res = await fetch(url, {
+    method,
+    headers,
+    credentials: 'same-origin',
+    body: JSON.stringify(body),
+  });
+
+  let json: any = null;
+
+  try {
+    json = await res.json();
+  } catch (e) {
+    // Em alguns casos, a API pode retornar um status de erro sem body JSON.
+    if (!res.ok) {
+        throw new ApiError(
+            `Erro ${res.status}`,
+            res.statusText || "Erro inesperado",
+            res.status
+        );
+    }
+    // Se não for erro, e o parse falhou, pode ser um retorno 204 (No Content), etc.
+  }
+
+  // Tratamento de erro padronizado (usando sua classe ApiError)
+  if (!res.ok) {
+    throw new ApiError(
+      json?.title ?? "Erro na requisição",
+      json?.message ?? res.statusText,
+      res.status,
+      json
+    );
+  }
+
+  // Seu padrão de retorno para sucesso
   return {
-    status: json.status as HttpStatusEnum,
     title: json.title as string,
     message: json.message as string,
     data: json.data as T,
-  };
+  } as ResponseProps<T>;
 }
-
-export const fetcherWithToken = (url: string, token: string) =>
-  fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-  .then(res => res.json());

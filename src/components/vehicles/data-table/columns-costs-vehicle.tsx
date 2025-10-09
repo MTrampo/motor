@@ -1,12 +1,46 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef, Row } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { ItemsCostFormatted } from "@/commons/models/Cost"
 import { CostTypeBadge } from "../cost-type"
 import { FaTrash } from "react-icons/fa6"
 import { ActionDialog } from "@/components/dialogs/action-dialog"
-import { killCost } from "@/app/dashboard/garage/[id]/action"
+import useCostSWR from "@/hooks/swr/use-cost"
+
+type ActionsCellProps = {
+  plate: string
+  row: Row<ItemsCostFormatted>
+}
+
+const ActionsCell = ({ plate, row }: ActionsCellProps) => {
+  const { killCost } = useCostSWR(plate);
+
+  const handleDeletionCost = async () => {
+    await killCost(plate, row.original.guid)
+  }
+
+  return (
+    <ActionDialog
+      title="Excluir Custo"
+      description={
+        <p>
+          Você tem certeza que deseja excluir este custo:{' '}
+          <b className="text-destructive">{row.original.description}</b>? 🤨
+        </p>
+      }
+      confirmText="Excluir"
+      cancelText="Cancelar"
+      onConfirm={handleDeletionCost}
+      confirmButtonVariant="destructive"
+      triggerComponent={
+        <Button className="cursor-pointer" variant="destructive" size="icon">
+          <FaTrash/>
+        </Button>
+      }
+    />
+  )
+}
 
 export const getColumns = (plate: string): ColumnDef<ItemsCostFormatted>[] => {
   return [
@@ -35,33 +69,7 @@ export const getColumns = (plate: string): ColumnDef<ItemsCostFormatted>[] => {
     {
       id: "actions",
       enableHiding: false,
-      cell: ({ row }) => {
-        
-        const handleDeletionCost = async () => {
-          await killCost(plate, row.original.guid)
-        }
-
-        return (
-          <ActionDialog
-            title="Excluir Custo"
-            description={
-              <p>
-                Você tem certeza que deseja excluir este custo:{' '}
-                <b className="text-destructive">{row.original.description}</b>? 🤨
-              </p>
-            }
-            confirmText="Excluir"
-            cancelText="Cancelar"
-            onConfirm={handleDeletionCost}
-            confirmButtonVariant="destructive"
-            triggerComponent={
-              <Button className="cursor-pointer" variant="destructive" size="icon">
-                <FaTrash/>
-              </Button>
-            }
-          />
-        )
-      },
-    },
+      cell: ({ row }) => <ActionsCell plate={plate} row={row}/>
+    }
   ]
 }

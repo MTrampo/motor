@@ -29,7 +29,6 @@ export const addStatusHistoryAndUpdateCurrentStatus = async (teamId: string, bod
   const id = await addStatusHistoryDoc(teamId, dataDoc);
   await updateVehicleCurrentStatus(teamId, dataDoc.plate, dataDoc.status)
   const result: ResponseProps<string> = {
-    status: HttpStatusEnum.CREATED,
     title: 'Criado',
     message: `Marcha alterada!`,
     data: id

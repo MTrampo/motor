@@ -12,9 +12,9 @@ import { ChartBarProfitProjection } from "@/components/vehicles/chart/chart-prof
 import TableCostsVehicle from "@/components/vehicles/data-table/table-costs-vehicle";
 import { FaCartArrowDown, FaFileCirclePlus, FaMagnifyingGlassDollar, FaSackDollar } from "react-icons/fa6";
 import { RegisterCostFormInputs } from "@/commons/models/Cost";
-import { addCost, updatedStatus } from "./action";
+import { updatedStatus } from "./action";
 import { ChartCostAnalysis } from "@/components/vehicles/chart/chart-cost-analysis";
-import { useGetCostByPlateSWR } from '@/hooks/swr/use-cost'
+import useCostSWR from '@/hooks/swr/use-cost'
 import { TimelineStatus } from "@/components/status/timeline-status";
 import { DialogForm, DialogFormRef } from "@/components/forms/dialog-form";
 import { GiGearStick, GiGearStickPattern } from "react-icons/gi";
@@ -25,14 +25,12 @@ type VehicleDetailsProps = {
 }
 
 export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
-  const { mutate, cost, isLoading } = useGetCostByPlateSWR(vehicle.id)
-
+  const { cost, addCost } = useCostSWR(vehicle.id)
   const costFormRef = useRef<SheetFormRef>(null)
   const statusFormRef = useRef<DialogFormRef>(null)
 
   const handleAddCost = async (data: RegisterCostFormInputs[]) => {
-    await addCost(vehicle.id, data)
-    //await mutate()
+    await addCost(data)
   }
 
   const handleUpdateStatus = async (data: VehicleStatusFormInputs) => {
@@ -165,7 +163,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
             ))}
           </div>
         )}
-        <div className={`${cost ? 'col-span-2' : 'col-span-3'} flex flex-col gap-10 border rounded-xl bg-white shadow-sm`}>
+        <div className={`${cost ? 'col-span-3 md:col-span-2' : 'col-span-3'} flex flex-col gap-10 border rounded-xl bg-white shadow-sm`}>
           <div className="max-[374]:p-5 p-10">
             <div className="flex justify-between items-center">
               <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">

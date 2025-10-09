@@ -29,7 +29,6 @@ const api = async <T, K>(
   const json = await result.json()
 
   return {
-    status: json.status as HttpStatusEnum,
     title: json.title as string,
     message: json.message as string,
     data: json.data as T,

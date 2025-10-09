@@ -3,13 +3,14 @@ import { CostDocData, CostItemDocData, CostRequestBody, formatCost } from "@/com
 import globalResponses from "@/commons/utils/responses"
 import { addCostDoc, addCostDocAndUpdateTotal, getCostByIdDocs, killCostDoc } from "./cost.firestore"
 import { ResponseProps } from "@/commons/models/Api"
-import { HttpStatusEnum } from "@/commons/enums/Api"
+import { ErrorCode, HttpStatusEnum } from "@/commons/enums/Api"
 import { addAndSynchronizeVehicleFinances, removeAndSynchronizeVehicleFinances } from "../summary/summary.api"
 import { FinanceTypeEnum } from "@/commons/enums/Finance"
+import { NotFound } from "@/commons/errors/generic"
 
 export const getCostById = async (teamId: string, documentId: string) => {
   const cost = await getCostByIdDocs(teamId, documentId)
-  if (!cost) return globalResponses.costNotFound(false)
+  if (!cost) throw new NotFound(ErrorCode.COST_NOT_FOUND);
 
   const formattedData = formatCost(cost)
   return globalResponses.costFound(formattedData)
@@ -18,7 +19,6 @@ export const getCostById = async (teamId: string, documentId: string) => {
 export const addCost = async (teamId: string, data: CostRequestBody) => {
   const id = await processAddNewCostOrNewCostItem(teamId, data);
   const result: ResponseProps<string> = {
-    status: HttpStatusEnum.CREATED,
     title: 'Cadastrado',
     message: `Custo cadastrado com sucesso!`,
     data: id,
@@ -45,7 +45,6 @@ export const killCost = async (teamId: string, data: CostRequestBody) => {
   });
 
   const result: ResponseProps<string> = {
-    status: HttpStatusEnum.CREATED,
     title: 'Cadastrado',
     message: `Orçamento cadastrado com sucesso! 🤠`,
     data: id,

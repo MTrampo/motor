@@ -7,6 +7,7 @@ import { FinanceTypeEnum } from "@/commons/enums/Finance";
 import { getFinancialValuesByTypeFactory } from "./summary.factory";
 import { endOfQuarter, startOfQuarter, subMonths, subQuarters } from "date-fns";
 import { updateVehicleCost } from "../vehicle/vehicle.api";
+import { Timestamp } from "firebase-admin/firestore";
 
 
 export const getFinanceById = async (teamId: string) => {
@@ -40,14 +41,7 @@ export const getQuarterlyFinanceComparison = async (teamId: string) => {
 
   // Busca os dados do trimestre atual
   const currentData = await getFinanceDocByFlexibleOrFixedPeriods(teamId, currentQuarterStart, currentQuarterEnd);
-  if (!currentData) {
-    return {
-      status: HttpStatusEnum.NOT_FOUND,
-      title: 'Finança não Encontrada',
-      message: 'Nenhuma finança ativa encontrada para o período atual!',
-      data: null
-    };
-  }
+  //if (!currentData) throw new NotFound(ErrorCode.SUMMARY_NOT_FOUND);
 
   // Define o período anterior (trimestre)
   const previousQuarterStart = startOfQuarter(subQuarters(today, 1));
@@ -58,7 +52,7 @@ export const getQuarterlyFinanceComparison = async (teamId: string) => {
 
 
   // Agrega os dados do trimestre atual e anterior
-  const currentSummary = aggregateFinances(currentData);
+  const currentSummary = currentData ? aggregateFinances(currentData) : null;
   const previousSummary = previousData ? aggregateFinances(previousData) : null;
 
   // Formata os dados agregados
@@ -135,7 +129,6 @@ async function processFinanceAccordingToTypeRequested (
     await createOrUpdateFinancialPeriodCorrespondingPaymentDate(teamId, payment, paymentDate, type, count, factor);
 
   const result: ResponseProps<string> = {
-    status: HttpStatusEnum.CREATED,
     title: 'Atualizado',
     message: `Finança atualizada com sucesso!`,
     data: periodFinance
@@ -175,8 +168,9 @@ async function createOrUpdateFinancialPeriodCorrespondingPaymentDate (
 }
 
 function aggregateFinances (finances: FinanceFirestore[]) {
+  const today = new Date();
   const initialData: FinanceFirestore = {
-    ...baseFinanceData(new Date()),
+    ...baseFinanceData(today),
     id: finances[0].id,
     lastCost: null,
     lastSold: null,
