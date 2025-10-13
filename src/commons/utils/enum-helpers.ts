@@ -68,7 +68,8 @@ export const costTypeTranslations: Record<CostTypeEnum, string> = {
   [CostTypeEnum.AESTHETICS]: "Estética",
   [CostTypeEnum.WASH]: "Lavagem/Higienização ",
   [CostTypeEnum.FUEL]: "Combustível",
-  [CostTypeEnum.FINE]: "Detran"
+  [CostTypeEnum.FINE]: "Detran",
+  [CostTypeEnum.DISPATCHING]: "Despachante",
 }
 
 export const roleTypeTranslations: Record<RoleEnum, string> = {

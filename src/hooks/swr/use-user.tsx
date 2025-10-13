@@ -12,6 +12,9 @@ export function useGetRegisteredUserSWR() {
       toast.error(err.title, { description: err.message })
     },
     shouldRetryOnError: false, // impede tentativas automáticas
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshInterval: 0,
   })
  
   return {

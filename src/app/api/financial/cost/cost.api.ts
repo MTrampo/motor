@@ -31,7 +31,6 @@ export const killCost = async (teamId: string, data: CostRequestBody) => {
   const oldDoc = await getCostByIdDocs(teamId, data.documentId);
   if (!oldDoc) return null;
 
-  const today = new Date()
   const oldDocItem = oldDoc.items.find(item => item.guid === data.guidItem)!;
   const total = oldDoc.total - oldDocItem.value;
 
@@ -40,7 +39,7 @@ export const killCost = async (teamId: string, data: CostRequestBody) => {
     plate: oldDoc.id,
     payment: oldDocItem.value,
     cost: total,
-    paymentDate: today,
+    paymentDate: oldDocItem.paymentDate.toDate(),
     type: FinanceTypeEnum.COST
   });
 

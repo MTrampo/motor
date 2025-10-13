@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import Image from "next/image";
 import svgCarRepair from "@/commons/assets/svgs/car-repair.svg";
 import { VehicleFormatted, VehicleStatusFormInputs } from "@/commons/models/Vehicle";
@@ -10,24 +10,39 @@ import { CarStatusBadge } from "@/components/status/car-status";
 import { Button } from "@/components/ui/button";
 import { ChartBarProfitProjection } from "@/components/vehicles/chart/chart-profit-projection-vehicle";
 import TableCostsVehicle from "@/components/vehicles/data-table/table-costs-vehicle";
-import { FaCartArrowDown, FaFileCirclePlus, FaMagnifyingGlassDollar, FaSackDollar } from "react-icons/fa6";
+import { FaCartArrowDown, FaFileCirclePlus, FaHandHoldingDollar, FaMagnifyingGlassDollar, FaSackDollar } from "react-icons/fa6";
 import { RegisterCostFormInputs } from "@/commons/models/Cost";
-import { updatedStatus } from "./action";
 import { ChartCostAnalysis } from "@/components/vehicles/chart/chart-cost-analysis";
-import useCostSWR from '@/hooks/swr/use-cost'
+import { useGetCostSWR, useAddCostSWR } from '@/hooks/swr/use-cost'
 import { TimelineStatus } from "@/components/status/timeline-status";
 import { DialogForm, DialogFormRef } from "@/components/forms/dialog-form";
 import { GiGearStick, GiGearStickPattern } from "react-icons/gi";
 import { StatusForm } from "@/components/forms/Vehicle/status-form";
+import { currencyFormatter } from "@/commons/utils/formatter";
+import { useUpdateStatusVehicleSWR } from "@/hooks/swr/use-vehicle";
 
 type VehicleDetailsProps = {
   vehicle: VehicleFormatted
 }
 
 export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
-  const { cost, addCost } = useCostSWR(vehicle.id)
+  const { updatedStatus } = useUpdateStatusVehicleSWR(vehicle.id)
+  const { cost } = useGetCostSWR(vehicle.id)
+  const { addCost } = useAddCostSWR(vehicle.id)
+
   const costFormRef = useRef<SheetFormRef>(null)
   const statusFormRef = useRef<DialogFormRef>(null)
+
+  const totalPaid = useCallback(() => {
+    const paymentTotal = vehicle.payment.total || 0
+    const costTotal = cost?.total || 0
+
+    const formatted = currencyFormatter.format(paymentTotal + costTotal)
+    return formatted
+  }, [vehicle.payment.total, cost?.total])
+
+  const totalPaidFormatted = totalPaid()
+  const IsThereCost = (cost && cost.items.length > 0) ?? false
 
   const handleAddCost = async (data: RegisterCostFormInputs[]) => {
     await addCost(data)
@@ -37,7 +52,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
     const history = vehicle.status.history
     const lastDocumentId = history && history.length > 0 ? history[history.length - 1].id : null
 
-    await updatedStatus(lastDocumentId, vehicle.id, data)
+    await updatedStatus(lastDocumentId, data)
   }
 
   return (
@@ -61,10 +76,6 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <div>
-                <span className="block text-muted-foreground">Pagamento</span>
-                <span className="block font-semibold">{vehicle.payment.paymentDateFormatted}</span>
-              </div>
               <div>
                 <span className="block text-muted-foreground">Ano</span>
                 <span className="block font-semibold">{vehicle.manufacturingYear}/{vehicle.modelYear}</span>
@@ -91,6 +102,34 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
               </div>
             </div>
           </div>
+          {vehicle.payment.third && (
+            <div className="flex flex-col max-[374]:p-5 p-10 gap-6 border-t">
+              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
+                Adquirido de 
+                <span className="block text-blue-500">Terceiro(a)</span>
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div>
+                  <span className="block text-muted-foreground">Pagamento</span>
+                  <span className="block font-semibold">{vehicle.payment.paymentDateFormatted}</span>
+                </div>
+                <div>
+                  <span className="block text-muted-foreground">Nome</span>
+                  <span className="block font-semibold">{vehicle.payment.third.name}</span>
+                </div>
+                <div>
+                  <span className="block text-muted-foreground">Documento</span>
+                  <span className="block font-semibold">{vehicle.payment.third.cpfCnpj}</span>
+                </div>
+                {vehicle.payment.notes && (
+                  <div className="col-span-5">
+                    <span className="block text-muted-foreground">Observação</span>
+                    <span className="block font-semibold">{vehicle.payment.notes}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           {vehicle.payment.auction && (
             <div className="flex flex-col max-[374]:p-5 p-10 gap-6 border-t">
               <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
@@ -98,6 +137,10 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                 <span className="block capitalize text-blue-500">{vehicle.payment.auction.name}</span>
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div>
+                  <span className="block text-muted-foreground">Pagamento</span>
+                  <span className="block font-semibold">{vehicle.payment.paymentDateFormatted}</span>
+                </div>
                 <div>
                   <span className="block text-muted-foreground">Código</span>
                   <span className="block font-semibold">{vehicle.payment.auction.code}</span>
@@ -130,6 +173,12 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                   <span className="block text-muted-foreground">Outros</span>
                   <span className="block font-semibold">{vehicle.payment.auction.othersFormatted}</span>
                 </div>
+                {vehicle.payment.notes && (
+                  <div className="col-span-5">
+                    <span className="block text-muted-foreground">Observação</span>
+                    <span className="block font-semibold">{vehicle.payment.notes}</span>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -163,7 +212,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
             ))}
           </div>
         )}
-        <div className={`${cost ? 'col-span-3 md:col-span-2' : 'col-span-3'} flex flex-col gap-10 border rounded-xl bg-white shadow-sm`}>
+        <div className="col-span-3 flex flex-col gap-10 border rounded-xl bg-white shadow-sm">
           <div className="max-[374]:p-5 p-10">
             <div className="flex justify-between items-center">
               <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
@@ -186,8 +235,8 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                 />
               </div>
             </div>
-            {cost ? (
-              <TableCostsVehicle plate={vehicle.id} cost={cost}/>
+            {IsThereCost ? (
+              <TableCostsVehicle plate={vehicle.id} cost={cost!}/>
             ) : (
               <div className="flex flex-col gap-5 pt-12">
                 <Image src={svgCarRepair} className="mx-auto" alt="carro em manutenção" width={200} height={200}/>
@@ -203,30 +252,31 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
             )}
           </div>
         </div>
-        {cost && (
-          <div className="col-span-3 md:col-span-1 border rounded-xl p-10 bg-white shadow-sm">
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {IsThereCost && (
+          <div className="border rounded-xl p-10 bg-white shadow-sm">
             <div className="flex flex-col gap-6">
               <h3 className="text-muted-foreground text-xl font-semibold flex gap-1 mb-6">
                 Análise de 
                 <span className="block capitalize text-blue-500">Gastos por Categoria</span>
               </h3>
               <p>
-                Entenda como o capital investido se distribuiu para as diferentes categorias de custos.
+                Entenda como o capital investido se distribuiu para as diferentes categorias de custos
+                (Manutenção, Documentação, Estética, etc.), de forma simples e estruturada.
               </p>
-              <ChartCostAnalysis cost={cost}/>
+              <ChartCostAnalysis cost={cost!}/>
             </div>
           </div>
         )}
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {vehicle.fipe > 0 && (
-          <div className="col-span-2 border rounded-xl p-10 bg-white shadow-sm">
+          <div className={`${IsThereCost ? 'col-span-1' : 'col-span-2'} border rounded-xl p-10 bg-white shadow-sm`}>
             <div className="flex flex-col gap-6">
               <h3 className="text-muted-foreground text-xl font-semibold flex gap-1 mb-6">
                 Simulação de 
                 <span className="block capitalize text-blue-500">Lucro com Desconto FIPE</span>
               </h3>
-              <div className="grid grid-cols-2 gap-y-2 sm:grid-cols-3 md:gap-y-0">
+              <div className="grid grid-cols-2 gap-y-2 sm:grid-cols-4 md:gap-y-0">
                 <div className="col-span-2 sm:col-span-1">
                   <span className="flex items-center gap-1 text-muted-foreground">
                     <FaMagnifyingGlassDollar />
@@ -243,11 +293,20 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                 </div>
                 <div>
                   <span className="flex items-center gap-1 text-muted-foreground">
-                    <FaSackDollar />
-                    Gasto Total
+                    <FaHandHoldingDollar />
+                    Custo
                   </span>
                   <span className="block font-semibold">
                     {cost?.totalFormatted ?? 'R$ 0,00'}
+                  </span>
+                </div>
+                <div>
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <FaSackDollar />
+                    Total Pago
+                  </span>
+                  <span className="block font-semibold">
+                    {totalPaidFormatted}
                   </span>
                 </div>
               </div>

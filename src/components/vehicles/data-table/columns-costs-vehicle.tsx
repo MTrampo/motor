@@ -6,7 +6,7 @@ import { ItemsCostFormatted } from "@/commons/models/Cost"
 import { CostTypeBadge } from "../cost-type"
 import { FaTrash } from "react-icons/fa6"
 import { ActionDialog } from "@/components/dialogs/action-dialog"
-import useCostSWR from "@/hooks/swr/use-cost"
+import { useKillCostSWR } from "@/hooks/swr/use-cost"
 
 type ActionsCellProps = {
   plate: string
@@ -14,7 +14,7 @@ type ActionsCellProps = {
 }
 
 const ActionsCell = ({ plate, row }: ActionsCellProps) => {
-  const { killCost } = useCostSWR(plate);
+  const { killCost } = useKillCostSWR(plate);
 
   const handleDeletionCost = async () => {
     await killCost(plate, row.original.guid)

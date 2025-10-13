@@ -6,34 +6,36 @@ import { toast } from "sonner"
 import useSWR, { mutate } from "swr"
 import useSWRMutation from "swr/mutation"
 
-const revalidateCostList = (plateId: string) => {
-    mutate(`/api/financial/cost/${plateId}`);
+const revalidateCosts = (plateId: string) => {
+  mutate(`/api/financial/cost/${plateId}`);
 };
 
-export default function useCostSWR(id: string) {
-  const { 
-    data: costData, 
-    error: costError, 
-    isLoading: isCostLoading
-  } = useSWR<ResponseProps<CostFormatted>, ApiError>(`/api/financial/cost/${id}`, fetcherSWR,
+export function useGetCostSWR(id: string) {
+  const { data: costData, error: costError, isLoading: isCostLoading } = useSWR<ResponseProps<CostFormatted>, ApiError>(`/api/financial/cost/${id}`,
+    fetcherSWR,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       refreshInterval: 0,
-    });
+    }
+  );
       
-  const { 
-      trigger, 
-      isMutating, 
-      error: errorMutate
-  } = useSWRMutation<ResponseProps<string | void>, ApiError, string, MutatorArgs<CostRequestBody>['arg']>(
-      '/api/financial/cost', 
-      mutationSWR,
-      {
-        onSuccess: () => {
-          revalidateCostList(id);
-        }
+  return {
+    cost: costData?.data ?? null,
+    isLoading: isCostLoading,
+    costError: costError,
+    revalidate: () => revalidateCosts(id) 
+  };
+}
+
+export function useAddCostSWR(id: string) {
+  const { trigger, isMutating, error } = useSWRMutation<ResponseProps<string>, ApiError, string, MutatorArgs<CostRequestBody>['arg']>('/api/financial/cost', 
+    mutationSWR,
+    {
+      onSuccess: () => {
+        revalidateCosts(id);
       }
+    }
   );
 
   const addCost = async (data: RegisterCostFormInputs[]) => {
@@ -61,6 +63,24 @@ export default function useCostSWR(id: string) {
     }
   }
 
+  return {
+    error,
+    addCost,
+    isMutating,
+    revalidate: () => revalidateCosts(id)
+  };
+}
+
+export function useKillCostSWR(id: string) {
+  const { trigger, isMutating, error } = useSWRMutation<ResponseProps<void>, ApiError, string, MutatorArgs<CostRequestBody>['arg']>('/api/financial/cost',
+    mutationSWR,
+    {
+      onSuccess: () => {
+        revalidateCosts(id);
+      }
+    }
+  );
+
   const killCost = async (plate: string, guid: string) => {
     const toastId = toast.loading('Deletando Custo...');
 
@@ -78,22 +98,11 @@ export default function useCostSWR(id: string) {
       throw err;
     }
   }
-
-
+  
   return {
-    // GET
-    cost: costData?.data,
-    isLoading: isCostLoading,
-    costError: costError,
-    
-    // POST
-    addCost,
-
-    // DELETE
+    error,
     killCost,
-    
     isMutating,
-    errorMutate,
-    revalidate: () => revalidateCostList(id) 
+    revalidate: () => revalidateCosts(id) 
   };
 }

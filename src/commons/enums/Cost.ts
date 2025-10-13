@@ -18,5 +18,6 @@ export enum CostTypeEnum {
   AESTHETICS,
   WASH,
   FUEL,
-  FINE
+  FINE,
+  DISPATCHING,
 }

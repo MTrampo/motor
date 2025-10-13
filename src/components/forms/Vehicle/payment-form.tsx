@@ -24,14 +24,6 @@ export function PaymentForm() {
     form.setValue('totalPaid', total)
   }
 
-  // const handleOriginChange = (value: string) => {
-  //   if(value === origin) return
-
-  //   localStorage.removeItem('payment')
-  //   form.reset(paymentDefaultValues, { keepDefaultValues: true })
-  //   form.setValue('origin', value)
-  // }
-
   return (
     <>
       <div className="grid grid-cols-4 gap-10 pb-10">

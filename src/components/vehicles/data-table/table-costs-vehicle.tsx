@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { getColumns } from "./columns-costs-vehicle"
-import { FaFilter, FaFilterCircleXmark, FaMagnifyingGlass } from 'react-icons/fa6'
+import { FaAngleLeft, FaAngleRight, FaFilter, FaFilterCircleXmark, FaMagnifyingGlass } from 'react-icons/fa6'
 import { useMemo } from "react"
 import { CostTypeText } from "../cost-type"
 import { InputIcon } from "@/components/ui/input-icon"
@@ -182,10 +182,6 @@ export default function TableCostsVehicle({ plate, cost }: TableCostsVehicleProp
         </Table>
       </div>
       <div className="flex flex-col sm:flex-row items-center sm:justify-between sm:space-x-2 py-4">
-        <div className="text-muted-foreground text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} de{" "}
-          {table.getPaginationRowModel().rows.length} linha(s) selecionadas.
-        </div>
         <div className="flex items-center gap-2 mt-5 sm:mt-0">
           <div className="hidden items-center gap-2 lg:flex">
             <Label htmlFor="rows-per-page" className="text-sm font-normal text-muted-foreground">
@@ -223,7 +219,7 @@ export default function TableCostsVehicle({ plate, cost }: TableCostsVehicleProp
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Anterio
+            <FaAngleLeft />
           </Button>
           <Button
             variant="outline"
@@ -231,7 +227,7 @@ export default function TableCostsVehicle({ plate, cost }: TableCostsVehicleProp
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Próximo
+            <FaAngleRight />
           </Button>
         </div>
       </div>

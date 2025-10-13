@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/Repository/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'scontent.cdninstagram.com',
+        pathname: '/**'
+      }
       // Se você tiver outros domínios de imagem, adicione-os aqui
       // {
       //   protocol: 'https',
