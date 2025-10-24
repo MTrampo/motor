@@ -1,11 +1,9 @@
-import { DocumentReference, Timestamp } from "firebase-admin/firestore"
-import { VehicleFistore, VehicleFormatted, formatVehicle } from "./Vehicle"
-import { currencyFormatter, dateFormatter, dateTimeFormatter } from "../utils/formatter"
+import { Timestamp } from "firebase-admin/firestore"
+import { currencyFormatter, dateFormatter } from "../utils/formatter"
 import { z } from "zod"
 import { CostTypeEnum } from "../enums/Cost"
 import { translateEnum } from "../utils/enum-helpers"
 import { registerCostFormSchema } from "../validations/Cost"
-import { PaginatedResult } from "./Data"
 
 export interface CostRequestBody {
   documentId: string

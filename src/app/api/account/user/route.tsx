@@ -1,4 +1,3 @@
-import { NextRequest } from "next/server"
 import { getLoggedInUserById } from "./user.api"
 import { withAuth } from "@/commons/lib/firebase/authentication"
 import { ResponseProps } from "@/commons/models/Api"
@@ -6,7 +5,7 @@ import { UserFormatted } from "@/commons/models/User"
 import { ApiCodeError } from "@/commons/errors/api"
 import { InternalServerError } from "@/commons/errors/generic"
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   return withAuth(async (session) => {
     try {
       const formattedData = await getLoggedInUserById(session)

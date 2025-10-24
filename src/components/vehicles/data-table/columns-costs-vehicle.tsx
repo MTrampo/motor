@@ -7,7 +7,7 @@ import { CostTypeBadge } from "../cost-type"
 import { FaTrash } from "react-icons/fa6"
 import { ActionDialog } from "@/components/dialogs/action-dialog"
 import { useKillCostSWR } from "@/hooks/swr/use-cost"
-import { isAvailableForSale } from "@/commons/utils/status-sequences"
+import { CarStatusEnum } from "@/commons/enums/Car"
 
 type ActionsCellProps = {
   status: number
@@ -16,14 +16,13 @@ type ActionsCellProps = {
 }
 
 const ActionsCell = ({ plate, row, status }: ActionsCellProps) => {
-  const availableSell = isAvailableForSale(status)
   const { killCost } = useKillCostSWR(plate);
 
   const handleDeletionCost = async () => {
     await killCost(plate, row.original.guid)
   }
 
-  if (!availableSell) return null;
+  if (status === CarStatusEnum.SOLD) return null;
 
   return (
     <ActionDialog

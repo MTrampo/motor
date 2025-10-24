@@ -1,7 +1,5 @@
 import { ResponseProps } from "../models/Api"
-import { getFirebaseAuthErrorMessage } from "../validations/User"
 import { VehicleFormatted, VehicleSummaryFormatted } from "../models/Vehicle"
-import { HttpStatusEnum } from "../enums/Api"
 import { CostFormatted } from "../models/Cost"
 import { VehicleSoldFormatted } from "../models/Sale"
 

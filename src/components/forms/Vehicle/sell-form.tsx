@@ -11,8 +11,7 @@ import { formatCurrencyInput, normalizeCurrencyValue } from "@/commons/utils/for
 import { VehicleSellFormInputs } from "@/commons/models/Sale";
 import { vehicleSell } from "@/commons/validations/Sale";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { paymentMethodForSaleTranslations, translateEnum } from "@/commons/utils/enum-helpers";
-import { number } from "zod";
+import { paymentMethodForSaleTranslations } from "@/commons/utils/enum-helpers";
 
 type SellFormFormProps = {
   onHandleSubmit: (data: VehicleSellFormInputs) => Promise<void>

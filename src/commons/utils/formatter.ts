@@ -1,6 +1,5 @@
-import { format, formatDistanceToNow, isThisWeek, isToday, isYesterday, parse } from 'date-fns'
+import { format, formatDistanceToNow, isThisWeek, isToday, isYesterday } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { Timestamp } from 'firebase-admin/firestore'
 import { StatusComparisonEnum } from '../enums/Finance'
 
 // Formatação de datas e horas

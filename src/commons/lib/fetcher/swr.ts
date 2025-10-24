@@ -3,7 +3,7 @@ import { MutatorArgs, ResponseProps } from "@/commons/models/Api";
 
 export async function fetcherSWR<T>(url: string): Promise<T> {
   const res = await fetch(url);
-  let json: any = null;
+  let json = null;
 
   try {
     json = await res.json();
@@ -42,17 +42,18 @@ export async function mutationSWR<T, K>(
     body: JSON.stringify(body),
   });
 
-  let json: any = null;
+  let json = null;
 
   try {
     json = await res.json();
-  } catch (e) {
+  } catch (err) {
     // Em alguns casos, a API pode retornar um status de erro sem body JSON.
     if (!res.ok) {
         throw new ApiError(
             `Erro ${res.status}`,
             res.statusText || "Erro inesperado",
-            res.status
+            res.status,
+            err
         );
     }
     // Se não for erro, e o parse falhou, pode ser um retorno 204 (No Content), etc.
