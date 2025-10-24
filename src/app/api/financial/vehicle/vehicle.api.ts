@@ -1,17 +1,18 @@
-import { formatVehicle, formatVehiclesSummary, VehicleAuctionFormInputs, VehicleDocData, VehicleRequestBody, VehicleSummaryDocData, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
+import { formatVehicle, formatVehiclesSummary, VehicleAuctionFormInputs, VehicleDocData, VehicleRequestBody, VehicleStatusBody, VehicleSummaryDocData, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
 import { addVehicleDoc, getAllVehiclesSummaryDocs, getVehicleByIdDocs, updateCurrentStatusDoc, updateVehicleCostDoc } from "./vehicle.firestore"
 import globalResponses from "@/commons/utils/responses"
 import { CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car"
 import { addFinanceAccordingToTypeRequested } from "../summary/summary.api"
 import { ResponseProps } from "@/commons/models/Api"
-import { HttpStatusEnum } from "@/commons/enums/Api"
+import { ErrorCode } from "@/commons/enums/Api"
 import { FinanceTypeEnum } from "@/commons/enums/Finance"
-import { getLatestXStatus } from "./status/status.api"
+import { addStatusHistory, getLatestXStatus } from "./status/status.api"
+import { NotFound } from "@/commons/errors/generic"
 
 
 export const getVehicleById = async (teamId: string, documentId: string) => {
   const vehicle = await getVehicleByIdDocs(teamId, documentId);
-  if (!vehicle) return globalResponses.vehicleNotFound(false);
+  if (!vehicle) throw new NotFound(ErrorCode.VEHICLE_NOT_FOUND);
 
   const statusHistory = await getLatestXStatus(teamId, vehicle.id, 5)
   const formattedData = formatVehicle(vehicle, statusHistory);
@@ -21,7 +22,7 @@ export const getVehicleById = async (teamId: string, documentId: string) => {
 
 export const getAllVehicles = async (teamId: string) => {
   const vehicles = await getAllVehiclesSummaryDocs(teamId)
-  if (!vehicles) return globalResponses.vehicleNotFound()
+  if (!vehicles) throw new NotFound(ErrorCode.VEHICLE_NOT_FOUND)
 
   const formattedData = formatVehiclesSummary(vehicles)
   return globalResponses.vehicleSummaryFound(formattedData)
@@ -36,7 +37,6 @@ export const addVehicle = async (teamId: string, data: VehicleRequestBody) => {
 
   const vehicleId = await syncAndAddVehicle(teamId, data.documentId, docData)
   const result: ResponseProps<boolean> = {
-    status: HttpStatusEnum.CREATED,
     title: 'Atualizado',
     message: `Finança atualizada com sucesso!`,
     data: vehicleId
@@ -154,6 +154,14 @@ const syncAndAddVehicle = async (teamId: string, documentId: string, data: Vehic
   }
 
   const vehicleId = await addVehicleDoc(teamId, documentId, data, vehicleSummaryDocData);
+
+  const statusBody: VehicleStatusBody = {
+    plate: documentId.toUpperCase(),
+    status: CarStatusEnum.PURCHASED,
+    startedAt: data.payment.paymentDate,
+  }
+
+  await addStatusHistory(teamId, statusBody);
   await addFinanceAccordingToTypeRequested(teamId, data.payment.total, data.payment.paymentDate, FinanceTypeEnum.PURCHASED);
 
   return vehicleId

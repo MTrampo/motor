@@ -43,3 +43,13 @@ const statusTransitions: Record<CarStatusEnum, CarStatusEnum[]> = {
 export function getNextVehicleStatuses(currentStatus: CarStatusEnum): CarStatusEnum[] {
   return statusTransitions[currentStatus] ?? [];
 }
+
+export function isAvailableForSale(status: CarStatusEnum): boolean {
+  const targetStatuses = [
+    CarStatusEnum.AVAILABLE,
+    CarStatusEnum.ANNOUNCED,
+    CarStatusEnum.RENTED,
+  ];
+
+  return targetStatuses.includes(Number(status));
+}

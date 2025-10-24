@@ -3,13 +3,14 @@ import { CostDocData, CostItemDocData, CostRequestBody, formatCost } from "@/com
 import globalResponses from "@/commons/utils/responses"
 import { addCostDoc, addCostDocAndUpdateTotal, getCostByIdDocs, killCostDoc } from "./cost.firestore"
 import { ResponseProps } from "@/commons/models/Api"
-import { HttpStatusEnum } from "@/commons/enums/Api"
-import { addAndSynchronizeVehicleFinances, removeAndSynchronizeVehicleFinances } from "../summary/summary.api"
+import { ErrorCode, HttpStatusEnum } from "@/commons/enums/Api"
+import { addAndSynchronizeVehicleCostFinances, removeAndSynchronizeVehicleCostFinances } from "../summary/summary.api"
 import { FinanceTypeEnum } from "@/commons/enums/Finance"
+import { NotFound } from "@/commons/errors/generic"
 
 export const getCostById = async (teamId: string, documentId: string) => {
   const cost = await getCostByIdDocs(teamId, documentId)
-  if (!cost) return globalResponses.costNotFound(false)
+  if (!cost) throw new NotFound(ErrorCode.COST_NOT_FOUND);
 
   const formattedData = formatCost(cost)
   return globalResponses.costFound(formattedData)
@@ -18,7 +19,6 @@ export const getCostById = async (teamId: string, documentId: string) => {
 export const addCost = async (teamId: string, data: CostRequestBody) => {
   const id = await processAddNewCostOrNewCostItem(teamId, data);
   const result: ResponseProps<string> = {
-    status: HttpStatusEnum.CREATED,
     title: 'Cadastrado',
     message: `Custo cadastrado com sucesso!`,
     data: id,
@@ -31,21 +31,19 @@ export const killCost = async (teamId: string, data: CostRequestBody) => {
   const oldDoc = await getCostByIdDocs(teamId, data.documentId);
   if (!oldDoc) return null;
 
-  const today = new Date()
   const oldDocItem = oldDoc.items.find(item => item.guid === data.guidItem)!;
   const total = oldDoc.total - oldDocItem.value;
 
   const id = await killCostDoc(teamId, data.documentId, oldDocItem, total);
-  await removeAndSynchronizeVehicleFinances(teamId, {
+  await removeAndSynchronizeVehicleCostFinances(teamId, {
     plate: oldDoc.id,
     payment: oldDocItem.value,
     cost: total,
-    paymentDate: today,
+    paymentDate: oldDocItem.paymentDate.toDate(),
     type: FinanceTypeEnum.COST
   });
 
   const result: ResponseProps<string> = {
-    status: HttpStatusEnum.CREATED,
     title: 'Cadastrado',
     message: `Orçamento cadastrado com sucesso! 🤠`,
     data: id,
@@ -72,7 +70,7 @@ const processAddNewCostOrNewCostItem = async (teamId: string, data: CostRequestB
     const total = (totalItems + checkCostsExist.total);
     
     const id = await addCostDocAndUpdateTotal(teamId, data.documentId, docItemData, total);
-    await addAndSynchronizeVehicleFinances(teamId, {
+    await addAndSynchronizeVehicleCostFinances(teamId, {
       plate: checkCostsExist.id,
       payment: totalItems,
       cost: total,
@@ -99,7 +97,7 @@ const processAddNewCostOrNewCostItem = async (teamId: string, data: CostRequestB
     const id = await addCostDoc(teamId, data.documentId, docData)
     
     const paymentDate = docData.items.map(item => item.paymentDate).sort((a, b) => b.getTime() - a.getTime())[0];
-    await addAndSynchronizeVehicleFinances(teamId, {
+    await addAndSynchronizeVehicleCostFinances(teamId, {
       plate: data.documentId,
       payment: docData.total,
       paymentDate,

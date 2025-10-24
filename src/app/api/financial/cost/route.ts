@@ -20,6 +20,4 @@ export async function DELETE(request: Request) {
     const result = await killCost(teamId, data)
     return Response.json(result)
   })
-
-  
 }

@@ -102,6 +102,12 @@ export function SummaryForm({ summary }: SummaryFormProps) {
             <span className="block text-muted-foreground">Valor pago</span>
             <span className="block font-semibold">{currencyFormatter.format(summary.paid)}</span>
           </div>
+          {summary.notes && (
+            <div className="col-span-5">
+              <span className="block text-muted-foreground">Observações</span>
+              <span className="block font-semibold">{summary.notes}</span>
+            </div>
+          )}
         </div>
       )}
       {isAuction(summary) && (
@@ -150,6 +156,12 @@ export function SummaryForm({ summary }: SummaryFormProps) {
             <span className="block text-muted-foreground">Administrativo</span>
             <span className="block font-semibold">{currencyFormatter.format(summary.administrative ?? 0)}</span>
           </div>
+          {summary.notes && (
+            <div className="col-span-5">
+              <span className="block text-muted-foreground">Observações</span>
+              <span className="block font-semibold">{summary.notes}</span>
+            </div>
+          )}
         </div>
       )}
     </div>

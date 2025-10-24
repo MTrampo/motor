@@ -4,6 +4,8 @@ import { cookies } from 'next/headers'
 import { firebaseAdmin } from './server'
 import { UserSession } from '@/commons/models/User'
 import { AuthenticationCodeEnum } from '@/commons/enums/Authentication'
+import { InternalServerError, Unauthorized } from '@/commons/errors/generic'
+import { ApiCodeError } from '@/commons/errors/api'
 
 const COOKIE_TK = process.env.COOKIE_TK || '';
 const COOKIE_TEAM = process.env.COOKIE_TEAM || '';
@@ -180,9 +182,7 @@ export async function checkIfHaveTeamSelectedAndIfNotSelectOne(team: string) {
 export async function withAuth(handler: (session: UserSession) => Promise<Response>) {
   try {
     const token = await getToken();
-    if (!token) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
-    }
+    if (!token) throw new Unauthorized()
 
     const selectedTeamId = await getTeamCookie();
     const decodedToken = await firebaseAdmin.auth.verifySessionCookie(token, true);
@@ -194,8 +194,14 @@ export async function withAuth(handler: (session: UserSession) => Promise<Respon
     };
 
     return handler(result);
-  } catch (err) {
-    console.error('Auth error:', err);
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  } catch (error: unknown) {
+    console.error('Auth error:', error);
+
+    if (error instanceof ApiCodeError) {
+      return Response.json(error.toJSON(), { status: error.status })
+    }
+
+    const internalError = new InternalServerError()
+    return Response.json(internalError.toJSON(), { status: internalError.status })
   }
 }

@@ -4,9 +4,10 @@ import { getCurrentPeriod } from "@/commons/utils/generate-data";
 import { createFinanceDoc, getFinanceDocByPeriod, getFinanceDocByFlexibleOrFixedPeriods, updateFinanceDoc } from "./summary.firestore";
 import { HttpStatusEnum } from "@/commons/enums/Api";
 import { FinanceTypeEnum } from "@/commons/enums/Finance";
-import { getFinancialValuesByTypeFactory } from "./summary.factory";
+import { getFinancialValuesBySaleFactory, getFinancialValuesByTypeFactory } from "./summary.factory";
 import { endOfQuarter, startOfQuarter, subMonths, subQuarters } from "date-fns";
 import { updateVehicleCost } from "../vehicle/vehicle.api";
+import { Timestamp } from "firebase-admin/firestore";
 
 
 export const getFinanceById = async (teamId: string) => {
@@ -40,14 +41,6 @@ export const getQuarterlyFinanceComparison = async (teamId: string) => {
 
   // Busca os dados do trimestre atual
   const currentData = await getFinanceDocByFlexibleOrFixedPeriods(teamId, currentQuarterStart, currentQuarterEnd);
-  if (!currentData) {
-    return {
-      status: HttpStatusEnum.NOT_FOUND,
-      title: 'Finança não Encontrada',
-      message: 'Nenhuma finança ativa encontrada para o período atual!',
-      data: null
-    };
-  }
 
   // Define o período anterior (trimestre)
   const previousQuarterStart = startOfQuarter(subQuarters(today, 1));
@@ -58,7 +51,7 @@ export const getQuarterlyFinanceComparison = async (teamId: string) => {
 
 
   // Agrega os dados do trimestre atual e anterior
-  const currentSummary = aggregateFinances(currentData);
+  const currentSummary = currentData ? aggregateFinances(currentData) : null;
   const previousSummary = previousData ? aggregateFinances(previousData) : null;
 
   // Formata os dados agregados
@@ -104,6 +97,14 @@ export const addFinanceAccordingToTypeRequested = (
   type: FinanceTypeEnum
 ) => processFinanceAccordingToTypeRequested(teamId, payment, paymentDate, type, false);
 
+export const addFinanceSale = (
+  teamId: string,
+  payment: number,
+  paymentDate: Date,
+  totalCost: number,
+  type: FinanceTypeEnum
+) => processFinanceAccordingToTypeRequested(teamId, payment, paymentDate, type, false, 1, totalCost);
+
 export const removeFinanceAccordingToTypeRequested = (
   teamId: string,
   payment: number,
@@ -111,14 +112,14 @@ export const removeFinanceAccordingToTypeRequested = (
   type: FinanceTypeEnum
 ) => processFinanceAccordingToTypeRequested(teamId, payment, paymentDate, type, true);
 
-export const addAndSynchronizeVehicleFinances = async (teamId: string, item: SynchronizeFinanceAndVehicleData) => {
+export const addAndSynchronizeVehicleCostFinances = async (teamId: string, item: SynchronizeFinanceAndVehicleData) => {
   await processFinanceAccordingToTypeRequested(teamId, item.payment, item.paymentDate, item.type, false, item.countItems);
 
   const newValue = item.cost || item.payment
   await updateVehicleCost(teamId, item.plate, newValue)
 }
 
-export const removeAndSynchronizeVehicleFinances = async (teamId: string, item: SynchronizeFinanceAndVehicleData) => {
+export const removeAndSynchronizeVehicleCostFinances = async (teamId: string, item: SynchronizeFinanceAndVehicleData) => {
   await processFinanceAccordingToTypeRequested(teamId, item.payment, item.paymentDate, item.type, true);
 
   const newValue = item.cost ?? item.payment
@@ -126,22 +127,57 @@ export const removeAndSynchronizeVehicleFinances = async (teamId: string, item: 
 }
 
 async function processFinanceAccordingToTypeRequested (
-  teamId: string, payment: number, paymentDate: Date,
-  type: FinanceTypeEnum, isDecrement: boolean = false, count: number = 1
+  teamId: string, payment: number, paymentDate: Date, type: FinanceTypeEnum,
+  isDecrement: boolean = false, count: number = 1, vehicleTotalCost: number = 0
 ) {
+  let periodFinance: string
   const factor = isDecrement ? -1 : 1;
 
-  const periodFinance = 
-    await createOrUpdateFinancialPeriodCorrespondingPaymentDate(teamId, payment, paymentDate, type, count, factor);
+  if (type === FinanceTypeEnum.SALE && vehicleTotalCost > 0) {
+    periodFinance = 
+      await createOrUpdateFinancialPeriodCorrespondingSold(teamId, payment, paymentDate, vehicleTotalCost, count, factor);
+  } else {
+    periodFinance = 
+      await createOrUpdateFinancialPeriodCorrespondingPaymentDate(teamId, payment, paymentDate, type, count, factor);
+  }
 
   const result: ResponseProps<string> = {
-    status: HttpStatusEnum.CREATED,
     title: 'Atualizado',
     message: `Finança atualizada com sucesso!`,
     data: periodFinance
   }
 
   return result
+}
+
+async function createOrUpdateFinancialPeriodCorrespondingSold (
+  teamId: string, payment: number, paymentDate: Date, 
+  vehicleTotalCost: number, count: number = 1, factor: number = 1
+) {
+  const today = new Date();
+  const date = new Date(paymentDate);
+  const periodId = getCurrentPeriod(date);
+
+  const financeDoc = await getFinanceDocByPeriod(teamId, periodId);
+  const financeSoldValues = getFinancialValuesBySaleFactory.get(FinanceTypeEnum.SALE)!;
+  const updatedValues = financeSoldValues(payment, paymentDate, vehicleTotalCost, financeDoc, count, factor)
+
+  if (financeDoc) {
+    const updatedFinanceDoc: Omit<FinanceDocData, 'id'> = {
+      ...financeDoc,
+      ...updatedValues,
+      updatedAt: today,
+    };
+
+    return await updateFinanceDoc(teamId, periodId, updatedFinanceDoc);
+  }
+
+  const newFinanceData: Omit<FinanceDocData, 'id'> = {
+    ...baseFinanceData(today),
+    ...updatedValues,
+  };
+
+  return await createFinanceDoc(teamId, periodId, newFinanceData);
 }
 
 async function createOrUpdateFinancialPeriodCorrespondingPaymentDate (
@@ -166,7 +202,7 @@ async function createOrUpdateFinancialPeriodCorrespondingPaymentDate (
     return await updateFinanceDoc(teamId, periodId, updatedFinanceDoc);
   }
 
-  const newFinanceData: FinanceDocData = {
+  const newFinanceData: Omit<FinanceDocData, 'id'> = {
     ...baseFinanceData(today),
     ...updatedValues,
   };
@@ -175,8 +211,9 @@ async function createOrUpdateFinancialPeriodCorrespondingPaymentDate (
 }
 
 function aggregateFinances (finances: FinanceFirestore[]) {
+  const today = new Date();
   const initialData: FinanceFirestore = {
-    ...baseFinanceData(new Date()),
+    ...baseFinanceData(today),
     id: finances[0].id,
     lastCost: null,
     lastSold: null,

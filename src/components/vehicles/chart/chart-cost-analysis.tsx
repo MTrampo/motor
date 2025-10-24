@@ -126,12 +126,21 @@ export function ChartCostAnalysis({ cost }: ChartCostAnalysisProps) {
 
   return (
     <Card className="flex flex-col shadow-none">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="items-center border-b">
         <CardTitle className="flex gap-1 text-muted-foreground">
-          <FaScrewdriverWrench />
-          Custos
+          {highestPercentageInfo && (
+            <div className="flex items-center gap-2 leading-6 sm:leading-none font-medium text-muted-foreground">
+              <FaScrewdriverWrench />
+              <span>
+                Gastos em <CostTypeBadge type={highestPercentageInfo.type}/> representam{' '}
+                {(highestPercentageInfo.percentage * 100).toFixed(0)}% do total projetado.
+              </span>
+            </div>
+          )}
         </CardTitle>
-        <CardDescription>{cost.totalFormatted}</CardDescription>
+        <CardDescription className="text-muted-foreground leading-none">
+          Análise realizada com base em {cost?.items?.length || 0} custos cadastrados para esse veículo.
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -171,16 +180,8 @@ export function ChartCostAnalysis({ cost }: ChartCostAnalysisProps) {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
-        {highestPercentageInfo && (
-          <div className="flex items-center gap-2 leading-6 sm:leading-none font-medium text-muted-foreground">
-            <span>
-              Gastos em <CostTypeBadge type={highestPercentageInfo.type}/> representam{' '}
-              {(highestPercentageInfo.percentage * 100).toFixed(0)}% do total projetado.
-            </span>
-          </div>
-        )}
-        <div className="text-muted-foreground leading-none">
-          Análise realizada com base em {cost?.items?.length || 0} custos cadastrados para esse veículo.
+        <div className="text-muted-foreground ">
+          Clique na barra para ver os detalhes da venda ou lucro projetado.
         </div>
       </CardFooter>
     </Card>

@@ -20,7 +20,7 @@ import {
 import { SummaryForm } from "@/components/forms/Vehicle/summary-form";
 import { VehicleMainFormInputs } from "@/commons/models/Vehicle";
 import { toast } from "sonner";
-import { addVehicle } from '@/app/dashboard/garage/new/action';
+import { useAddVehicleSWR } from '@/hooks/swr/use-vehicle';
 
 export const { Stepper, useStepper } = defineStepper(
   {
@@ -58,6 +58,8 @@ export function StepperForm() {
 
   const [disableReset, setDisableReset] = useState(true)
   const [summaryData, setSummaryData] = useState<VehicleMainFormInputs | null>(null)
+
+  const { addVehicle } = useAddVehicleSWR()
 
   const form = useForm<z.infer<typeof methods.current.schema>>({
     mode: "onTouched",
@@ -152,15 +154,15 @@ export function StepperForm() {
           })}
         </Stepper.Panel>
         <Stepper.Controls className="justify-between">
-          <Button
+          {/* <Button
             type="button"
             variant="destructive"
             disabled={disableReset}
             onClick={resetDataForm}
           >
             <FaTrash /> Excluir
-          </Button>
-          <div className="flex gap-6">
+          </Button> */}
+          {/* <div className="flex gap-6"> */}
             <Button
               type="button"
               variant="secondary"
@@ -178,7 +180,7 @@ export function StepperForm() {
                 <FaFloppyDisk /> Salvar
               </Button>
             )}
-          </div>
+          {/* </div> */}
         </Stepper.Controls>
       </form>
     </Form>

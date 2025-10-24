@@ -118,11 +118,45 @@ export function formatFinance(finance: FinanceFirestore): FinanceFormatted {
   }
 }
 
+export function createZeroFinanceFormatted(id: string, now: Date = new Date()): FinanceFormatted {
+  const zeroCurrency = currencyFormatter.format(0);
+  const nullDateFormatted = formatLastUpdated(null);
+  const nowFormatted = dateFormatter.format(now);
+
+  return {
+    id: id,
+    lastPurchased: null,
+    lastCost: null,
+    lastSold: null,
+    lastProfit: null,
+    createdAt: now, 
+    updatedAt: now,
+    amountCost: 0,
+    amountPurchased: 0,
+    amountProfit: 0,
+    amountSold: 0,
+    countCost: 0,
+    countProfit: 0,
+    countPurchased: 0,
+    countSold: 0,
+    amountCostFormatted: zeroCurrency,
+    amountPurchasedFormatted: zeroCurrency,
+    amountProfitFormatted: zeroCurrency,
+    amountSoldFormatted: zeroCurrency,
+    lastPurchasedFormatted: nullDateFormatted,
+    lastCostFormatted: nullDateFormatted,
+    lastSoldFormatted: nullDateFormatted,
+    lastProfitFormatted: nullDateFormatted,
+    updatedAtFormatted: nowFormatted,
+    createdAtFormatted: nowFormatted,
+  };
+}
+
 export function formatFinanceWithComparison(
-  currentFinance: FinanceFirestore,
+  currentFinance: FinanceFirestore | null,
   previousFinance: FinanceFirestore | null
 ) : FinanceComparisonFormatted {
-  const formattedBase = formatFinance(currentFinance);
+  const formattedBase = currentFinance ? formatFinance(currentFinance) : createZeroFinanceFormatted('00-0000');
   const comparison = {
     amountPurchased: createComparisonData(formattedBase.amountPurchased, previousFinance?.amountPurchased || 0, true),
     amountSold: createComparisonData(formattedBase.amountSold, previousFinance?.amountSold || 0, true),

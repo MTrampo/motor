@@ -2,7 +2,8 @@ export enum FinanceTypeEnum {
   COST,
   PURCHASED,
   SOLD,
-  PROFIT
+  PROFIT,
+  SALE
 }
 
 export enum StatusComparisonEnum {

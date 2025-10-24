@@ -23,7 +23,7 @@ export function BasicForm() {
           <FormItem>
             <FormLabel>Placa*</FormLabel>
             <FormControl>
-              <Input type="text" placeholder="Ex: HJD3G15" maxLength={7} {...field}/>
+              <Input type="text" placeholder="Ex: XXX3X15" maxLength={7} {...field}/>
             </FormControl>
             <FormMessage/>
           </FormItem>

@@ -100,13 +100,8 @@ export default function OverviewFinances() {
         )}
       />
       <CardFinance 
-        title="Faturamento" 
-        description={(
-          <>
-            {finance.countProfit > 0 && finance.countProfit}
-            {finance.comparison.amountProfit.text}
-          </>
-        )} 
+        title="Receita" 
+        description={finance.comparison.amountProfit.text} 
         amount={finance.amountProfitFormatted} 
         last={finance.lastProfitFormatted}
         percentage={(

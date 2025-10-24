@@ -18,6 +18,12 @@ export interface VehicleStatusHistoryRequestBody extends VehicleStatusFormInputs
   plate: string;
 }
 
+export interface VehicleStatusBody {
+  plate: string,
+  status: CarStatusEnum,
+  startedAt: Date
+}
+
 export interface VehicleSummaryDocData extends Omit<VehicleSummaryFirestore, 'id' | 'createdAt' | 'updatedAt'> {
   createdAt: Date;
   updatedAt: Date;
