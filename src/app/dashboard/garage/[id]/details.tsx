@@ -92,53 +92,53 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <div>
                 <span className="block text-muted-foreground">Ano</span>
-                <span className="block font-semibold">{vehicle.manufacturingYear}/{vehicle.modelYear}</span>
+                <span className="block font-semibold break-all">{vehicle.manufacturingYear}/{vehicle.modelYear}</span>
               </div>
               <div>
                 <span className="block text-muted-foreground">Km</span>
-                <span className="block font-semibold">{vehicle.kilometers}</span>
+                <span className="block font-semibold break-all">{vehicle.kilometers}</span>
               </div>
               <div>
                 <span className="block text-muted-foreground">Cor</span>
-                <span className="block font-semibold">{vehicle.color}</span>
+                <span className="block font-semibold break-all">{vehicle.color}</span>
               </div>
               <div>
                 <span className="block text-muted-foreground">Condição</span>
-                <span className="block font-semibold">{vehicle.conditionTypeFormatted}</span>
+                <span className="block font-semibold break-all">{vehicle.conditionTypeFormatted}</span>
               </div>
               <div>
                 <span className="block text-muted-foreground">Placa</span>
-                <span className="block font-semibold">{vehicle.id}</span>
+                <span className="block font-semibold break-all">{vehicle.id}</span>
               </div>
               <div>
                 <span className="block text-muted-foreground">Chassi</span>
-                <span className="block font-semibold">{vehicle.chassis}</span>
+                <span className="block font-semibold break-all">{vehicle.chassis}</span>
               </div>
             </div>
           </div>
           {vehicle.payment.third && (
             <div className="flex flex-col max-[374]:p-5 p-10 gap-6 border-t">
-              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
+              <h3 className="text-muted-foreground text-xl font-semibold flex flex-wrap gap-1">
                 Adquirido de 
                 <span className="block text-blue-500">Terceiro(a)</span>
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <div>
                   <span className="block text-muted-foreground">Pagamento</span>
-                  <span className="block font-semibold">{vehicle.payment.paymentDateFormatted}</span>
+                  <span className="block font-semibold break-all">{vehicle.payment.paymentDateFormatted}</span>
                 </div>
                 <div>
                   <span className="block text-muted-foreground">Nome</span>
-                  <span className="block font-semibold">{vehicle.payment.third.name}</span>
+                  <span className="block font-semibold break-all">{vehicle.payment.third.name}</span>
                 </div>
                 <div>
                   <span className="block text-muted-foreground">Documento</span>
-                  <span className="block font-semibold">{vehicle.payment.third.cpfCnpj}</span>
+                  <span className="block font-semibold break-all">{vehicle.payment.third.cpfCnpj}</span>
                 </div>
                 {vehicle.payment.notes && (
-                  <div className="col-span-5">
+                  <div className="col-span-full">
                     <span className="block text-muted-foreground">Observação</span>
-                    <span className="block font-semibold">{vehicle.payment.notes}</span>
+                    <span className="block font-semibold break-all">{vehicle.payment.notes}</span>
                   </div>
                 )}
               </div>
@@ -146,7 +146,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
           )}
           {vehicle.payment.auction && (
             <div className="flex flex-col max-[374]:p-5 p-10 gap-6 border-t">
-              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
+              <h3 className="text-muted-foreground text-xl font-semibold flex flex-wrap gap-1">
                 Leilão
                 <span className="block capitalize text-blue-500">{vehicle.payment.auction.name}</span>
               </h3>
@@ -188,7 +188,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                   <span className="block font-semibold">{vehicle.payment.auction.othersFormatted}</span>
                 </div>
                 {vehicle.payment.notes && (
-                  <div className="col-span-5">
+                  <div className="col-span-full">
                     <span className="block text-muted-foreground">Observação</span>
                     <span className="block font-semibold">{vehicle.payment.notes}</span>
                   </div>
@@ -200,7 +200,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
         {vehicle.status.history && (
           <div className="col-span-3 md:col-span-1 border rounded-xl p-10 bg-white shadow-sm">
             <div className="flex justify-between items-center">
-              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1 mb-6">
+              <h3 className="text-muted-foreground text-xl font-semibold flex flex-wrap gap-1 mb-6">
                 Histórico de 
                 <span className="block capitalize text-blue-500">Marchas</span>
               </h3>
@@ -228,93 +228,93 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
         )}
         {vehicle.status.current === CarStatusEnum.SOLD && (
           <div className="col-span-3 flex flex-col gap-10 border rounded-xl bg-gray-900 shadow-sm">
-            <div className="max-[374]:p-5 p-10">
-              <h3 className="text-white text-xl font-semibold flex gap-1 mb-6">
-                Análise de 
-                <span className="block capitalize text-blue-500">Performance de Venda</span>
-              </h3>
-              <div className="flex flex-col gap-6">
+            <div className="flex flex-col max-[374]:p-5 p-10 gap-6">
+              <div>
+                <h3 className="text-white text-xl font-semibold flex flex-wrap gap-1 mb-6">
+                  Análise de 
+                  <span className="block capitalize text-blue-500">Performance de Venda</span>
+                </h3>
                 <div className="text-gray-100 text-sm">
                   <ReactMarkdown>
                     {sold?.descriptionClassification}
                   </ReactMarkdown>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-10">
-                  <div className="text-center">
-                    <span className="block text-gray-100 text-sm">
-                      Valor Total do Veículo
-                    </span>
-                    <span className="block text-gray-100 font-semibold text-xl">
-                      {sold?.realTotalCostFormatted || 'R$ 0,00'}
-                    </span>
-                  </div>
-                  <div className="text-center">
-                    <span className="block text-gray-100 text-sm">
-                      Valor da Venda
-                    </span>
-                    <span className="block text-gray-100 font-semibold text-xl">
-                      {sold?.salePriceFormatted || 'R$ 0,00'}
-                    </span>
-                  </div>
-                  <div className="text-center">
-                    <span className="block text-gray-100 text-sm">
-                      Lucro Bruto
-                    </span>
-                    <span className="block text-gray-100 font-semibold text-xl">
-                      {sold?.grossProfitFormatted || 'R$ 0,00'}
-                    </span>
-                  </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-10">
+                <div className="text-center">
+                  <span className="block text-gray-100 text-sm">
+                    Valor Total do Veículo
+                  </span>
+                  <span className="block text-gray-100 font-semibold text-xl break-all">
+                    {sold?.realTotalCostFormatted || 'R$ 0,00'}
+                  </span>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  <div>
-                    <span className="block text-gray-100 text-sm">
-                      Data da Venda
-                    </span>
-                    <span className="block font-semibold text-gray-100">
-                      {sold?.saleDateFormatted}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="block text-gray-100 text-sm">
-                      Método de Pagamento
-                    </span>
-                    <span className="block font-semibold text-gray-100">
-                      {sold?.paymentMethodFormatted}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="block text-gray-100 text-sm">
-                      Classificação da Venda
-                    </span>
-                    <span className="block font-semibold text-gray-100">
-                      {sold?.classificationFormatted}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="block text-gray-100 text-sm">
-                      Margem Bruta
-                    </span>
-                    <span className="block font-semibold text-gray-100">
-                      {sold?.grossMarginPercentageFormatted || '0%'} ({sold?.grossProfitFormatted || 'R$ 0,00'}/{sold?.salePriceFormatted || 'R$ 0,00'})
-                    </span>
-                  </div>
-                  <div>
-                    <span className="block text-gray-100 text-sm">
-                      Retorno do Investimento (ROI)
-                    </span>
-                    <span className="block font-semibold text-gray-100">
-                      {sold?.roiPercentageFormatted || '0%'} ({sold?.grossProfitFormatted || 'R$ 0,00'}/{sold?.purchasePriceFormatted || 'R$ 0,00'})
-                    </span>
-                  </div>
-                  {sold?.notes && (
-                    <div className="col-span-5">
-                      <span className="block text-gray-100 text-sm">Observação</span>
-                      <span className="block text-gray-100 font-semibold">
-                        {sold?.notes}
-                      </span>
-                    </div>
-                  )}
+                <div className="text-center">
+                  <span className="block text-gray-100 text-sm">
+                    Valor da Venda
+                  </span>
+                  <span className="block text-gray-100 font-semibold text-xl break-all">
+                    {sold?.salePriceFormatted || 'R$ 0,00'}
+                  </span>
                 </div>
+                <div className="text-center">
+                  <span className="block text-gray-100 text-sm">
+                    Lucro Bruto
+                  </span>
+                  <span className="block text-gray-100 font-semibold text-xl break-all">
+                    {sold?.grossProfitFormatted || 'R$ 0,00'}
+                  </span>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div>
+                  <span className="block text-gray-100 text-sm">
+                    Data da Venda
+                  </span>
+                  <span className="block font-semibold text-gray-100 break-all">
+                    {sold?.saleDateFormatted}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-gray-100 text-sm">
+                    Método de Pagamento
+                  </span>
+                  <span className="block font-semibold text-gray-100 break-all">
+                    {sold?.paymentMethodFormatted}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-gray-100 text-sm">
+                    Classificação da Venda
+                  </span>
+                  <span className="block font-semibold text-gray-100 break-all">
+                    {sold?.classificationFormatted}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-gray-100 text-sm">
+                    Margem Bruta
+                  </span>
+                  <span className="block font-semibold text-gray-100 break-all">
+                    {sold?.grossMarginPercentageFormatted || '0%'} ({sold?.grossProfitFormatted || 'R$ 0,00'}/{sold?.salePriceFormatted || 'R$ 0,00'})
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-gray-100 text-sm">
+                    Retorno do Investimento (ROI)
+                  </span>
+                  <span className="block font-semibold text-gray-100 break-all">
+                    {sold?.roiPercentageFormatted || '0%'} ({sold?.grossProfitFormatted || 'R$ 0,00'}/{sold?.purchasePriceFormatted || 'R$ 0,00'})
+                  </span>
+                </div>
+                {sold?.notes && (
+                  <div className="col-span-full">
+                    <span className="block text-gray-100 text-sm">Observação</span>
+                    <span className="block text-gray-100 font-semibold break-all">
+                      {sold?.notes}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -322,7 +322,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
         <div className="col-span-3 flex flex-col gap-10 border rounded-xl bg-white shadow-sm">
           <div className="max-[374]:p-5 p-10">
             <div className="flex justify-between items-center">
-              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
+              <h3 className="text-muted-foreground text-xl font-semibold flex flex-wrap gap-1">
                 Custos
                 <span className="block capitalize text-blue-500">Gerais</span>
               </h3>
@@ -366,7 +366,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
         {IsThereCost && (
           <div className="border rounded-xl p-10 bg-white shadow-sm">
             <div className="flex flex-col gap-6">
-              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1 mb-6">
+              <h3 className="text-muted-foreground text-xl font-semibold flex flex-wrap gap-1 mb-6">
                 Análise de 
                 <span className="block capitalize text-blue-500">Gastos por Categoria</span>
               </h3>
@@ -381,7 +381,7 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
         {vehicle.fipe > 0 && (
           <div className={`${IsThereCost ? 'col-span-1' : 'col-span-2'} border rounded-xl p-10 bg-white shadow-sm`}>
             <div className="flex flex-col gap-6">
-              <h3 className="text-muted-foreground text-xl font-semibold flex gap-1 mb-6">
+              <h3 className="text-muted-foreground text-xl font-semibold flex flex-wrap gap-1 mb-6">
                 Simulação de 
                 <span className="block capitalize text-blue-500">Lucro com Desconto FIPE</span>
               </h3>
