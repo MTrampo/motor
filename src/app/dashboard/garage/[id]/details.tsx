@@ -10,7 +10,7 @@ import { CarStatusBadge } from "@/components/status/car-status";
 import { Button } from "@/components/ui/button";
 import { ChartBarProfitProjection } from "@/components/vehicles/chart/chart-profit-projection-vehicle";
 import TableCostsVehicle from "@/components/vehicles/data-table/table-costs-vehicle";
-import { FaCartArrowDown, FaFileCirclePlus, FaHandHoldingDollar, FaMagnifyingGlassDollar, FaSackDollar, FaTrophy } from "react-icons/fa6";
+import { FaCartArrowDown, FaFileCirclePlus, FaHandHoldingDollar, FaMagnifyingGlassDollar, FaSackDollar } from "react-icons/fa6";
 import { RegisterCostFormInputs } from "@/commons/models/Cost";
 import { ChartCostAnalysis } from "@/components/vehicles/chart/chart-cost-analysis";
 import { useGetCostSWR, useAddCostSWR } from '@/hooks/swr/use-cost'
@@ -234,11 +234,11 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                 <span className="block capitalize text-blue-500">Performance de Venda</span>
               </h3>
               <div className="flex flex-col gap-6">
-                <p className="text-gray-100 text-sm">
+                <div className="text-gray-100 text-sm">
                   <ReactMarkdown>
                     {sold?.descriptionClassification}
                   </ReactMarkdown>
-                </p>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-10">
                   <div className="text-center">
                     <span className="block text-gray-100 text-sm">

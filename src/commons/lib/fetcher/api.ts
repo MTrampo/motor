@@ -1,4 +1,3 @@
-import { HttpStatusEnum } from "../../enums/Api"
 import { ApiProps, ResponseProps } from "../../models/Api"
 
 const api = async <T, K>(

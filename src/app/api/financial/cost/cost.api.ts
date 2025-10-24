@@ -3,7 +3,7 @@ import { CostDocData, CostItemDocData, CostRequestBody, formatCost } from "@/com
 import globalResponses from "@/commons/utils/responses"
 import { addCostDoc, addCostDocAndUpdateTotal, getCostByIdDocs, killCostDoc } from "./cost.firestore"
 import { ResponseProps } from "@/commons/models/Api"
-import { ErrorCode, HttpStatusEnum } from "@/commons/enums/Api"
+import { ErrorCode } from "@/commons/enums/Api"
 import { addAndSynchronizeVehicleCostFinances, removeAndSynchronizeVehicleCostFinances } from "../summary/summary.api"
 import { FinanceTypeEnum } from "@/commons/enums/Finance"
 import { NotFound } from "@/commons/errors/generic"

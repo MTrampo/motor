@@ -1,4 +1,4 @@
-import { VehicleStatusBody, VehicleStatusHistoryDocData, VehicleStatusHistoryRequestBody, VehicleSummaryDocData } from "@/commons/models/Vehicle";
+import { VehicleStatusBody, VehicleStatusHistoryDocData, VehicleStatusHistoryRequestBody } from "@/commons/models/Vehicle";
 import { addStatusHistoryDoc, getLatestXStatusDocs, updateCurrentStatusDoc } from "./status.firestore";
 import { ResponseProps } from "@/commons/models/Api";
 import { updateVehicleCurrentStatus } from "../vehicle.api";

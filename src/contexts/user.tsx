@@ -7,11 +7,11 @@ import { firebase } from "@/commons/lib/firebase/client";
 import { clearAuthenticatedUserSession, createAuthenticatedUserSession, setTeamCookie } from "@/commons/lib/firebase/authentication";
 import { ResponseFirebaseProps } from "@/commons/models/Api";
 import { getFirebaseAuthErrorMessage } from "@/commons/validations/User";
-import { HttpStatusEnum } from "@/commons/enums/Api";
 import { useTriggerGetRegisteredUser } from "@/hooks/swr/use-user";
 import { checkIfHaveTeamSelectedAndIfNotSelectOne } from "@/commons/lib/firebase/authentication";
 import { TeamMemberFormatted } from "@/commons/models/Team";
 import { clearServiceWorkerCache } from "@/pwa/register-sw";
+import { toast } from "sonner";
 
 type UserProviderProps = {
   children: ReactNode
@@ -55,12 +55,9 @@ const UserProvider = ({ children }: UserProviderProps) => {
   const handleUnauthenticatedUser = useCallback(async (title?: string, message?: string) => {
     await signOutUser()
 
-    // toast({
-    //   icon: <FaUserXmark />,
-    //   variant: 'destructive',
-    //   title: title || 'Usuário Desconectado',
-    //   description: message || 'Você foi desconectado. Por favor, faça login novamente.',
-    // })
+    toast.info(title || "Sessão Expirada", {
+      description: message || "Por favor, faça login novamente para continuar.",
+    });
   }, [signOutUser])
 
   const getUserDataAndSyncSession = useCallback(async (loggedInUser: User) => {
@@ -76,7 +73,7 @@ const UserProvider = ({ children }: UserProviderProps) => {
     }
 
     const userFound = await triggerGetRegisteredUser()
-    if (userFound?.status === HttpStatusEnum.UNAUTHORIZED || userFound.data === null) {
+    if (userFound?.data === null) {
       return await handleUnauthenticatedUser(userFound.title, userFound.message)  
     }
 

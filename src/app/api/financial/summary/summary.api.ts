@@ -7,7 +7,6 @@ import { FinanceTypeEnum } from "@/commons/enums/Finance";
 import { getFinancialValuesBySaleFactory, getFinancialValuesByTypeFactory } from "./summary.factory";
 import { endOfQuarter, startOfQuarter, subMonths, subQuarters } from "date-fns";
 import { updateVehicleCost } from "../vehicle/vehicle.api";
-import { Timestamp } from "firebase-admin/firestore";
 
 
 export const getFinanceById = async (teamId: string) => {

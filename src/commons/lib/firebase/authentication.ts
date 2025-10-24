@@ -36,6 +36,7 @@ export async function getToken(): Promise<string | null> {
 export async function clearAuthenticatedUserSession(uid?: string): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_TK);
+  cookieStore.delete(COOKIE_TEAM);
 
   if (uid) {
     await firebaseAdmin.auth.revokeRefreshTokens(uid);
