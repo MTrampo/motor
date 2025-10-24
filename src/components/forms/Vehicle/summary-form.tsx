@@ -31,7 +31,7 @@ export function SummaryForm({ summary }: SummaryFormProps) {
 
   return (
     <div className="flex flex-col gap-10">
-      <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
+      <h3 className="text-muted-foreground text-xl font-semibold flex flex-wrap gap-1">
         Informações do{' '}
         <span className="block capitalize text-blue-500">Veículo</span>
       </h3>
@@ -78,7 +78,7 @@ export function SummaryForm({ summary }: SummaryFormProps) {
         </div>
       </div>
       <div>
-        <h3 className="text-muted-foreground text-xl font-semibold flex gap-1">
+        <h3 className="text-muted-foreground text-xl font-semibold flex flex-wrap gap-1">
           Informações de{' '}
           <span className="block text-blue-500">Pagamento</span>
         </h3>
@@ -157,7 +157,7 @@ export function SummaryForm({ summary }: SummaryFormProps) {
             <span className="block font-semibold">{currencyFormatter.format(summary.administrative ?? 0)}</span>
           </div>
           {summary.notes && (
-            <div className="col-span-5">
+            <div className="col-span-full">
               <span className="block text-muted-foreground">Observações</span>
               <span className="block font-semibold">{summary.notes}</span>
             </div>
