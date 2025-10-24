@@ -3,23 +3,9 @@ import { getFirebaseAuthErrorMessage } from "../validations/User"
 import { VehicleFormatted, VehicleSummaryFormatted } from "../models/Vehicle"
 import { HttpStatusEnum } from "../enums/Api"
 import { CostFormatted } from "../models/Cost"
+import { VehicleSoldFormatted } from "../models/Sale"
 
 const globalResponses = {
-  unauthorizedUser: (code: string): ResponseProps<null> => ({
-    title: 'Usuário não autenticado',
-    message: getFirebaseAuthErrorMessage(code),
-    data: null
-  }),
-  costNotFound: (isPlural = true): ResponseProps<null> => ({
-    title: isPlural ? 'Custos dos Veículo não Encontrados' : 'Custo do Veículo não Encontrado',
-    message: isPlural ? 'Nenhum custo encontrado' : 'Custo do veículo desejado não encontrado',
-    data: null
-  }),
-  vehicleNotFound: (isPlural = true): ResponseProps<null> => ({
-    title: isPlural ? 'Veículos não Encontrados' : 'Veículo não Encontrado',
-    message: isPlural ? 'Nenhum veículo encontrado' : 'Veículo desejado não encontrado',
-    data: null
-  }),
   costFound: (
     formattedData: CostFormatted,
     isPlural = true
@@ -44,21 +30,14 @@ const globalResponses = {
     message: isPlural ? 'Veículos recuperados com sucesso' : 'Veículo recuperado com sucesso',
     data: formattedData
   }),
-  // budgetPageFound: (
-  //   pageData: ReturnPageBudgets,
-  //   isPlural = true
-  // ): ResponseProps<ReturnPageBudgets> => ({
-  //
-  //   title: isPlural ? 'Orçamentos Encontrados' : 'Orçamento Encontrado',
-  //   message: isPlural ? 'Orçamentos recuperados com sucesso' : 'Orçamento recuperado com sucesso',
-  //   data: pageData
-  // }),
-
-  financeNotFound: (): ResponseProps<null> => ({
-    title: 'Financeiro não encontrado',
-    message: 'Erro ao recuperar financeiro.',
-    data: null
-  })
+  soldFound: (
+    formattedData: VehicleSoldFormatted | VehicleSoldFormatted[],
+    isPlural = true
+  ): ResponseProps<VehicleSoldFormatted | VehicleSoldFormatted[]> => ({
+    title: isPlural ? 'Vendas Encontradas' : 'Vendas Encontrada',
+    message: isPlural ? 'Vendas recuperadas com sucesso' : 'Vendas recuperada com sucesso',
+    data: formattedData
+  }),
 }
 
 export default globalResponses

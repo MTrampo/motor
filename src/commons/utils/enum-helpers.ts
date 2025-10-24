@@ -2,6 +2,7 @@ import { AuctionTypeEnum, DamageTypeEnum } from "@/commons/enums/Auction";
 import { CarConditionTypeEnum, CarOrigenEnum, CarStatusEnum } from "@/commons/enums/Car";
 import { CostTypeEnum } from "../enums/Cost";
 import { RoleEnum } from "../enums/Organization";
+import { SaleClassificationEnum, SalePaymentMethodEnum } from "../enums/Payment";
 
 export const originTypeTranslations: Record<CarOrigenEnum, string> = {
   [CarOrigenEnum.AUCTION]: "Adquirido do leilão",
@@ -79,6 +80,24 @@ export const roleTypeTranslations: Record<RoleEnum, string> = {
   [RoleEnum.SELLER]: "Vendedor",
 }
 
+export const paymentMethodForSaleTranslations: Record<SalePaymentMethodEnum, string> = {
+  [SalePaymentMethodEnum.CASH]: "Dinheiro",
+  [SalePaymentMethodEnum.CREDIT_CARD]: "Cartão de Crédito",
+  [SalePaymentMethodEnum.DEBIT_CARD]: "Cartão de Débito",
+  [SalePaymentMethodEnum.PIX]: "Pix",
+  [SalePaymentMethodEnum.BANK_SLIP]: "Boleto Bancário",
+  [SalePaymentMethodEnum.BANK_TRANSFER]: "Transferência Bancária",
+  [SalePaymentMethodEnum.CHECK]: "Cheque",
+  [SalePaymentMethodEnum.FINANCING]: "Financiamento",
+  [SalePaymentMethodEnum.LETTER_OF_CREDIT]: "Carta de Crédito",
+}
+
+export const performanceClassificationTranslations: Record<SaleClassificationEnum, string> = {
+  [SaleClassificationEnum.HIGH_PERFORMANCE]: "Alto Desempenho",
+  [SaleClassificationEnum.MEDIUM_PERFORMANCE]: "Desempenho Médio",
+  [SaleClassificationEnum.LOW_PERFORMANCE]: "Baixo Desempenho",
+}
+
 const translations = {
   CostType: costTypeTranslations,
   RoleType: roleTypeTranslations,
@@ -87,6 +106,8 @@ const translations = {
   AuctionType: auctionTypeTranslations,
   CarStatusType: carStatusTypeTranslations,
   CarConditionType: carConditionTypeTranslations,
+  PaymentMethodForSale: paymentMethodForSaleTranslations,
+  SaleClassification: performanceClassificationTranslations,
 };
 
 export function translateEnum<T extends keyof typeof translations, K extends keyof typeof translations[T]>(

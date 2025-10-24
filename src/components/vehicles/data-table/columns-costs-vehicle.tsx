@@ -7,18 +7,23 @@ import { CostTypeBadge } from "../cost-type"
 import { FaTrash } from "react-icons/fa6"
 import { ActionDialog } from "@/components/dialogs/action-dialog"
 import { useKillCostSWR } from "@/hooks/swr/use-cost"
+import { isAvailableForSale } from "@/commons/utils/status-sequences"
 
 type ActionsCellProps = {
+  status: number
   plate: string
   row: Row<ItemsCostFormatted>
 }
 
-const ActionsCell = ({ plate, row }: ActionsCellProps) => {
+const ActionsCell = ({ plate, row, status }: ActionsCellProps) => {
+  const availableSell = isAvailableForSale(status)
   const { killCost } = useKillCostSWR(plate);
 
   const handleDeletionCost = async () => {
     await killCost(plate, row.original.guid)
   }
+
+  if (!availableSell) return null;
 
   return (
     <ActionDialog
@@ -42,7 +47,7 @@ const ActionsCell = ({ plate, row }: ActionsCellProps) => {
   )
 }
 
-export const getColumns = (plate: string): ColumnDef<ItemsCostFormatted>[] => {
+export const getColumns = (plate: string, status: number): ColumnDef<ItemsCostFormatted>[] => {
   return [
     {
       accessorKey: "description",
@@ -69,7 +74,7 @@ export const getColumns = (plate: string): ColumnDef<ItemsCostFormatted>[] => {
     {
       id: "actions",
       enableHiding: false,
-      cell: ({ row }) => <ActionsCell plate={plate} row={row}/>
+      cell: ({ row }) => <ActionsCell plate={plate} status={status} row={row}/>
     }
   ]
 }

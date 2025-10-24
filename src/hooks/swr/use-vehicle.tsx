@@ -3,17 +3,18 @@
 import useSWR, { mutate } from "swr"
 import { fetcherSWR, mutationSWR } from "@/commons/lib/fetcher/swr"
 import { MutatorArgs, ResponseProps } from "@/commons/models/Api"
-import { VehicleAuctionFormInputs, VehicleFormatted, VehicleMainFormInputs, VehicleRequestBody, VehicleStatusFormInputs, VehicleStatusHistoryRequestBody, VehicleSummaryFormatted, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
+import { VehicleAuctionFormInputs, VehicleFormatted, VehicleMainFormInputs, VehicleRequestBody,
+  VehicleStatusFormInputs, VehicleStatusHistoryRequestBody, VehicleSummaryFormatted, VehicleThirdFormInputs } from "@/commons/models/Vehicle"
 import { ApiError } from "@/commons/errors/api"
 import useSWRMutation from "swr/mutation"
 import { toast } from "sonner"
 import { CarOrigenEnum } from "@/commons/enums/Car"
 
-const revalidateVehicles = () => {
+export const revalidateVehicles = () => {
   mutate('/api/financial/vehicle');
 };
 
-const revalidateVehicle = (plateId: string) => {
+export const revalidateVehicle = (plateId: string) => {
   mutate(`/api/financial/vehicle/${plateId}`);
 };
 

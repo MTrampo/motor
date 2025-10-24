@@ -4,7 +4,7 @@ import globalResponses from "@/commons/utils/responses"
 import { addCostDoc, addCostDocAndUpdateTotal, getCostByIdDocs, killCostDoc } from "./cost.firestore"
 import { ResponseProps } from "@/commons/models/Api"
 import { ErrorCode, HttpStatusEnum } from "@/commons/enums/Api"
-import { addAndSynchronizeVehicleFinances, removeAndSynchronizeVehicleFinances } from "../summary/summary.api"
+import { addAndSynchronizeVehicleCostFinances, removeAndSynchronizeVehicleCostFinances } from "../summary/summary.api"
 import { FinanceTypeEnum } from "@/commons/enums/Finance"
 import { NotFound } from "@/commons/errors/generic"
 
@@ -35,7 +35,7 @@ export const killCost = async (teamId: string, data: CostRequestBody) => {
   const total = oldDoc.total - oldDocItem.value;
 
   const id = await killCostDoc(teamId, data.documentId, oldDocItem, total);
-  await removeAndSynchronizeVehicleFinances(teamId, {
+  await removeAndSynchronizeVehicleCostFinances(teamId, {
     plate: oldDoc.id,
     payment: oldDocItem.value,
     cost: total,
@@ -70,7 +70,7 @@ const processAddNewCostOrNewCostItem = async (teamId: string, data: CostRequestB
     const total = (totalItems + checkCostsExist.total);
     
     const id = await addCostDocAndUpdateTotal(teamId, data.documentId, docItemData, total);
-    await addAndSynchronizeVehicleFinances(teamId, {
+    await addAndSynchronizeVehicleCostFinances(teamId, {
       plate: checkCostsExist.id,
       payment: totalItems,
       cost: total,
@@ -97,7 +97,7 @@ const processAddNewCostOrNewCostItem = async (teamId: string, data: CostRequestB
     const id = await addCostDoc(teamId, data.documentId, docData)
     
     const paymentDate = docData.items.map(item => item.paymentDate).sort((a, b) => b.getTime() - a.getTime())[0];
-    await addAndSynchronizeVehicleFinances(teamId, {
+    await addAndSynchronizeVehicleCostFinances(teamId, {
       plate: data.documentId,
       payment: docData.total,
       paymentDate,

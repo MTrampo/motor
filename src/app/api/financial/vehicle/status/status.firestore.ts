@@ -29,7 +29,7 @@ export async function getLatestXStatusDocs(teamId: string, plate: string, x: num
 }
 
 export async function addStatusHistoryDoc(teamId: string, docData: VehicleStatusHistoryDocData) {
-  const docRef = firebaseAdmin.db.collection(firebaseAdmin.getPath.statusHistory(teamId));
+  const docRef = getStatusHistoryDocRef(teamId);
   await docRef.add(docData);
   return docRef.id;
 }

@@ -11,12 +11,13 @@ const collection = {
 }
 
 const subCollection = {
-  vehicle: process.env.FIRESTORE_SUB_COLLECTION_VEHICLES as string,
-  vehicleSummary: process.env.FIRESTORE_SUB_COLLECTION_VEHICLE_SUMMARY as string,
   cost: process.env.FIRESTORE_SUB_COLLECTION_COST as string,
+  sale: process.env.FIRESTORE_SUB_COLLECTION_SALE as string,
   finance: process.env.FIRESTORE_SUB_COLLECTION_FINANCE as string,
+  vehicle: process.env.FIRESTORE_SUB_COLLECTION_VEHICLES as string,
   customer: process.env.FIRESTORE_SUB_COLLECTION_CUSTOMER as string,
   statusHistory: process.env.FIRESTORE_SUB_COLLECTION_STATUS_HISTORY as string,
+  vehicleSummary: process.env.FIRESTORE_SUB_COLLECTION_VEHICLE_SUMMARY as string,
 }
 
 export const getPath: FirestorePaths = {
@@ -26,10 +27,11 @@ export const getPath: FirestorePaths = {
   teamMembers: `${collection.teamMembers}`,
 
   // Sub-coleções
-  vehicle: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.vehicle}`,
-  vehicleSummary: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.vehicleSummary}`,
   cost: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.cost}`,
+  sale: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.sale}`,
   finance: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.finance}`,
+  vehicle: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.vehicle}`,
   customer: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.customer}`,
-  statusHistory: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.statusHistory}`
+  statusHistory: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.statusHistory}`,
+  vehicleSummary: (teamId: string): string => `${collection.team}/${teamId}/${subCollection.vehicleSummary}`,
 }

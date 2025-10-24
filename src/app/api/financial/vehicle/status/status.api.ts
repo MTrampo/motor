@@ -30,6 +30,32 @@ export const addStatusHistory = async (teamId: string, vehicleStatus: VehicleSta
   return result
 }
 
+export const updateStatusSold = async (teamId: string, plate: string, date: Date, statusDocumentId: string) => {
+  const today = new Date()
+  const dataDoc: VehicleStatusHistoryDocData = {
+    plate: plate.toUpperCase(),
+    endedAt: date,
+    status: CarStatusEnum.SOLD,
+    startedAt: date,
+    createdAt: today,
+    updatedAt: today,
+  }
+
+  if (statusDocumentId) {
+    await updateCurrentStatusDoc(teamId, statusDocumentId, date);
+  }
+
+  const id = await addStatusHistoryDoc(teamId, dataDoc);
+  await updateVehicleCurrentStatus(teamId, dataDoc.plate, dataDoc.status)
+  const result: ResponseProps<string> = {
+    title: 'Marcha Engatada',
+    message: `Marcha engatada com sucesso`,
+    data: id
+  }
+  
+  return result
+}
+
 export const addStatusHistoryAndUpdateCurrentStatus = async (teamId: string, body: VehicleStatusHistoryRequestBody) => {
   const today = new Date()
   const dataDoc: VehicleStatusHistoryDocData = {

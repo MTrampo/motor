@@ -10,7 +10,7 @@ import { CarStatusBadge } from "@/components/status/car-status";
 import { Button } from "@/components/ui/button";
 import { ChartBarProfitProjection } from "@/components/vehicles/chart/chart-profit-projection-vehicle";
 import TableCostsVehicle from "@/components/vehicles/data-table/table-costs-vehicle";
-import { FaCartArrowDown, FaFileCirclePlus, FaHandHoldingDollar, FaMagnifyingGlassDollar, FaSackDollar } from "react-icons/fa6";
+import { FaCartArrowDown, FaFileCirclePlus, FaHandHoldingDollar, FaMagnifyingGlassDollar, FaSackDollar, FaTrophy } from "react-icons/fa6";
 import { RegisterCostFormInputs } from "@/commons/models/Cost";
 import { ChartCostAnalysis } from "@/components/vehicles/chart/chart-cost-analysis";
 import { useGetCostSWR, useAddCostSWR } from '@/hooks/swr/use-cost'
@@ -20,18 +20,30 @@ import { GiGearStick, GiGearStickPattern } from "react-icons/gi";
 import { StatusForm } from "@/components/forms/Vehicle/status-form";
 import { currencyFormatter } from "@/commons/utils/formatter";
 import { useUpdateStatusVehicleSWR } from "@/hooks/swr/use-vehicle";
+import { ActionMenu } from "@/components/dashboard/action-menu";
+import { CarStatusEnum } from "@/commons/enums/Car";
+import { useGetVehicleSoldByIdSWR } from "@/hooks/swr/use-sale";
+import ReactMarkdown from 'react-markdown';
+import { isAvailableForSale } from "@/commons/utils/status-sequences";
 
 type VehicleDetailsProps = {
   vehicle: VehicleFormatted
 }
 
+//TODO: Criar loading skeleton
+//TODO: Criar um card mostrando a métrica de venda, lucro bruto, lucro líquido e se foi um bom negócio ou não.
+
 export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
   const { updatedStatus } = useUpdateStatusVehicleSWR(vehicle.id)
-  const { cost } = useGetCostSWR(vehicle.id)
   const { addCost } = useAddCostSWR(vehicle.id)
+
+  const { cost } = useGetCostSWR(vehicle.id)
+  const { sold } = useGetVehicleSoldByIdSWR(vehicle.id)
 
   const costFormRef = useRef<SheetFormRef>(null)
   const statusFormRef = useRef<DialogFormRef>(null)
+
+  const availableSell = isAvailableForSale(vehicle.status.current)
 
   const totalPaid = useCallback(() => {
     const paymentTotal = vehicle.payment.total || 0
@@ -72,7 +84,9 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
               </div>
               <div className="flex justify-between pb-6 lg:block lg:space-x-10">
                 <CarStatusBadge status={vehicle.status.current}/>
-                {/* <ActionMenu currentStatus={vehicle.status.current}/> */}
+                {availableSell && (
+                  <ActionMenu vehicle={vehicle} totalCost={cost?.total ?? 0}/>
+                )}
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -198,18 +212,111 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                       <GiGearStickPattern />
                     </Button>
                   )}
-                  title={(<><GiGearStickPattern /> Mudar Marcha</>)}
+                  title={(<><GiGearStickPattern /> Engatar Marcha</>)}
                   description="Cada marcha representa uma etapa da jornada do seu veículo, do pátio à venda ou aluguel. Mude a marcha para acompanhar o processo e manter tudo atualizado."
                   formComponent={(
                     <StatusForm ref={statusFormRef} currentStatus={vehicle.status.current} onHandleSubmit={handleUpdateStatus} />
                   )}
-                  buttonText={(<>MUDAR <GiGearStick /></>)}
+                  buttonText={(<>ENGATAR <GiGearStick /></>)}
                 />
               </div>
             </div>
             {vehicle.status.history.map(history => (
               <TimelineStatus key={history.id} history={history}/>
             ))}
+          </div>
+        )}
+        {vehicle.status.current === CarStatusEnum.SOLD && (
+          <div className="col-span-3 flex flex-col gap-10 border rounded-xl bg-gray-900 shadow-sm">
+            <div className="max-[374]:p-5 p-10">
+              <h3 className="text-white text-xl font-semibold flex gap-1 mb-6">
+                Análise de 
+                <span className="block capitalize text-blue-500">Performance de Venda</span>
+              </h3>
+              <div className="flex flex-col gap-6">
+                <p className="text-gray-100 text-sm">
+                  <ReactMarkdown>
+                    {sold?.descriptionClassification}
+                  </ReactMarkdown>
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-10">
+                  <div className="text-center">
+                    <span className="block text-gray-100 text-sm">
+                      Valor Total do Veículo
+                    </span>
+                    <span className="block text-gray-100 font-semibold text-xl">
+                      {sold?.realTotalCostFormatted || 'R$ 0,00'}
+                    </span>
+                  </div>
+                  <div className="text-center">
+                    <span className="block text-gray-100 text-sm">
+                      Valor da Venda
+                    </span>
+                    <span className="block text-gray-100 font-semibold text-xl">
+                      {sold?.salePriceFormatted || 'R$ 0,00'}
+                    </span>
+                  </div>
+                  <div className="text-center">
+                    <span className="block text-gray-100 text-sm">
+                      Lucro Bruto
+                    </span>
+                    <span className="block text-gray-100 font-semibold text-xl">
+                      {sold?.grossProfitFormatted || 'R$ 0,00'}
+                    </span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  <div>
+                    <span className="block text-gray-100 text-sm">
+                      Data da Venda
+                    </span>
+                    <span className="block font-semibold text-gray-100">
+                      {sold?.saleDateFormatted}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-100 text-sm">
+                      Método de Pagamento
+                    </span>
+                    <span className="block font-semibold text-gray-100">
+                      {sold?.paymentMethodFormatted}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-100 text-sm">
+                      Classificação da Venda
+                    </span>
+                    <span className="block font-semibold text-gray-100">
+                      {sold?.classificationFormatted}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-100 text-sm">
+                      Margem Bruta
+                    </span>
+                    <span className="block font-semibold text-gray-100">
+                      {sold?.grossMarginPercentageFormatted || '0%'} ({sold?.grossProfitFormatted || 'R$ 0,00'}/{sold?.salePriceFormatted || 'R$ 0,00'})
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-100 text-sm">
+                      Retorno do Investimento (ROI)
+                    </span>
+                    <span className="block font-semibold text-gray-100">
+                      {sold?.roiPercentageFormatted || '0%'} ({sold?.grossProfitFormatted || 'R$ 0,00'}/{sold?.purchasePriceFormatted || 'R$ 0,00'})
+                    </span>
+                  </div>
+                  {sold?.notes && (
+                    <div className="col-span-5">
+                      <span className="block text-gray-100 text-sm">Observação</span>
+                      <span className="block text-gray-100 font-semibold">
+                        {sold?.notes}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         )}
         <div className="col-span-3 flex flex-col gap-10 border rounded-xl bg-white shadow-sm">
@@ -219,24 +326,26 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
                 Custos
                 <span className="block capitalize text-blue-500">Gerais</span>
               </h3>
-              <div>
-                <SheetForm
-                  formRef={costFormRef}
-                  triggerComponent={(
-                    <Button variant="outline" size="icon">
-                      <FaFileCirclePlus />
-                    </Button>
-                  )}
-                  title="Adicionar Custos"
-                  description='Informe qualquer despesa relacionada ao seu veículo, desde manutenções e reparos a gastos com peças, inspeções ou documentação.'
-                  formComponent={(
-                    <RegisterCostForm ref={costFormRef} onHandleSubmit={handleAddCost} />
-                  )}
-                />
-              </div>
+              {vehicle.status.current !== CarStatusEnum.SOLD && (
+                <div>
+                  <SheetForm
+                    formRef={costFormRef}
+                    triggerComponent={(
+                      <Button variant="outline" size="icon">
+                        <FaFileCirclePlus />
+                      </Button>
+                    )}
+                    title="Adicionar Custos"
+                    description='Informe qualquer despesa relacionada ao seu veículo, desde manutenções e reparos a gastos com peças, inspeções ou documentação.'
+                    formComponent={(
+                      <RegisterCostForm ref={costFormRef} onHandleSubmit={handleAddCost} />
+                    )}
+                  />
+                </div>
+              )}
             </div>
             {IsThereCost ? (
-              <TableCostsVehicle plate={vehicle.id} cost={cost!}/>
+              <TableCostsVehicle plate={vehicle.id} cost={cost!} status={vehicle.status.current}/>
             ) : (
               <div className="flex flex-col gap-5 pt-12">
                 <Image src={svgCarRepair} className="mx-auto" alt="carro em manutenção" width={200} height={200}/>

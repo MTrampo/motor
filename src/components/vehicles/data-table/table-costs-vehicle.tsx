@@ -17,18 +17,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CostFormatted } from "@/commons/models/Cost"
 
 type TableCostsVehicleProps = {
+  status: number
   plate: string
   cost: CostFormatted
 }
 
-export default function TableCostsVehicle({ plate, cost }: TableCostsVehicleProps) {
+export default function TableCostsVehicle({ plate, cost, status }: TableCostsVehicleProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
-  const columns = useMemo(() => getColumns(plate), [plate]);
+  const columns = useMemo(() => getColumns(plate, status), [plate]);
 
   const table = useReactTable({
     data: cost?.items || [],

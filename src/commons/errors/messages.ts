@@ -21,6 +21,10 @@ export const errorMessages: Record<ErrorCode, { title: string; message: string }
     title: "Finança não Encontrada",
     message: "Nenhuma finança ativa encontrada para o período atual!"
   },
+  [ErrorCode.SALE_NOT_FOUND]: {
+    title: "Venda não Encontrada",
+    message: "A venda desejada não foi localizada.",
+  },
   [ErrorCode.BAD_REQUEST]: {
     title: 'Falha na solicitação',
     message: "Erro ao tentar processar solicitação"
