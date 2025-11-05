@@ -35,6 +35,6 @@ export function middleware(request: NextRequest) {
 // Aplica o middleware a todas as rotas, exceto arquivos estáticos e API
 export const config = {
   matcher: [
-    '/((?!api|_next/static|favicon.ico|sw.js|manifest.webmanifest|imgs).*)',
+    '/((?!api|_next/static|favicon.ico|sw.js|manifest.webmanifest|imgs|svgs).*)',
   ],
 }

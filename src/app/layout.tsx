@@ -1,19 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { inter, lexend } from "@/commons/styles/fonts";
 import "@/commons/styles/globals.css";
 import { PwaMetaTags } from "@/pwa/meta-tags";
 import { Toaster } from "@/components/ui/sonner";
 import UserProvider from "@/contexts/user";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Motor",
@@ -34,7 +24,7 @@ export default function RootLayout({
         <PwaMetaTags/>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${lexend.variable} antialiased`}
       >
         <UserProvider>
           {children}

@@ -49,7 +49,7 @@ export function useSellVehicleSWR() {
       const requestBody: SellVehicleRequestBody = {
         plate,
         purchase,
-        totalCost: cost,
+        cost: cost,
         notes: data.note,
         sellerId: userId,
         saleDate: data.sell,

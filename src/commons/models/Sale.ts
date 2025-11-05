@@ -13,7 +13,7 @@ export interface SellVehicleRequestBody {
   salePrice: number,
   buyerId?: string,
   paymentMethod: number,
-  totalCost: number,
+  cost: number,
   notes?: string
   previousStatusDocumentId: string,
 }

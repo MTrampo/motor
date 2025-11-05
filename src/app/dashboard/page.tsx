@@ -1,6 +1,6 @@
 import OverviewCarsFinances from "@/components/finances/data-table/overview-cars-finances";
 import OverviewFinances from "@/components/finances/overview-finances";
-import Header from "@/components/header";
+import Header from "@/components/header/dashboard";
 
 export default async function Dashboard () {
   return (

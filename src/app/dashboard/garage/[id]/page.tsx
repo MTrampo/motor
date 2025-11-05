@@ -1,7 +1,7 @@
 "use client"
 
 import { use } from "react";
-import Header from "@/components/header";
+import Header from "@/components/header/dashboard";
 import Image from "next/image"
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { useGetVehicleByIdSWR } from "@/hooks/swr/use-vehicle"

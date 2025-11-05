@@ -9,7 +9,7 @@ export default function SignIn() {
   const [forgotPassword, setForgotPassword] = useState(false)
 
   return (
-    <main className="grid grid-cols-1 xl:grid-cols-2 h-[100vh] justify-around">
+    <main className="grid grid-cols-1 xl:grid-cols-2 h-screen justify-around">
       <div className="hidden xl:block bg-[url('/imgs/hero-cars.png')] w-full bg-cover bg-no-repeat"/>
       <div className="bg-[url('/imgs/hero-cars.png')] bg-contain bg-repeat-round xl:bg-none flex items-center justify-center px-2 xl:p-10">
         <div className="bg-white md:bg-gray-100/90 xl:bg-background p-6 xl:p-0 rounded-xl mx-auto flex w-full flex-col justify-center gap-6 sm:w-[350px]">

@@ -34,6 +34,12 @@ const UserProvider = ({ children }: UserProviderProps) => {
   const [activeTeam, setActiveTeam] = useState<TeamMemberFormatted | null>(null)
   const { triggerGetRegisteredUser } = useTriggerGetRegisteredUser()
 
+  const toastUnauthenticatedUser = (title?: string, message?: string) => {
+    toast.info(title || "Sessão Expirada", {
+      description: message || "Por favor, faça login novamente para continuar.",
+    });
+  }
+
   const clearUserCache = useCallback(async () => {
     await clearServiceWorkerCache()
   }, [activeTeam]) 
@@ -54,10 +60,6 @@ const UserProvider = ({ children }: UserProviderProps) => {
 
   const handleUnauthenticatedUser = useCallback(async (title?: string, message?: string) => {
     await signOutUser()
-
-    toast.info(title || "Sessão Expirada", {
-      description: message || "Por favor, faça login novamente para continuar.",
-    });
   }, [signOutUser])
 
   const getUserDataAndSyncSession = useCallback(async (loggedInUser: User) => {
@@ -65,7 +67,8 @@ const UserProvider = ({ children }: UserProviderProps) => {
       const idToken = await loggedInUser.getIdToken();
       const isSessionValid = await createAuthenticatedUserSession(idToken);
       if (!isSessionValid) {
-        return await handleUnauthenticatedUser(
+        await handleUnauthenticatedUser()
+        return toastUnauthenticatedUser(
           "Falha na Sessão",
           "Não foi possível criar sua sessão. Faça login novamente."
         );
@@ -74,7 +77,8 @@ const UserProvider = ({ children }: UserProviderProps) => {
 
     const userFound = await triggerGetRegisteredUser()
     if (userFound?.data === null) {
-      return await handleUnauthenticatedUser(userFound.title, userFound.message)  
+      await handleUnauthenticatedUser()
+      return toastUnauthenticatedUser(userFound.title, userFound.message)  
     }
 
     if (userFound.data.teams && userFound.data.teams.length > 0) {

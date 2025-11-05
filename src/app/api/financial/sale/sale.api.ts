@@ -30,7 +30,7 @@ export const sellVehicle = async (teamId: string, body: SellVehicleRequestBody) 
     saleDate: saleDate,
     salePrice: body.salePrice,
     paymentMethod: body.paymentMethod,
-    totalCost: body.totalCost,
+    totalCost: (body.purchase + body.cost),
     buyerId: body.buyerId ?? null,
     notes: body.notes ?? null,
     createdAt: today,
@@ -39,7 +39,7 @@ export const sellVehicle = async (teamId: string, body: SellVehicleRequestBody) 
 
   const saleId = await addVehicleSale(teamId, body.plate, docData);
   await updateStatusSold(teamId, body.plate, saleDate, body.previousStatusDocumentId);
-  await addFinanceSale(teamId, body.salePrice, saleDate, body.totalCost, FinanceTypeEnum.SALE);
+  await addFinanceSale(teamId, body.salePrice, saleDate, body.cost, FinanceTypeEnum.SALE);
 
   const result: ResponseProps<string> = {
     title: 'Atualizado',

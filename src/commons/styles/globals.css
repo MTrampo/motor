@@ -4,6 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-header: var(--header);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -45,6 +46,7 @@
 
 :root {
   --radius: 0.625rem;
+  --header: #edefee;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -132,6 +134,19 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-lexend);
+}
+
+span, p, a, li, div, input, button, textarea, label, select {
+  font-family: var(--font-inter);
+}
+
+.fade-content {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInContent 1s ease forwards;
+}
 
 @layer base {
   * {
@@ -139,5 +154,12 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@keyframes fadeInContent {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

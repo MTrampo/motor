@@ -1,37 +1,35 @@
-import { ReactNode } from "react";
+
+import Link from "next/link"
+import Image from "next/image";
+import { Navigation } from "@/components/header/nav";
 import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
-import { SidebarTrigger } from "../ui/sidebar";
 
-type HeaderProps = {
-  title: ReactNode | string
-}
+export default function Header() {
 
-export default function Header({ title }: HeaderProps) {
-  return(
-    <header className="flex border-b h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-      <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
-        <SidebarTrigger className="-ml-1" />
-        <Separator
-          orientation="vertical"
-          className="mx-2 data-[orientation=vertical]:h-4"
-        />
-        <h1 className="text-base font-medium">
-          {title}
-        </h1>
-        <div className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-            <a
-              href="https://meu-trampo.vercel.app/"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="dark:text-foreground"
-            >
-              Meu Trampo
-            </a>
-          </Button>
+  return (
+    <header className="sticky top-0 z-50 bg-header">
+      <nav className="mx-auto p-6 max-w-5xl md:max-w-7xl ">
+        <div className="flex justify-between items-center">
+          <Link href="/">
+            <Image
+              src="/svgs/logo-beta.svg"
+              alt="Motor Logo"
+              width={50}
+              height={50}
+              className="w-48 h-auto"
+            />
+          </Link>
+          <div className="flex items-center gap-4">
+            <Navigation />
+            <Button variant="emphasis" asChild>
+              <Link href="/signin">
+                FROTA
+              </Link>
+            </Button>
+            {/* <ModeToggle /> */}
+          </div>
         </div>
-      </div>
+      </nav>
     </header>
   )
 }

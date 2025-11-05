@@ -1,6 +1,6 @@
 "use client"
 
-import Header from "@/components/header";
+import Header from "@/components/header/dashboard";
 import { Stepper, StepperForm } from "@/components/forms/Vehicle/stepper-form";
 
 export default function NewVehicle() {

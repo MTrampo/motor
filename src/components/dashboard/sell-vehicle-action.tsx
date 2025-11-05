@@ -51,7 +51,7 @@ export function SellVehicleAction({ vehicle, totalCost }: SellVehicleActionProps
       formComponent={<SellForm ref={sellFormRef} onHandleSubmit={handleSellVehicle}/>}
       buttonText={(
         <>
-          ACELERAR NA PISTA <GiF1Car className="!w-10 !h-10" />
+          ACELERAR NA PISTA <GiF1Car className="w-10! h-10!" />
         </>
       )}
     />

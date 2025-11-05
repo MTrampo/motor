@@ -100,7 +100,7 @@ export default function OverviewFinances() {
         )}
       />
       <CardFinance 
-        title="Receita" 
+        title="Lucro" 
         description={finance.comparison.amountProfit.text} 
         amount={finance.amountProfitFormatted} 
         last={finance.lastProfitFormatted}
